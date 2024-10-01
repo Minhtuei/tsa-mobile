@@ -9,7 +9,7 @@ export const lightTheme = {
   ...MD3LightTheme,
   roundness: 2,
   colors: {
-    primary: 'rgb(44, 44, 44)',
+    primary: '#34A853',
     onPrimary: 'rgb(255, 255, 255)',
     primaryContainer: 'rgb(223, 224, 255)',
     onPrimaryContainer: 'rgb(0, 13, 95)',
@@ -169,7 +169,7 @@ const createStyles = (theme: MD3Theme) =>
       gap: 8,
     },
     wideButton: {
-      width: '100%',
+      width: '80%',
       padding: 2,
 
       alignItems: 'stretch',

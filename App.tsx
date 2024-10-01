@@ -65,7 +65,7 @@ function AppContent() {
       <PaperProvider theme={theme}>
         <NavigationContainer theme={theme as any}>
           <RootStack.Navigator
-            initialRouteName="SplashScreen"
+            initialRouteName="Onboarding"
             screenOptions={{ headerShown: false }}
           >
             <RootStack.Screen
@@ -131,53 +131,54 @@ const MainTab = (
             setMessage('');
           }}
         />
-        <StatusBar
-          style={theme.dark ? 'light' : 'dark'}
-          backgroundColor={theme.colors.background}
-        />
-        <Tab.Navigator
-          id="MainTab"
-          initialRouteName="Home"
-          barStyle={{
-            justifyContent: 'center',
-            maxHeight: Platform.OS === 'ios' ? 64 : 80,
-            backgroundColor: theme.colors.background,
-          }}
-        >
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'home',
-              title: 'Trang chủ',
-            }}
-            name="Home"
-            component={Home}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'shopping',
-              title: 'Đơn hàng',
-            }}
-            name="Order"
-            component={Order}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'file-document',
-              title: 'Báo cáo',
-            }}
-            name="Report"
-            component={Report}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'cog',
-              title: 'Cài đặt',
-            }}
-            name="Setting"
-            component={Setting}
-          />
-        </Tab.Navigator>
       </Portal>
+
+      <StatusBar
+        style={theme.dark ? 'light' : 'dark'}
+        backgroundColor={theme.colors.background}
+      />
+      <Tab.Navigator
+        id="MainTab"
+        initialRouteName="Home"
+        barStyle={{
+          justifyContent: 'center',
+          maxHeight: Platform.OS === 'ios' ? 64 : 80,
+          backgroundColor: theme.colors.background,
+        }}
+      >
+        <Tab.Screen
+          options={{
+            tabBarIcon: 'home',
+            title: 'Trang chủ',
+          }}
+          name="Home"
+          component={Home}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: 'shopping',
+            title: 'Đơn hàng',
+          }}
+          name="Order"
+          component={Order}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: 'file-document',
+            title: 'Báo cáo',
+          }}
+          name="Report"
+          component={Report}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: 'cog',
+            title: 'Cài đặt',
+          }}
+          name="Setting"
+          component={Setting}
+        />
+      </Tab.Navigator>
     </>
   );
 };

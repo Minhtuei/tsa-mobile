@@ -6,7 +6,9 @@ export const Header = (props: NativeStackHeaderProps) => {
   return (
     <Appbar.Header
       mode="center-aligned"
-      statusBarHeight={Platform.OS === 'ios' ? 0 : Constants.statusBarHeight}
+      statusBarHeight={
+        Platform.OS === 'android' ? 0 : Constants.statusBarHeight
+      }
     >
       <Appbar.BackAction
         onPress={() => props.navigation.goBack()}
