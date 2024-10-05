@@ -21,7 +21,7 @@ export const lightTheme = {
     onTertiary: 'rgb(0,0,0)',
     tertiaryContainer: 'rgba(148, 163, 184, 1)',
     onTertiaryContainer: 'rgb(0, 0, 0)',
-    error: 'rgb(251,2,9,1)',
+    error: 'rgba(251,2,9,1)',
     onError: 'rgb(255, 255, 255)',
     errorContainer: 'rgb(255, 218, 214)',
     onErrorContainer: 'rgb(65, 0, 2)',
@@ -29,10 +29,10 @@ export const lightTheme = {
     onBackground: 'rgb(0, 0, 0)',
     surface: 'rgb(255, 255, 255)',
     onSurface: 'rgb(0, 0, 0)',
-    surfaceVariant: 'rgb(70, 70, 79)',
-    onSurfaceVariant: 'rgb(199, 197, 208)',
-    outline: 'rgba(0, 0, 0, 0.3)',
-    outlineVariant: 'rgb(70, 70, 79)',
+    surfaceVariant: 'rgba(241, 244, 245, 1)',
+    onSurfaceVariant: 'rgba(15, 23, 42, 1)',
+    outline: 'rgba(51, 51, 51, 1)',
+    outlineVariant: 'rgba(102,102,102,0.25)',
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
     inverseSurface: 'rgb(48, 48, 52)',
@@ -119,6 +119,7 @@ const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     keyboardAvoidingView: {
       flexGrow: 1,
+      backgroundColor: theme.colors.background,
     },
     auth: {
       paddingVertical: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 16,
@@ -164,13 +165,13 @@ const createStyles = (theme: MD3Theme) =>
       gap: 8,
     },
     wideButton: {
-      width: '80%',
+      width: '100%',
       padding: 2,
 
       alignItems: 'stretch',
     },
     mediumButton: {
-      width: '50%',
+      width: '80%',
       marginVertical: 8,
     },
     smallButton: {

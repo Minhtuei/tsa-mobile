@@ -86,7 +86,7 @@ function AppContent() {
               name="AuthStack"
               component={AuthStack}
               options={{
-                navigationBarColor: theme.colors.elevation.level1,
+                navigationBarColor: theme.colors.background,
               }}
             />
             <RootStack.Screen
