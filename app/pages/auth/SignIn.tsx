@@ -157,7 +157,7 @@ export const SignIn = (
                 <Text style={globalStyles.text}>Chưa có tài khoản?</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    props.navigation.navigate('SignUp');
+                    props.navigation.navigate('SignUp', { stepper: 0 });
                   }}
                 >
                   <Text
