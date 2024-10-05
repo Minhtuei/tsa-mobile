@@ -27,12 +27,13 @@ export const Onboarding = (
     <>
       <StatusBar
         style={theme.dark ? 'light' : 'dark'}
-        backgroundColor={theme.colors.primaryContainer}
+        backgroundColor={theme.colors.background}
       />
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: 'white',
+          paddingTop: 16,
+          backgroundColor: theme.colors.background,
         }}
       >
         <Button
@@ -81,7 +82,7 @@ export const Onboarding = (
                     i === index ? theme.colors.primary : theme.colors.surface,
                 },
               ]}
-            ></View>
+            />
           ))}
           <IconButton
             icon="chevron-right"
@@ -106,27 +107,46 @@ const CarouselItem = ({
   const globalStyles = useGlobalStyles();
   return (
     <View style={styles.slide}>
+      <Text
+        style={[
+          globalStyles.title,
+          {
+            fontSize: 32,
+            textTransform: 'uppercase',
+          },
+        ]}
+      >
+        {item.title}
+      </Text>
       <Image
         source={item.image}
         style={styles.image}
-        resizeMode="center"
+        resizeMode="contain"
         resizeMethod="scale"
       />
-      <Text variant="titleLarge" style={[styles.text, { fontWeight: 700 }]}>
-        {item.title}
-      </Text>
-      <Text variant="bodyMedium" style={styles.text}>
-        {item.description}
-      </Text>
-      {last && (
-        <Button
-          mode="contained"
-          onPress={onFinish}
-          style={globalStyles.wideButton}
+      <View
+        style={{
+          flex: 0.2,
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
+        <Text
+          style={[globalStyles.text, { textAlign: 'center', fontSize: 18 }]}
         >
-          Bắt đầu
-        </Button>
-      )}
+          {item.description}
+        </Text>
+        {last && (
+          <Button
+            mode="contained"
+            onPress={onFinish}
+            style={[globalStyles.wideButton]}
+          >
+            Bắt đầu
+          </Button>
+        )}
+      </View>
     </View>
   );
 };
@@ -136,24 +156,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 24,
+    padding: 16,
+    paddingTop: 32,
   },
   image: {
-    width: SCREEN.width * 0.8,
-    height: SCREEN.width * 0.8,
-  },
-  text: {
-    textAlign: 'center',
-    marginHorizontal: 32,
-    fontFamily: 'Roboto',
-    fontSize: 20,
+    width: '100%',
+    flex: 0.8,
   },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: SCREEN.width * 0.02,
-    height: SCREEN.height * 0.2,
+    height: SCREEN.height * 0.1,
   },
   dot: {
     height: 8,

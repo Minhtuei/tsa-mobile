@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import { Dimensions, Platform, StyleSheet } from 'react-native';
-import { MD3Theme, MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
+import { MD3DarkTheme, MD3LightTheme, MD3Theme } from 'react-native-paper';
 
 const STATUS_BAR_HEIGHT = Constants.statusBarHeight;
 const SCREEN_WITH = Dimensions.get('window').width;
@@ -9,30 +9,30 @@ export const lightTheme = {
   ...MD3LightTheme,
   roundness: 2,
   colors: {
-    primary: '#34A853',
+    primary: 'rgba(52, 168, 83, 1)',
     onPrimary: 'rgb(255, 255, 255)',
-    primaryContainer: 'rgb(223, 224, 255)',
-    onPrimaryContainer: 'rgb(0, 13, 95)',
-    secondary: 'rgb(91, 93, 114)',
+    primaryContainer: 'rgba(91, 226, 61, 1)',
+    onPrimaryContainer: 'rgb(255,255,255)',
+    secondary: 'rgba(148, 163, 184, 1)',
     onSecondary: 'rgb(255, 255, 255)',
-    secondaryContainer: 'rgb(227, 227, 227)',
-    onSecondaryContainer: 'rgb(24, 26, 44)',
-    tertiary: 'rgb(119, 83, 108)',
-    onTertiary: 'rgb(255, 255, 255)',
-    tertiaryContainer: 'rgb(255, 215, 240)',
-    onTertiaryContainer: 'rgb(45, 18, 39)',
-    error: 'rgb(186, 26, 26)',
+    secondaryContainer: 'rgba(66, 133, 244, 1)',
+    onSecondaryContainer: 'rgb(255, 255, 255)',
+    tertiary: 'rgb(255, 255, 255)',
+    onTertiary: 'rgb(0,0,0)',
+    tertiaryContainer: 'rgba(148, 163, 184, 1)',
+    onTertiaryContainer: 'rgb(0, 0, 0)',
+    error: 'rgb(251,2,9,1)',
     onError: 'rgb(255, 255, 255)',
     errorContainer: 'rgb(255, 218, 214)',
     onErrorContainer: 'rgb(65, 0, 2)',
-    background: 'rgb(255, 251, 255)',
-    onBackground: 'rgb(27, 27, 31)',
-    surface: 'rgb(255, 251, 255)',
-    onSurface: 'rgb(27, 27, 31)',
-    surfaceVariant: 'rgb(227, 225, 236)',
-    onSurfaceVariant: 'rgb(70, 70, 79)',
-    outline: 'rgb(118, 118, 128)',
-    outlineVariant: 'rgb(199, 197, 208)',
+    background: 'rgb(255, 255, 255)',
+    onBackground: 'rgb(0, 0, 0)',
+    surface: 'rgb(255, 255, 255)',
+    onSurface: 'rgb(0, 0, 0)',
+    surfaceVariant: 'rgb(70, 70, 79)',
+    onSurfaceVariant: 'rgb(199, 197, 208)',
+    outline: 'rgba(0, 0, 0, 0.3)',
+    outlineVariant: 'rgb(70, 70, 79)',
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
     inverseSurface: 'rgb(48, 48, 52)',
@@ -57,7 +57,6 @@ export const lightTheme = {
     onWarning: 'rgb(255, 255, 255)',
     warningContainer: 'rgb(255, 223, 158)',
     onWarningContainer: 'rgb(38, 26, 0)',
-    text: 'rgb(255, 255, 255)',
   },
 };
 
@@ -83,11 +82,11 @@ export const darkTheme = {
     onErrorContainer: 'rgb(255, 180, 171)',
     background: 'rgb(27, 27, 31)',
     onBackground: 'rgb(228, 225, 230)',
-    surface: 'rgb(27, 27, 31)',
+    surface: 'rgb(2, 27, 31)',
     onSurface: 'rgb(228, 225, 230)',
     surfaceVariant: 'rgb(70, 70, 79)',
     onSurfaceVariant: 'rgb(199, 197, 208)',
-    outline: 'rgba(118, 118, 118)',
+    outline: 'rgba(0, 0, 0, 0.3)',
     outlineVariant: 'rgb(70, 70, 79)',
     shadow: 'rgb(0, 0, 0)',
     scrim: 'rgb(0, 0, 0)',
@@ -113,7 +112,6 @@ export const darkTheme = {
     onWarning: 'rgb(63, 46, 0)',
     warningContainer: 'rgb(91, 67, 0)',
     onWarningContainer: 'rgb(255, 223, 158)',
-    text: 'rgb(44, 44, 44)',
   },
 };
 
@@ -125,10 +123,7 @@ const createStyles = (theme: MD3Theme) =>
     auth: {
       paddingVertical: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 16,
     },
-    title: {
-      marginVertical: 32,
-      textAlign: 'center',
-    },
+
     error: {
       color: theme.colors.error,
       marginBottom: 4,
@@ -182,92 +177,15 @@ const createStyles = (theme: MD3Theme) =>
       marginVertical: 4,
       fontSize: 12,
     },
-    footer: {
-      flex: 1,
-      justifyContent: 'flex-end',
-    },
-    bankSurface: {
-      padding: 12,
-      margin: 4,
-      flexDirection: 'row',
-      alignItems: 'center',
-      borderRadius: 12,
-    },
-    icon: {
-      height: 32,
-      width: 32,
-      marginRight: 12,
-    },
-    bigIcon: {
-      height: 48,
-      width: 48,
-      marginRight: 12,
-    },
-    bankText: {
-      flexGrow: 1,
-      width: SCREEN_WITH - 160,
-    },
-    touchable: {
-      alignItems: 'center',
-      flexDirection: 'row',
-      flexGrow: 1,
-    },
-    deviceSurface: {
-      padding: 12,
-      margin: 8,
-      borderRadius: 12,
-    },
-    selectableContainer: {
-      flexDirection: 'row',
-      marginVertical: 4,
-    },
-    bankLogo: {
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    smallIcon: {
-      height: 20,
-      width: 20,
-      marginRight: 8,
-    },
-    deviceText: {
-      width: '60%',
-    },
-    bankInfo: {
-      alignItems: 'flex-end',
-      alignSelf: 'flex-start',
-      width: '40%',
-    },
-    deviceAction: {
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      marginTop: 8,
-      gap: 8,
-    },
-    tutorial: {
-      margin: 'auto',
-      height: '100%',
-      paddingBottom: 100,
-      opacity: 0.5,
-      gap: 16,
-    },
-    check: {
-      width: '45%',
-    },
-    delete: {
-      width: '30%',
-    },
     text: {
-      fontSize: 16,
+      color: theme.colors.onSurface,
       fontFamily: 'Roboto',
+      fontSize: 16,
     },
-    iconContainer: {
-      borderRadius: 100,
-      width: 48,
-      aspectRatio: '1/1',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 4,
+    title: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      fontFamily: 'Roboto',
     },
   });
 

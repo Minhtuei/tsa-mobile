@@ -79,7 +79,7 @@ function AppContent() {
               name="Onboarding"
               component={Onboarding}
               options={{
-                navigationBarColor: theme.colors.primaryContainer,
+                navigationBarColor: theme.colors.background,
               }}
             />
             <RootStack.Screen
