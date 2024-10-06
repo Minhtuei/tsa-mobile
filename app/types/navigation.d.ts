@@ -11,8 +11,8 @@ type AuthStackParamList = {
   SignIn: undefined;
   SignUp: { stepper: number };
   ForgotPassword: undefined;
-  VerifyEmail: { stepper: number; email: string };
-  CreateAccount: { stepper: number };
+  VerifyEmail: { stepper: number; email?: string; token?: string };
+  CreateAccount: { stepper: number; token: string };
 };
 
 type MainTabParamList = {

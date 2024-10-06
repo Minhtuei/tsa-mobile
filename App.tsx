@@ -1,4 +1,8 @@
-import { NavigationContainer, CommonActions } from '@react-navigation/native';
+import {
+  NavigationContainer,
+  CommonActions,
+  LinkingOptions,
+} from '@react-navigation/native';
 import {
   createNativeStackNavigator,
   NativeStackScreenProps,
@@ -34,9 +38,29 @@ import { Report } from '@pages/report/Report';
 import { Setting } from '@pages/setting/Setting';
 import IconModal from '@components/IconModal';
 import { useState } from 'react';
-
+import * as Linking from 'expo-linking';
+const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createMaterialBottomTabNavigator<MainTabParamList>();
+
+const linking: LinkingOptions<RootStackParamList> = {
+  prefixes: [prefix],
+  config: {
+    screens: {
+      AuthStack: {
+        screens: {
+          CreateAccount: {
+            path: 'create-account/:stepper/:token',
+            parse: {
+              stepper: (stepper) => Number(stepper),
+              token: (token) => decodeURIComponent(token),
+            },
+          },
+        },
+      },
+    },
+  },
+};
 export default function App() {
   return (
     <SafeAreaProvider>
@@ -52,6 +76,7 @@ function AppContent() {
     Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme;
   const insets = useSafeAreaInsets();
+
   return (
     <SafeAreaView
       style={[
@@ -63,7 +88,7 @@ function AppContent() {
       ]}
     >
       <PaperProvider theme={theme}>
-        <NavigationContainer theme={theme as any}>
+        <NavigationContainer theme={theme as any} linking={linking}>
           <RootStack.Navigator
             initialRouteName="Onboarding"
             screenOptions={{ headerShown: false }}

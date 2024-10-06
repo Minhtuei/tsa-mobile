@@ -5,10 +5,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from 'app/types/navigation';
 import EmailIcon from '../../../assets/icons/emailIcon.svg';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import {
-  useCheckVerificationMutation,
-  useSignUpMutation,
-} from '@services/auth.service';
+import { useSignUpMutation } from '@services/auth.service';
 import Toast from 'react-native-root-toast';
 import { getErrorMessage } from '@utils/helper';
 
@@ -18,21 +15,11 @@ export const VerifyEmail = (
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const [resendEmail] = useSignUpMutation();
-  const [checkVerifyEmail] = useCheckVerificationMutation();
-  const handleSubmit = () => {
-    checkVerifyEmail({ email: props.route.params.email })
-      .unwrap()
-      .then(() => {
-        props.navigation.navigate('SignIn');
-      })
-      .catch((error) => {
-        Toast.show(getErrorMessage(error), {
-          position: Toast.positions.BOTTOM,
-          containerStyle: { backgroundColor: theme.colors.error },
-        });
-      });
-  };
+
   const handleResendEmail = () => {
+    if (!props.route.params.email) {
+      return;
+    }
     resendEmail({ email: props.route.params.email })
       .unwrap()
       .then(() => {
@@ -86,17 +73,6 @@ export const VerifyEmail = (
           </TouchableOpacity>
         </View>
       </View>
-      <Button
-        onPress={handleSubmit}
-        mode="contained"
-        style={[globalStyles.wideButton]}
-        labelStyle={[
-          globalStyles.text,
-          { color: theme.colors.onPrimary, fontWeight: 'bold' },
-        ]}
-      >
-        Tiếp tục
-      </Button>
     </SignUpLayout>
   );
 };

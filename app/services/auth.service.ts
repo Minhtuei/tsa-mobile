@@ -1,4 +1,8 @@
-import { SignInSchemaType, SignUpSchemaType } from '@validations/auth.schema';
+import {
+  CreateAccountSchemaType,
+  SignInSchemaType,
+  SignUpSchemaType,
+} from '@validations/auth.schema';
 import { apiService } from './api.service';
 const authService = apiService.injectEndpoints({
   overrideExisting: true,
@@ -20,14 +24,8 @@ const authService = apiService.injectEndpoints({
     verifyEmail: build.query({
       query: (token: string) => `auth/signup/verify?token=${token}`,
     }),
-    checkVerification: build.mutation<void, SignUpSchemaType>({
-      query: (body) => ({
-        url: `auth/signup/verify/check`,
-        method: 'POST',
-        body,
-      }),
-    }),
-    completeRegistration: build.mutation({
+
+    completeRegistration: build.mutation<void, CreateAccountSchemaType>({
       query: (body) => ({
         url: `auth/signup/complete`,
         method: 'POST',
@@ -49,5 +47,4 @@ export const {
   useVerifyEmailQuery,
   useCompleteRegistrationMutation,
   useRefreshTokenMutation,
-  useCheckVerificationMutation,
 } = authService;

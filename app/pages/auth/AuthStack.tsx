@@ -9,6 +9,7 @@ import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
 import { ForgotPassword } from './ForgotPassword';
 import { VerifyEmail } from './VerifyEmail';
+import { CreateAccount } from './CreateAccount';
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export const AuthStack = (
@@ -30,6 +31,7 @@ export const AuthStack = (
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
       </Stack.Navigator>
     </>
   );

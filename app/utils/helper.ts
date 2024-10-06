@@ -39,10 +39,19 @@ function isErrorWithDataMessage(
 }
 
 export function getErrorMessage(err: unknown): string {
+  const SERVER_ERROR_MESSAGE = 'Server không phản hồi';
+  const UNKNOWN_ERROR_MESSAGE = 'Đã xảy ra lỗi không xác định';
+
   if (isFetchBaseQueryError(err) && isErrorWithDataMessage(err)) {
+    if (err.status === 500 || err.data.message === 'Aborted') {
+      return SERVER_ERROR_MESSAGE;
+    }
     return err.data.message;
   } else if (isErrorWithMessage(err)) {
+    if (err.message === 'Aborted') {
+      return SERVER_ERROR_MESSAGE;
+    }
     return err.message;
   }
-  return 'An unknown error occurred';
+  return UNKNOWN_ERROR_MESSAGE;
 }

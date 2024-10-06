@@ -30,12 +30,13 @@ type SignUpLayoutProps = {
   onRedirect: () => void;
   children: React.ReactNode;
   position: number;
+  hideGoogleBtn?: boolean;
 };
 export const SignUpLayout = (props: SignUpLayoutProps) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
-  const { title, onRedirect, children, position } = props;
+  const { title, onRedirect, children, position, hideGoogleBtn } = props;
   const renderStepIndicator = (params: {
     position: number;
     stepStatus: string;
@@ -82,10 +83,19 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
           <ScrollView
             style={[
               styles.scrollView,
-              { backgroundColor: theme.colors.background },
+              {
+                backgroundColor: theme.colors.background,
+              },
             ]}
           >
-            <View style={styles.formContainer}>
+            <View
+              style={[
+                styles.formContainer,
+                {
+                  marginBottom: Platform.OS === 'ios' ? 64 : 80,
+                },
+              ]}
+            >
               <StepIndicator
                 customStyles={STEPPER_STYLE}
                 currentPosition={position}
@@ -96,39 +106,42 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
               <Text style={[globalStyles.title, styles.title]}>{title}</Text>
 
               {children}
-              <View style={styles.signUpContainer}>
-                <Text style={globalStyles.text}>Bạn đã có tài khoản?</Text>
-                <TouchableOpacity onPress={onRedirect}>
-                  <Text
-                    style={[
-                      globalStyles.text,
-                      styles.signUpText,
-                      { color: theme.colors.primary },
-                    ]}
+              {hideGoogleBtn && (
+                <>
+                  <View style={styles.signUpContainer}>
+                    <Text style={globalStyles.text}>Bạn đã có tài khoản?</Text>
+                    <TouchableOpacity onPress={onRedirect}>
+                      <Text
+                        style={[
+                          globalStyles.text,
+                          styles.signUpText,
+                          { color: theme.colors.primary },
+                        ]}
+                      >
+                        Đăng nhập
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <AuthSeparator />
+                  <Button
+                    mode="outlined"
+                    onPress={() => {}}
+                    style={styles.googleButton}
                   >
-                    Đăng nhập
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <AuthSeparator />
-
-              <Button
-                mode="outlined"
-                onPress={() => {}}
-                style={styles.googleButton}
-              >
-                <View style={styles.googleButtonContent}>
-                  <GoogleIcon width={24} height={24} />
-                  <Text
-                    style={[
-                      styles.buttonContent,
-                      { color: theme.colors.onSurface },
-                    ]}
-                  >
-                    Đăng nhập với Google
-                  </Text>
-                </View>
-              </Button>
+                    <View style={styles.googleButtonContent}>
+                      <GoogleIcon width={24} height={24} />
+                      <Text
+                        style={[
+                          styles.buttonContent,
+                          { color: theme.colors.onSurface },
+                        ]}
+                      >
+                        Đăng nhập với Google
+                      </Text>
+                    </View>
+                  </Button>
+                </>
+              )}
             </View>
           </ScrollView>
         </Pressable>
