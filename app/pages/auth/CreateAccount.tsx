@@ -20,11 +20,12 @@ import {
   CreateAccountSchemaType,
 } from '@validations/auth.schema';
 import { BUILDINGS, DOMITORIES, ROOMS } from '@constants/domitory';
-import { ActivityIndicator, Button } from 'react-native-paper';
+import { ActivityIndicator, Button, Portal } from 'react-native-paper';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { useCompleteRegistrationMutation } from '@services/auth.service';
-import Toast from 'react-native-root-toast';
 import { getErrorMessage } from '@utils/helper';
+import IconModal from '@components/IconModal';
+import { useState } from 'react';
 
 export const CreateAccount = (
   props: NativeStackScreenProps<AuthStackParamList, 'CreateAccount'>
@@ -32,6 +33,8 @@ export const CreateAccount = (
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const [createAccount, { isLoading }] = useCompleteRegistrationMutation();
+  const [msg, setMsg] = useState('');
+  const [msgType, setMsgType] = useState<'success' | 'error'>('success');
   const {
     control,
     handleSubmit,
@@ -50,19 +53,25 @@ export const CreateAccount = (
     },
   });
   const onSubmit = (data: CreateAccountSchemaType) => {
-    console.log(data);
-    createAccount(data)
+    const { confirmPassword, ...rest } = data;
+    createAccount(rest)
       .unwrap()
       .then((data) => {
-        console.log(data);
+        setMsg('Tạo tài khoản thành công');
+        setMsgType('success');
       })
       .catch((error) => {
-        Toast.show(getErrorMessage(error), {
-          position: Toast.positions.BOTTOM,
-          containerStyle: { backgroundColor: theme.colors.error },
-        });
+        setMsg(getErrorMessage(error));
+        setMsgType('error');
       });
   };
+  const handleOnDismiss = (type: 'success' | 'error') => {
+    if (type === 'success') {
+      props.navigation.navigate('SignIn');
+    }
+    setMsg('');
+  };
+
   return (
     <SignUpLayout
       position={2}
@@ -71,6 +80,13 @@ export const CreateAccount = (
         props.navigation.navigate('SignIn');
       }}
     >
+      <Portal>
+        <IconModal
+          variant={msgType}
+          message={msg}
+          onDismiss={() => handleOnDismiss(msgType)}
+        />
+      </Portal>
       <View>
         <LastNameInput control={control} errors={errors} />
         <FirstNameInput control={control} errors={errors} />
@@ -102,7 +118,7 @@ export const CreateAccount = (
         {isLoading ? (
           <ActivityIndicator color={theme.colors.onPrimary} />
         ) : (
-          'Tiếp tục'
+          'Hoàn tất'
         )}
       </Button>
     </SignUpLayout>

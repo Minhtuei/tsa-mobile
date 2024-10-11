@@ -33,9 +33,13 @@ export const SignUp = (
     signUp(data)
       .unwrap()
       .then(() => {
-        props.navigation.navigate('VerifyEmail', {
-          stepper: 1,
-          email: data.email,
+        // props.navigation.navigate('VerifyEmail', {
+        //   stepper: 1,
+        //   email: data.email,
+        // });
+        props.navigation.navigate('CreateAccount', {
+          stepper: 2,
+          token: '123',
         });
       })
       .catch((error) => {
@@ -65,12 +69,9 @@ export const SignUp = (
           { color: theme.colors.onPrimary, fontWeight: 'bold' },
         ]}
         disabled={isLoading}
+        loading={isLoading}
       >
-        {isLoading ? (
-          <ActivityIndicator color={theme.colors.onPrimary} />
-        ) : (
-          'Tiếp tục'
-        )}
+        Tiếp tục
       </Button>
     </SignUpLayout>
   );

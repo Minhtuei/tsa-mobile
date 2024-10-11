@@ -25,7 +25,10 @@ const authService = apiService.injectEndpoints({
       query: (token: string) => `auth/signup/verify?token=${token}`,
     }),
 
-    completeRegistration: build.mutation<void, CreateAccountSchemaType>({
+    completeRegistration: build.mutation<
+      void,
+      Omit<CreateAccountSchemaType, 'confirmPassword'>
+    >({
       query: (body) => ({
         url: `auth/signup/complete`,
         method: 'POST',

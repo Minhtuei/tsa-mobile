@@ -72,7 +72,7 @@ export const PasswordInput = ({
             error={!!errors.password}
             right={
               <TextInput.Icon
-                icon={showPassword ? 'eye-off' : 'eye'}
+                icon={!showPassword ? 'eye-off' : 'eye'}
                 onPress={() => setShowPassword(!showPassword)}
               />
             }
@@ -118,7 +118,7 @@ export const ConfirmPasswordInput = ({
             error={!!errors.confirmPassword}
             right={
               <TextInput.Icon
-                icon={showPassword ? 'eye-off' : 'eye'}
+                icon={!showPassword ? 'eye-off' : 'eye'}
                 onPress={() => setShowPassword(!showPassword)}
               />
             }

@@ -53,5 +53,6 @@ export function getErrorMessage(err: unknown): string {
     }
     return err.message;
   }
+  console.error(err);
   return UNKNOWN_ERROR_MESSAGE;
 }

@@ -79,72 +79,71 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
         ]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Pressable style={styles.pressable} onPress={Keyboard.dismiss}>
-          <ScrollView
+        <ScrollView
+          style={[
+            styles.scrollView,
+            {
+              backgroundColor: theme.colors.background,
+            },
+          ]}
+          showsVerticalScrollIndicator={false}
+        >
+          <View
             style={[
-              styles.scrollView,
+              styles.formContainer,
               {
-                backgroundColor: theme.colors.background,
+                marginBottom: Platform.OS === 'ios' ? 64 : 80,
               },
             ]}
           >
-            <View
-              style={[
-                styles.formContainer,
-                {
-                  marginBottom: Platform.OS === 'ios' ? 64 : 80,
-                },
-              ]}
-            >
-              <StepIndicator
-                customStyles={STEPPER_STYLE}
-                currentPosition={position}
-                stepCount={3}
-                // onPress={onStepPress}
-                renderStepIndicator={(params) => renderStepIndicator(params)}
-              />
-              <Text style={[globalStyles.title, styles.title]}>{title}</Text>
+            <StepIndicator
+              customStyles={STEPPER_STYLE}
+              currentPosition={position}
+              stepCount={3}
+              // onPress={onStepPress}
+              renderStepIndicator={(params) => renderStepIndicator(params)}
+            />
+            <Text style={[globalStyles.title, styles.title]}>{title}</Text>
 
-              {children}
-              {hideGoogleBtn && (
-                <>
-                  <View style={styles.signUpContainer}>
-                    <Text style={globalStyles.text}>Bạn đã có tài khoản?</Text>
-                    <TouchableOpacity onPress={onRedirect}>
-                      <Text
-                        style={[
-                          globalStyles.text,
-                          styles.signUpText,
-                          { color: theme.colors.primary },
-                        ]}
-                      >
-                        Đăng nhập
-                      </Text>
-                    </TouchableOpacity>
+            {children}
+            {hideGoogleBtn && (
+              <>
+                <View style={styles.signUpContainer}>
+                  <Text style={globalStyles.text}>Bạn đã có tài khoản?</Text>
+                  <TouchableOpacity onPress={onRedirect}>
+                    <Text
+                      style={[
+                        globalStyles.text,
+                        styles.signUpText,
+                        { color: theme.colors.primary },
+                      ]}
+                    >
+                      Đăng nhập
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <AuthSeparator />
+                <Button
+                  mode="outlined"
+                  onPress={() => {}}
+                  style={styles.googleButton}
+                >
+                  <View style={styles.googleButtonContent}>
+                    <GoogleIcon width={24} height={24} />
+                    <Text
+                      style={[
+                        styles.buttonContent,
+                        { color: theme.colors.onSurface },
+                      ]}
+                    >
+                      Đăng nhập với Google
+                    </Text>
                   </View>
-                  <AuthSeparator />
-                  <Button
-                    mode="outlined"
-                    onPress={() => {}}
-                    style={styles.googleButton}
-                  >
-                    <View style={styles.googleButtonContent}>
-                      <GoogleIcon width={24} height={24} />
-                      <Text
-                        style={[
-                          styles.buttonContent,
-                          { color: theme.colors.onSurface },
-                        ]}
-                      >
-                        Đăng nhập với Google
-                      </Text>
-                    </View>
-                  </Button>
-                </>
-              )}
-            </View>
-          </ScrollView>
-        </Pressable>
+                </Button>
+              </>
+            )}
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
