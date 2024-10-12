@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { setColorScheme } from '@slices/app.slice';
-import { setLoading, setUser } from '@slices/auth.slice';
+import { setToken, setUser } from '@slices/auth.slice';
 import { RootStackParamList } from 'app/types/navigation';
 import { Role } from 'app/types/role';
 import { Platform } from 'expo-modules-core';
@@ -22,31 +22,31 @@ export const SplashScreen = (
 
   const dispatch = useAppDispatch();
   const getData = async () => {
-    let token: string | null = null;
+    let accessToken: string | null = null;
     let refreshToken: string | null = null;
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      token = await SecureStore.getItemAsync('token');
+      accessToken = await SecureStore.getItemAsync('accessToken');
       refreshToken = await SecureStore.getItemAsync('refreshToken');
     } else {
-      token = await AsyncStorage.getItem('token');
+      accessToken = await AsyncStorage.getItem('accessToken');
       refreshToken = await AsyncStorage.getItem('refreshToken');
     }
-    const name: string | null = await AsyncStorage.getItem('name');
-    const role = (await AsyncStorage.getItem('role')) as Role | null;
+    const user = await AsyncStorage.getItem('user');
+    if (user) {
+      dispatch(setUser(JSON.parse(user)));
+    }
     dispatch(
-      setUser({
-        name,
-        token,
+      setToken({
+        accessToken,
         refreshToken,
-        role,
       })
     );
+
     const colorScheme = await AsyncStorage.getItem('colorScheme');
     if (colorScheme === 'dark' || colorScheme === 'light') {
       Appearance.setColorScheme(colorScheme);
     }
     dispatch(setColorScheme(colorScheme ?? 'system'));
-    dispatch(setLoading(false));
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const onboarding = await AsyncStorage.getItem('onboarding');
@@ -55,7 +55,11 @@ export const SplashScreen = (
         index: 0,
         routes: [
           {
-            name: !onboarding ? 'Onboarding' : token ? 'MainTab' : 'AuthStack',
+            name: !onboarding
+              ? 'Onboarding'
+              : accessToken
+                ? 'MainTab'
+                : 'AuthStack',
           },
         ],
       })

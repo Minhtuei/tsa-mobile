@@ -12,7 +12,7 @@ import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 interface RefreshTokenRes {
   data: {
-    token: string;
+    accessToken: string;
     refreshToken: string;
   };
 }
@@ -22,7 +22,7 @@ const baseQuery = fetchBaseQuery({
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;
-    const token = state.auth.user.token;
+    const token = state.auth.accessToken;
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -45,28 +45,29 @@ export const baseQueryWithReauth: BaseQueryFn<
           url: 'auth/refresh',
           method: 'POST',
           body: {
-            refreshToken: (api.getState() as RootState).auth.user.refreshToken,
+            refreshToken: (api.getState() as RootState).auth.refreshToken,
           },
         },
         api,
         extraOptions
       );
       if (result.data) {
-        const { token, refreshToken } = (result.data as RefreshTokenRes).data;
-        api.dispatch(setToken({ token, refreshToken }));
+        const { accessToken, refreshToken } = (result.data as RefreshTokenRes)
+          .data;
+        api.dispatch(setToken({ accessToken, refreshToken }));
         release();
         return await baseQuery(args, api, extraOptions);
       } else {
         release();
         setTimeout(async () => {
           if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.deleteItemAsync('token');
+            await SecureStore.deleteItemAsync('accessToken');
             await SecureStore.deleteItemAsync('refreshToken');
           } else {
-            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('accessToken');
             await AsyncStorage.removeItem('refreshToken');
           }
-          api.dispatch(setToken({ token: '', refreshToken: '' }));
+          api.dispatch(setToken({ accessToken: '', refreshToken: '' }));
         }, 3000);
       }
     } else {

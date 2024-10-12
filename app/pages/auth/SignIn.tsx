@@ -3,7 +3,11 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { signInSchema, SignInSchemaType } from '@validations/auth.schema';
-import { AuthStackParamList } from 'app/types/navigation';
+import {
+  AuthStackParamList,
+  HomeStackParamList,
+  RootStackParamList,
+} from 'app/types/navigation';
 import { useForm } from 'react-hook-form';
 import {
   Keyboard,
@@ -20,10 +24,19 @@ import { Button, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GoogleIcon from '../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './components/AuthForm';
+import { useSignInMutation } from '@services/auth.service';
+import Toast from 'react-native-root-toast';
+import { getErrorMessage } from '@utils/helper';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
+import { setToken, setUser, UserInfo } from '@slices/auth.slice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from 'react';
+import * as SecureStore from 'expo-secure-store';
 
 const Seperator = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
+
   return (
     <View style={styles.seperatorContainer}>
       <View
@@ -51,15 +64,18 @@ const Seperator = () => {
   );
 };
 
-export const SignIn = (
-  props: NativeStackScreenProps<AuthStackParamList, 'SignIn'>
-) => {
+export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
+
+  const [login, { isLoading }] = useSignInMutation();
+  const auth = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
     control,
   } = useForm<SignInSchemaType>({
@@ -69,8 +85,51 @@ export const SignIn = (
       password: '',
     },
   });
+  useEffect(() => {
+    const getEmail = async () => {
+      const user = (await AsyncStorage.getItem('user')) as UserInfo | null;
+      if (user) {
+        setValue('email', user.email, { shouldValidate: true });
+      }
+    };
+    getEmail();
+  }, []);
   const onSubmit = (data: SignInSchemaType) => {
-    console.log(data);
+    login(data)
+      .unwrap()
+      .then(async (res) => {
+        if (res.userInfo) {
+          await AsyncStorage.setItem('user', JSON.stringify(res.userInfo));
+          dispatch(setUser(res.userInfo));
+        }
+        if (res.accessToken && res.refreshToken) {
+          if (Platform.OS === 'ios' || Platform.OS === 'android') {
+            await SecureStore.setItemAsync('accessToken', res.accessToken);
+            await SecureStore.setItemAsync('refreshToken', res.refreshToken);
+          } else {
+            await AsyncStorage.setItem('accessToken', res.accessToken);
+            await AsyncStorage.setItem('refreshToken', res.refreshToken);
+          }
+          dispatch(
+            setToken({
+              accessToken: res.accessToken,
+              refreshToken: res.refreshToken,
+            })
+          );
+        }
+        props.navigation.navigate('MainTab', {
+          screen: 'Home',
+        });
+      })
+      .catch((err) => {
+        Toast.show(getErrorMessage(err), {
+          position: Toast.positions.BOTTOM,
+          backgroundColor: theme.colors.error,
+          shadow: true,
+          animation: true,
+          hideOnPress: true,
+        });
+      });
   };
 
   return (
@@ -150,6 +209,8 @@ export const SignIn = (
                 mode="contained"
                 style={[globalStyles.wideButton, styles.loginButton]}
                 labelStyle={styles.buttonContent}
+                loading={isLoading}
+                disabled={isLoading}
               >
                 Đăng nhập
               </Button>
@@ -157,7 +218,9 @@ export const SignIn = (
                 <Text style={globalStyles.text}>Chưa có tài khoản?</Text>
                 <TouchableOpacity
                   onPress={() => {
-                    props.navigation.navigate('SignUp', { stepper: 0 });
+                    props.navigation.navigate('AuthStack', {
+                      screen: 'SignUp',
+                    });
                   }}
                 >
                   <Text

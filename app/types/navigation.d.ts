@@ -9,10 +9,10 @@ type RootStackParamList = {
 
 type AuthStackParamList = {
   SignIn: undefined;
-  SignUp: { stepper: number };
+  SignUp: undefined;
   ForgotPassword: undefined;
-  VerifyEmail: { stepper: number; email?: string; token?: string };
-  CreateAccount: { stepper: number; token: string };
+  VerifyEmail: { email?: string } | undefined;
+  CreateAccount: { token: string };
 };
 
 type MainTabParamList = {

@@ -79,6 +79,7 @@ export const CreateAccount = (
       onRedirect={() => {
         props.navigation.navigate('SignIn');
       }}
+      hideGoogleBtn={true}
     >
       <Portal>
         <IconModal

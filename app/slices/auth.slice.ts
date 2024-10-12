@@ -1,54 +1,61 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Role } from 'app/types/role';
-export interface UserType {
-  name: string | null;
-  token: string | null;
-  role: Role | null;
+
+export interface UserInfo {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  role: string;
+  createdAt: string;
+  verified: boolean;
+  email: string;
+}
+
+export interface AuthState {
+  accessToken: string | null;
   refreshToken: string | null;
+  userInfo: UserInfo | null;
 }
-
-interface AuthState {
-  user: UserType;
-  isLoading: boolean;
-}
-
 const initialState: AuthState = {
-  user: {
-    name: null,
-    token: null,
-    role: null,
-    refreshToken: null,
+  accessToken: '',
+  refreshToken: '',
+  userInfo: {
+    id: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    role: '',
+    createdAt: '',
+    verified: false,
+    email: '',
   },
-  isLoading: false,
 };
 
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    setUser(state, action: PayloadAction<UserType>) {
-      state.user = action.payload;
-    },
-    setLoading(state, action: PayloadAction<boolean>) {
-      state.isLoading = action.payload;
+    setUser(state, action: PayloadAction<UserInfo | null>) {
+      state.userInfo = action.payload;
     },
     setToken: (
       state,
-      action: PayloadAction<{ token: string; refreshToken: string }>
+      action: PayloadAction<{
+        accessToken: string | null;
+        refreshToken: string | null;
+      }>
     ) => {
-      state.user.token = action.payload.token;
-      state.user.refreshToken = action.payload.refreshToken;
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
     },
     removeUser(state) {
-      state.user = {
-        name: null,
-        token: null,
-        refreshToken: null,
-        role: null,
-      };
+      state.userInfo = null;
+      state.accessToken = null;
+      state.refreshToken = null;
     },
   },
 });
 
-export const { setUser, setLoading, setToken, removeUser } = authSlice.actions;
+export const { setUser, setToken, removeUser } = authSlice.actions;
 export default authSlice.reducer;

@@ -33,13 +33,8 @@ export const SignUp = (
     signUp(data)
       .unwrap()
       .then(() => {
-        // props.navigation.navigate('VerifyEmail', {
-        //   stepper: 1,
-        //   email: data.email,
-        // });
-        props.navigation.navigate('CreateAccount', {
-          stepper: 2,
-          token: '123',
+        props.navigation.navigate('VerifyEmail', {
+          email: data.email,
         });
       })
       .catch((error) => {

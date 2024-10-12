@@ -24,13 +24,14 @@ import { AuthSeparator } from './AuthSeparator';
 import StepIndicator from 'react-native-step-indicator';
 import { STEPPER_STYLE } from '@constants/stepper';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import Ionicons from '@expo/vector-icons/Ionicons';
 type SignUpLayoutProps = {
   title: string;
-  onRedirect: () => void;
+  onRedirect?: () => void;
   children: React.ReactNode;
   position: number;
   hideGoogleBtn?: boolean;
+  onPressStepper?: () => void;
 };
 export const SignUpLayout = (props: SignUpLayoutProps) => {
   const globalStyles = useGlobalStyles();
@@ -100,13 +101,12 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
               customStyles={STEPPER_STYLE}
               currentPosition={position}
               stepCount={3}
-              // onPress={onStepPress}
               renderStepIndicator={(params) => renderStepIndicator(params)}
             />
             <Text style={[globalStyles.title, styles.title]}>{title}</Text>
 
             {children}
-            {hideGoogleBtn && (
+            {!hideGoogleBtn && (
               <>
                 <View style={styles.signUpContainer}>
                   <Text style={globalStyles.text}>Bạn đã có tài khoản?</Text>

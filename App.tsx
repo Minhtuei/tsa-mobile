@@ -50,9 +50,8 @@ const linking: LinkingOptions<RootStackParamList> = {
       AuthStack: {
         screens: {
           CreateAccount: {
-            path: 'create-account/:stepper/:token',
+            path: 'create-account/:token',
             parse: {
-              stepper: (stepper) => Number(stepper),
               token: (token) => decodeURIComponent(token),
             },
           },
@@ -90,7 +89,7 @@ function AppContent() {
       <PaperProvider theme={theme}>
         <NavigationContainer theme={theme as any} linking={linking}>
           <RootStack.Navigator
-            initialRouteName="Onboarding"
+            initialRouteName="SplashScreen"
             screenOptions={{ headerShown: false }}
           >
             <RootStack.Screen
@@ -169,6 +168,10 @@ const MainTab = (
           justifyContent: 'center',
           maxHeight: Platform.OS === 'ios' ? 64 : 80,
           backgroundColor: theme.colors.background,
+        }}
+        activeColor={theme.colors.primary}
+        activeIndicatorStyle={{
+          backgroundColor: theme.colors.onPrimary,
         }}
       >
         <Tab.Screen

@@ -4,10 +4,11 @@ import {
   SignUpSchemaType,
 } from '@validations/auth.schema';
 import { apiService } from './api.service';
+import { AuthState, UserInfo } from '@slices/auth.slice';
 const authService = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    signIn: build.mutation<void, SignInSchemaType>({
+    signIn: build.mutation<AuthState, SignInSchemaType>({
       query: (body) => ({
         url: `auth/signin`,
         method: 'POST',
