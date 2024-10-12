@@ -9,7 +9,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { SettingStackParamList } from '../../types/navigation';
 import IconModal from '@components/IconModal';
 import { useEffect, useState } from 'react';
-import { Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 
 import SettingButton from '@components/SettingButton';
 
@@ -49,7 +49,7 @@ export const SettingScreen = (
   const globalStyles = useGlobalStyles();
 
   return (
-    <Surface style={globalStyles.fullScreen}>
+    <View style={globalStyles.fullScreen}>
       <SettingButton
         text="Hồ sơ"
         icon="account"
@@ -118,6 +118,6 @@ export const SettingScreen = (
           }}
         />
       </Portal>
-    </Surface>
+    </View>
   );
 };

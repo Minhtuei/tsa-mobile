@@ -7,6 +7,7 @@ import HeaderLogo from '../../assets/tsa-header.svg';
 const BackgroundImg = require('../../assets/header-background.png');
 import { ImageBackground } from 'react-native';
 import { SCREEN } from '@constants/screen';
+import { DashboardHeader } from './DashboardHeader';
 
 export const Header = (props: NativeStackHeaderProps) => {
   const theme = useAppTheme();
@@ -19,34 +20,14 @@ export const Header = (props: NativeStackHeaderProps) => {
           statusBarHeight={
             Platform.OS === 'android' ? 0 : Constants.statusBarHeight
           }
+          elevated={true}
           theme={theme}
         >
           {canGoBack && <Appbar.BackAction onPress={props.navigation.goBack} />}
           <Appbar.Content title={props.options.title ?? 'TSA Mobile'} />
         </Appbar.Header>
       ) : (
-        <ImageBackground
-          source={BackgroundImg}
-          style={{
-            width: SCREEN.width,
-            height: 177,
-          }}
-        >
-          <View
-            style={[
-              {
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-              Platform.OS === 'ios' && {
-                paddingTop: Constants.statusBarHeight,
-              },
-            ]}
-          >
-            <HeaderLogo width={SCREEN.width / 2} height={SCREEN.width / 2} />
-          </View>
-        </ImageBackground>
+        <DashboardHeader />
       )}
     </>
   );
