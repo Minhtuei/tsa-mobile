@@ -13,22 +13,18 @@ export const Header = (props: NativeStackHeaderProps) => {
   const theme = useAppTheme();
   const canGoBack = props.navigation.canGoBack();
 
-  return (
-    <>
-      {canGoBack ? (
-        <Appbar.Header
-          statusBarHeight={
-            Platform.OS === 'android' ? 0 : Constants.statusBarHeight
-          }
-          elevated={true}
-          theme={theme}
-        >
-          {canGoBack && <Appbar.BackAction onPress={props.navigation.goBack} />}
-          <Appbar.Content title={props.options.title ?? 'TSA Mobile'} />
-        </Appbar.Header>
-      ) : (
-        <DashboardHeader />
-      )}
-    </>
+  return canGoBack ? (
+    <Appbar.Header
+      statusBarHeight={
+        Platform.OS === 'android' ? 0 : Constants.statusBarHeight
+      }
+      elevated={true}
+      theme={theme}
+    >
+      {canGoBack && <Appbar.BackAction onPress={props.navigation.goBack} />}
+      <Appbar.Content title={props.options.title ?? 'TSA Mobile'} />
+    </Appbar.Header>
+  ) : (
+    <></>
   );
 };

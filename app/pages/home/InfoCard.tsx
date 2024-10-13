@@ -3,6 +3,7 @@ import { View, ViewStyle, TextStyle, ViewProps } from 'react-native';
 import { Text } from 'react-native-paper';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { MaterialIcons } from '@expo/vector-icons';
+import { SCREEN } from '@constants/screen';
 interface InfoCardProps extends ViewProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
   itemName: string;
@@ -19,10 +20,10 @@ const InfoCard: React.FC<InfoCardProps> = ({
   const globalStyles = useGlobalStyles();
 
   const containerStyle: ViewStyle = {
-    padding: 16,
+    padding: SCREEN.width * 0.025,
     backgroundColor: theme.colors.primary,
     borderRadius: 8,
-    gap: 24,
+    gap: 8,
     flex: 0.45,
     opacity: 0.9,
   };
@@ -52,9 +53,13 @@ const InfoCard: React.FC<InfoCardProps> = ({
           size={24}
           color={theme.colors.onPrimary}
         />
-        <Text style={[globalStyles.text, itemTextStyle]}>{itemName}</Text>
+        <Text numberOfLines={2} style={[globalStyles.text, itemTextStyle]}>
+          {itemName}
+        </Text>
       </View>
-      <Text style={[globalStyles.text, valueTextStyle]}>{value}</Text>
+      <Text numberOfLines={2} style={[globalStyles.text, valueTextStyle]}>
+        {value}
+      </Text>
     </View>
   );
 };

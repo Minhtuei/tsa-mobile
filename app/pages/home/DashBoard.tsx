@@ -1,45 +1,167 @@
+import {
+  DASHBOARD_HEADER_HEIGHT,
+  DashboardHeader,
+} from '@components/DashboardHeader';
 import { SCREEN } from '@constants/screen';
-import { useAppSelector } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { Platform, ScrollView, View } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { useState } from 'react';
-import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
-import InfoCard from './InfoCard';
+import { useGlobalStyles } from '@hooks/theme';
+import { Platform, ScrollView, View, Animated } from 'react-native';
+import { Text } from 'react-native-paper';
 import BackgroundIcon from '../../../assets/background-icon.svg';
+import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
+import { useState } from 'react';
 export const Dashboard = () => {
-  const theme = useAppTheme();
+  const HIDE_TAB_HEIGHT = Platform.OS === 'ios' ? 100 : 50;
+
   const globalStyles = useGlobalStyles();
-  const auth = useAppSelector((state) => state.auth);
-
-  const [selectedType, setSelectedType] = useState<'today' | 'week' | 'month'>(
-    'today'
-  );
-
+  const [selectedType, setSelectedType] = useState<
+    'today' | 'yesterday' | 'week' | 'month'
+  >('today');
+  const scrollY = new Animated.Value(0);
+  const millipedeOpacity = scrollY.interpolate({
+    inputRange: [0, DASHBOARD_HEADER_HEIGHT / 2],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+  const stickyTop = scrollY.interpolate({
+    inputRange: [DASHBOARD_HEADER_HEIGHT, DASHBOARD_HEADER_HEIGHT * 2],
+    outputRange: [-HIDE_TAB_HEIGHT, 0],
+    extrapolate: 'clamp',
+  });
+  const InfoCardAnimation = {
+    transform: [
+      {
+        translateY: scrollY.interpolate({
+          inputRange: [0, DASHBOARD_HEADER_HEIGHT],
+          outputRange: [0, DASHBOARD_HEADER_HEIGHT],
+          extrapolate: 'clamp',
+        }),
+      },
+    ],
+  };
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={[globalStyles.background]}
-      contentContainerStyle={{ paddingBottom: 24 }}
-    >
-      <View
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: 0,
-          zIndex: -1,
-          opacity: 0.5,
-          transform: [{ translateY: 200 }],
-        }}
+    <View style={[globalStyles.background]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 24, flexGrow: 1 }}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
       >
+        <DashboardHeader
+          animation={InfoCardAnimation}
+          opacity={millipedeOpacity}
+        />
+        {/* 
+        <View
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: 0,
+            zIndex: -1,
+            opacity: 0.5,
+            transform: [{ translateY: 200 }],
+          }}
+        >
+          <Text
+            style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+          >
+            Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+          </Text>
+          <BackgroundIcon width={SCREEN.width} height={SCREEN.height * 0.3} />
+        </View> */}
         <Text
           style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
         >
           Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
         </Text>
-        <BackgroundIcon width={SCREEN.width} height={SCREEN.height * 0.3} />
-      </View>
-    </ScrollView>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+        <Text
+          style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
+        >
+          Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
+        </Text>
+      </ScrollView>
+      <Animated.View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          backgroundColor: 'white',
+          justifyContent: 'flex-end',
+          top: stickyTop,
+          left: 0,
+          right: 0,
+          opacity: 1,
+          height: HIDE_TAB_HEIGHT,
+          position: 'absolute',
+          ...Platform.select({
+            android: {
+              elevation: 3,
+            },
+            ios: {
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+            },
+          }),
+        }}
+      >
+        <QueryTypeBtnTab
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+        />
+      </Animated.View>
+    </View>
   );
 };
