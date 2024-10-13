@@ -6,8 +6,10 @@ import { AuthStackParamList, RootStackParamList } from 'app/types/navigation';
 import { useAppTheme } from '@hooks/theme';
 import { StatusBar } from 'expo-status-bar';
 import { SignIn } from './SignIn';
-import { Signup } from './Signup';
+import { SignUp } from './Signup';
 import { ForgotPassword } from './ForgotPassword';
+import { VerifyEmail } from './VerifyEmail';
+import { CreateAccount } from './CreateAccount';
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export const AuthStack = (
@@ -26,8 +28,10 @@ export const AuthStack = (
         initialRouteName="SignIn"
       >
         <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={Signup} />
+        <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+        <Stack.Screen name="CreateAccount" component={CreateAccount} />
       </Stack.Navigator>
     </>
   );

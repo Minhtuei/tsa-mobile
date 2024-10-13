@@ -1,23 +1,28 @@
 import { ImageSourcePropType } from 'react-native';
-import { Image } from 'react-native';
+const createFormImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_1.png');
+const chooseLocationImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_2.png');
+const paymentImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_3.png');
 export const ONBOARDING_DATA = [
   {
+    key: 1,
     title: 'Tạo đơn hàng',
-    subtitle:
+    description:
       'Sinh viên tiến hành nhập thông tin đơn hàng cần vận chuyển lên hệ thống',
-    imageUri: Image.resolveAssetSource(require('../../assets/onboarding/onboarding_1.png')).uri
+    image: createFormImg,
   },
 
   {
+    key: 2,
     title: 'Chọn vị trí',
-    subtitle:
+    description:
       'Lựa chọn vị trí giao đơn hàng để quản trị viên tiến hành chỉ định nhân viên giao hàng',
-    imageUri: Image.resolveAssetSource(require('../../assets/onboarding/onboarding_2.png')).uri,
+    image: chooseLocationImg,
   },
   {
+    key: 3,
     title: 'Thanh toán',
-    subtitle: 'Lựa chọn phương thức thanh toán phù hợp để thanh toán đơn hàng',
-    imageUri: Image.resolveAssetSource(require('../../assets/onboarding/onboarding_3.png')).uri,
+    description: 'Lựa chọn phương thức thanh toán phù hợp',
+    image: paymentImg,
   },
 ];
 export type OnboardingDataType = (typeof ONBOARDING_DATA)[number];

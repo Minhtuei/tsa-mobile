@@ -11,6 +11,8 @@ type AuthStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;
+  VerifyEmail: { email?: string } | undefined;
+  CreateAccount: { token: string };
 };
 
 type MainTabParamList = {
