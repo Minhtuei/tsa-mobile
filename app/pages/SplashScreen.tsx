@@ -55,7 +55,7 @@ export const SplashScreen = (
         index: 0,
         routes: [
           {
-            name: !onboarding ? 'Onboarding' : token ? 'MainTab' : 'AuthStack',
+            name: onboarding ? 'Onboarding' : token ? 'MainTab' : 'AuthStack',
           },
         ],
       })

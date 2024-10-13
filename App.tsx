@@ -65,7 +65,7 @@ function AppContent() {
       <PaperProvider theme={theme}>
         <NavigationContainer theme={theme as any}>
           <RootStack.Navigator
-            initialRouteName="Onboarding"
+            initialRouteName="SplashScreen"
             screenOptions={{ headerShown: false }}
           >
             <RootStack.Screen
