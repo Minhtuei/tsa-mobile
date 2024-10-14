@@ -25,7 +25,7 @@ import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { useCompleteRegistrationMutation } from '@services/auth.service';
 import { getErrorMessage } from '@utils/helper';
 import IconModal from '@components/IconModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const CreateAccount = (
   props: NativeStackScreenProps<AuthStackParamList, 'CreateAccount'>
@@ -39,6 +39,7 @@ export const CreateAccount = (
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(createAccountSchema),
     defaultValues: {
@@ -52,6 +53,12 @@ export const CreateAccount = (
       building: '',
     },
   });
+
+  useEffect(() => {
+    if (props.route.params?.token) {
+      setValue('token', props.route.params.token);
+    }
+  }, [props.route.params?.token]);
   const onSubmit = (data: CreateAccountSchemaType) => {
     const { confirmPassword, ...rest } = data;
     createAccount(rest)

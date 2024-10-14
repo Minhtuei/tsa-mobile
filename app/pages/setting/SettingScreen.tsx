@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Linking, View } from 'react-native';
 
 import SettingButton from '@components/SettingButton';
+import { useLogoutMutation } from '@services/auth.service';
 
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
@@ -29,10 +30,20 @@ export const SettingScreen = (
   const [notification, setNotification] = useState(false);
   const [switchNotificationLoading, setSwitchNotificationLoading] =
     useState(false);
-  const [logOutLoading, setLogOutLoading] = useState(false);
+  const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
 
   const signOut = async () => {
-    clearStorage();
+    if (!auth.refreshToken) {
+      return;
+    }
+    logOut({ refreshToken: auth.refreshToken })
+      .unwrap()
+      .then(() => {
+        clearStorage();
+      })
+      .catch((err: any) => {
+        setlogOutErr(err.data.message);
+      });
   };
 
   const clearStorage = async () => {

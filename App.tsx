@@ -134,16 +134,16 @@ const MainTab = (
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
-  // if (auth.user.token === null) {
-  //   dispatch(stopTimer());
-  //   dispatch(apiService.util.resetApiState());
-  //   props.navigation.dispatch(
-  //     CommonActions.reset({
-  //       index: 0,
-  //       routes: [{ name: 'AuthStack' }],
-  //     })
-  //   );
-  // }
+  if (auth.accessToken === null) {
+    dispatch(stopTimer());
+    dispatch(apiService.util.resetApiState());
+    props.navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'AuthStack' }],
+      })
+    );
+  }
 
   return (
     <>

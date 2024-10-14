@@ -30,6 +30,7 @@ export const createAccountSchema = Yup.object({
   confirmPassword: Yup.string()
     .required('Nhập lại mật khẩu không được để trống')
     .oneOf([Yup.ref('password')], 'Mật khẩu không khớp'),
+  token: Yup.string().required('Mã xác thực không được để trống'),
 });
 
 export type SignInSchemaType = Yup.InferType<typeof signInSchema>;

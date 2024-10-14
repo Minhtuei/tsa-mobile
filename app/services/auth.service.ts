@@ -43,6 +43,13 @@ const authService = apiService.injectEndpoints({
         body,
       }),
     }),
+    logout: build.mutation<void, { refreshToken: string }>({
+      query: (body) => ({
+        url: `auth/signout`,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 export const {
@@ -51,4 +58,5 @@ export const {
   useVerifyEmailQuery,
   useCompleteRegistrationMutation,
   useRefreshTokenMutation,
+  useLogoutMutation,
 } = authService;
