@@ -1,49 +1,24 @@
-import {
-  DASHBOARD_HEADER_HEIGHT,
-  DashboardHeader,
-} from '@components/DashboardHeader';
-import { SCREEN } from '@constants/screen';
+import { DashboardHeader } from '@components/DashboardHeader';
+import { DASHBOARD_HEADER_HEIGHT, HIDE_TAB_HEIGHT } from '@constants/screen';
 import { useGlobalStyles } from '@hooks/theme';
 import { Platform, ScrollView, View, Animated } from 'react-native';
 import { Text } from 'react-native-paper';
 import BackgroundIcon from '../../../assets/background-icon.svg';
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
 import { useRef, useState } from 'react';
+import { getInterpolatedValues } from '@utils/scrollAnimationValues';
+import { useGetOrdersQuery } from '@services/order.service';
 export const Dashboard = () => {
-  const HIDE_TAB_HEIGHT = Platform.OS === 'ios' ? 100 : 50;
-
   const globalStyles = useGlobalStyles();
   const [selectedType, setSelectedType] = useState<
     'today' | 'yesterday' | 'week' | 'month'
   >('today');
   const scrollY = useRef(new Animated.Value(0)).current;
   const scrollViewRef = useRef<ScrollView>(null);
-  const millipedeOpacity = scrollY.interpolate({
-    inputRange: [0, DASHBOARD_HEADER_HEIGHT / 2],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-  const stickyTop = scrollY.interpolate({
-    inputRange: [DASHBOARD_HEADER_HEIGHT, DASHBOARD_HEADER_HEIGHT * 1.5],
-    outputRange: [-HIDE_TAB_HEIGHT, 0],
-    extrapolate: 'clamp',
-  });
-  const stickyOpacity = scrollY.interpolate({
-    inputRange: [DASHBOARD_HEADER_HEIGHT, DASHBOARD_HEADER_HEIGHT * 1.5],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-  const InfoCardAnimation = {
-    transform: [
-      {
-        translateY: scrollY.interpolate({
-          inputRange: [0, DASHBOARD_HEADER_HEIGHT],
-          outputRange: [0, DASHBOARD_HEADER_HEIGHT],
-          extrapolate: 'clamp',
-        }),
-      },
-    ],
-  };
+  const { millipedeOpacity, stickyTop, stickyOpacity, InfoCardAnimation } =
+    getInterpolatedValues(scrollY);
+  // const { data, isLoading, isError, refetch, error } =
+  //   useGetOrdersQuery(undefined);
   return (
     <View style={[globalStyles.background]}>
       <ScrollView

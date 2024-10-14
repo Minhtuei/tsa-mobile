@@ -1,5 +1,5 @@
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
-import { SCREEN } from '@constants/screen';
+import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Animated, ImageBackground, Platform, View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
@@ -10,7 +10,6 @@ import { useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import Constants from 'expo-constants';
 import { useState } from 'react';
-export const DASHBOARD_HEADER_HEIGHT = SCREEN.height * 0.25;
 export const DashboardHeader = ({
   opacity,
   animation,

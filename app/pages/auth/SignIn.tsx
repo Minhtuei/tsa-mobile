@@ -127,10 +127,10 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
               refreshToken: res.refreshToken,
             })
           );
+          props.navigation.navigate('MainTab', {
+            screen: 'Home',
+          });
         }
-        props.navigation.navigate('MainTab', {
-          screen: 'Home',
-        });
       })
       .catch((err) => {
         Toast.show(getErrorMessage(err), {
