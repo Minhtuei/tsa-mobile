@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Linking, View } from 'react-native';
 
 import SettingButton from '@components/SettingButton';
+import { CommonActions } from '@react-navigation/native';
 
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
@@ -27,12 +28,12 @@ export const SettingScreen = (
   // Show error but doesn't log out
   const [unregisterErr, setUnregisterErr] = useState('');
   const [notification, setNotification] = useState(false);
-  const [switchNotificationLoading, setSwitchNotificationLoading] =
-    useState(false);
+  const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
   const [logOutLoading, setLogOutLoading] = useState(false);
 
   const signOut = async () => {
-    clearStorage();
+    await clearStorage();
+    props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'AuthStack' }] }));
   };
 
   const clearStorage = async () => {
@@ -51,24 +52,24 @@ export const SettingScreen = (
   return (
     <View style={globalStyles.fullScreen}>
       <SettingButton
-        text="Hồ sơ"
-        icon="account"
+        text='Hồ sơ'
+        icon='account'
         onPress={() => {
           props.navigation.navigate('Profile');
         }}
       />
       <Divider />
       <SettingButton
-        text="Chế độ màu"
-        icon="circle-half-full"
+        text='Chế độ màu'
+        icon='circle-half-full'
         onPress={() => {
           props.navigation.navigate('ChangeTheme');
         }}
       />
       <Divider />
       <SettingButton
-        text="Đổi mật khẩu"
-        icon="lock-reset"
+        text='Đổi mật khẩu'
+        icon='lock-reset'
         onPress={() => {
           props.navigation.navigate('ChangePassword');
         }}
@@ -97,20 +98,20 @@ export const SettingScreen = (
 
       <Divider /> */}
       <SettingButton
-        text="Đăng xuất"
-        icon="logout"
+        text='Đăng xuất'
+        icon='logout'
         disabled={logOutLoading}
         loading={logOutLoading}
         onPress={signOut}
       />
       <Portal>
         <IconModal
-          variant="warning"
+          variant='warning'
           message={unregisterErr}
           onDismiss={() => setUnregisterErr('')}
         />
         <IconModal
-          variant="warning"
+          variant='warning'
           message={logOutErr}
           onDismiss={() => {
             setlogOutErr('');
