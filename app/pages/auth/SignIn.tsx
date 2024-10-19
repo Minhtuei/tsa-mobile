@@ -164,90 +164,94 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
         Đăng nhập
       </Text>
       <KeyboardAvoidingView
-        style={globalStyles.keyboardAvoidingView}
+        style={[
+          globalStyles.keyboardAvoidingView,
+          {
+            borderTopRightRadius: 24,
+            borderTopLeftRadius: 24,
+          },
+        ]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <Pressable style={styles.pressable} onPress={Keyboard.dismiss}>
-          <ScrollView
-            style={[
-              styles.scrollView,
-              { backgroundColor: theme.colors.background },
-            ]}
-          >
-            <View style={styles.formContainer}>
-              <Text style={[globalStyles.title, styles.title]}>
-                Chào mừng bạn đến với TSA
-              </Text>
-              <Text style={globalStyles.text}>
-                Để kết nối với chúng tôi, hãy đăng nhập với tài khoản cá nhân
-                của bạn
-              </Text>
-              <Button
-                mode="outlined"
-                onPress={() => {}}
-                style={styles.googleButton}
-              >
-                <View style={styles.googleButtonContent}>
-                  <GoogleIcon width={24} height={24} />
-                  <Text
-                    style={[
-                      styles.buttonContent,
-                      { color: theme.colors.onSurface },
-                    ]}
-                  >
-                    Đăng nhập với Google
-                  </Text>
-                </View>
-              </Button>
-              <Seperator />
-              <View>
-                <EmailInput control={control} errors={errors} />
-                <PasswordInput control={control} errors={errors} />
+        <ScrollView
+          style={[
+            styles.scrollView,
+            { backgroundColor: theme.colors.background },
+          ]}
+        >
+          <View style={styles.formContainer}>
+            <Text style={[globalStyles.title, styles.title]}>
+              Chào mừng bạn đến với TSA
+            </Text>
+            <Text style={globalStyles.text}>
+              Để kết nối với chúng tôi, hãy đăng nhập với tài khoản cá nhân của
+              bạn
+            </Text>
+            <Button
+              mode="outlined"
+              onPress={() => {}}
+              style={styles.googleButton}
+            >
+              <View style={styles.googleButtonContent}>
+                <GoogleIcon width={24} height={24} />
+                <Text
+                  style={[
+                    styles.buttonContent,
+                    { color: theme.colors.onSurface },
+                  ]}
+                >
+                  Đăng nhập với Google
+                </Text>
               </View>
-              <TouchableOpacity>
+            </Button>
+            <Seperator />
+            <View>
+              <EmailInput control={control} errors={errors} />
+              <PasswordInput control={control} errors={errors} />
+            </View>
+            <TouchableOpacity>
+              <Text
+                style={[
+                  globalStyles.text,
+                  styles.forgotPasswordText,
+                  { color: theme.colors.primary },
+                ]}
+              >
+                Quên mật khẩu?
+              </Text>
+            </TouchableOpacity>
+            <Button
+              onPress={handleSubmit(onSubmit)}
+              mode="contained"
+              style={[globalStyles.wideButton, styles.loginButton]}
+              labelStyle={styles.buttonContent}
+              loading={isLoading}
+              disabled={isLoading}
+            >
+              Đăng nhập
+            </Button>
+            <View style={styles.signUpContainer}>
+              <Text style={globalStyles.text}>Chưa có tài khoản?</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  props.navigation.navigate('AuthStack', {
+                    screen: 'SignUp',
+                  });
+                }}
+              >
                 <Text
                   style={[
                     globalStyles.text,
-                    styles.forgotPasswordText,
+                    styles.signUpText,
                     { color: theme.colors.primary },
                   ]}
                 >
-                  Quên mật khẩu?
+                  Đăng ký
                 </Text>
               </TouchableOpacity>
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                mode="contained"
-                style={[globalStyles.wideButton, styles.loginButton]}
-                labelStyle={styles.buttonContent}
-                loading={isLoading}
-                disabled={isLoading}
-              >
-                Đăng nhập
-              </Button>
-              <View style={styles.signUpContainer}>
-                <Text style={globalStyles.text}>Chưa có tài khoản?</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    props.navigation.navigate('AuthStack', {
-                      screen: 'SignUp',
-                    });
-                  }}
-                >
-                  <Text
-                    style={[
-                      globalStyles.text,
-                      styles.signUpText,
-                      { color: theme.colors.primary },
-                    ]}
-                  >
-                    Đăng ký
-                  </Text>
-                </TouchableOpacity>
-              </View>
             </View>
-          </ScrollView>
-        </Pressable>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -270,9 +274,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 30,
   },
-  pressable: {
-    flex: 1,
-  },
+
   scrollView: {
     flex: 1,
     borderTopLeftRadius: 24,

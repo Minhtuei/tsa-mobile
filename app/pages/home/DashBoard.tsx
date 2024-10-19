@@ -1,5 +1,9 @@
 import { DashboardHeader } from '@components/DashboardHeader';
-import { DASHBOARD_HEADER_HEIGHT, HIDE_TAB_HEIGHT } from '@constants/screen';
+import {
+  DASHBOARD_HEADER_HEIGHT,
+  HIDE_TAB_HEIGHT,
+  SCREEN,
+} from '@constants/screen';
 import { useGlobalStyles } from '@hooks/theme';
 import { Platform, ScrollView, View, Animated } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -17,8 +21,7 @@ export const Dashboard = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const { millipedeOpacity, stickyTop, stickyOpacity, InfoCardAnimation } =
     getInterpolatedValues(scrollY);
-  // const { data, isLoading, isError, refetch, error } =
-  //   useGetOrdersQuery(undefined);
+  const { data, isLoading, isError, refetch, error } = useGetOrdersQuery();
   return (
     <View style={[globalStyles.background]}>
       <ScrollView
@@ -35,7 +38,7 @@ export const Dashboard = () => {
           animation={InfoCardAnimation}
           opacity={millipedeOpacity}
         />
-        {/* 
+
         <View
           style={{
             position: 'absolute',
@@ -52,15 +55,7 @@ export const Dashboard = () => {
             Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
           </Text>
           <BackgroundIcon width={SCREEN.width} height={SCREEN.height * 0.3} />
-        </View> */}
-        {Array.from({ length: 12 }).map((_, index) => (
-          <Text
-            key={index}
-            style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
-          >
-            Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
-          </Text>
-        ))}
+        </View>
       </ScrollView>
       <Animated.View
         style={{

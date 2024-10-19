@@ -39,6 +39,28 @@ import { Setting } from '@pages/setting/Setting';
 import IconModal from '@components/IconModal';
 import { useState } from 'react';
 import * as Linking from 'expo-linking';
+import { registerTranslation } from 'react-native-paper-dates';
+registerTranslation('vi', {
+  save: 'Lưu',
+  selectSingle: 'Chọn ngày',
+  selectMultiple: 'Chọn nhiều ngày',
+  selectRange: 'Chọn khoảng ngày',
+  notAccordingToDateFormat: (inputFormat) =>
+    `Định dạng ngày phải là ${inputFormat}`,
+  mustBeHigherThan: (date) => `Phải sau ${date}`,
+  mustBeLowerThan: (date) => `Phải trước ${date}`,
+  mustBeBetween: (startDate, endDate) =>
+    `Phải nằm trong khoảng ${startDate} và ${endDate}`,
+  dateIsDisabled: 'Ngày bị vô hiệu hóa',
+  previous: 'Trước đó',
+  next: 'Tiếp theo',
+  typeInDate: 'Nhập ngày',
+  pickDateFromCalendar: 'Chọn ngày từ lịch',
+  close: 'Đóng',
+  hour: '',
+  minute: '',
+});
+
 const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createMaterialBottomTabNavigator<MainTabParamList>();
@@ -189,6 +211,18 @@ const MainTab = (
           }}
           name="Order"
           component={Order}
+          listeners={{
+            tabPress: (e) => {
+              // Prevent default action
+              e.preventDefault();
+              props.navigation.reset({
+                index: 0,
+                routes: [
+                  { name: 'MainTab', state: { routes: [{ name: 'Order' }] } },
+                ],
+              });
+            },
+          }}
         />
         <Tab.Screen
           options={{

@@ -9,7 +9,7 @@ export const Header = (props: NativeStackHeaderProps) => {
   const theme = useAppTheme();
   const [canGoBack, setCanGoBack] = useState(false);
   useEffect(() => {
-    ['Dashboard'].includes(props.route.name)
+    ['Dashboard', 'OrderList'].includes(props.route.name)
       ? setCanGoBack(false)
       : setCanGoBack(true);
   }, [props.route.name]);
