@@ -1,7 +1,7 @@
 import { Dimensions, Platform } from 'react-native';
 export const SCREEN = {
   width: Dimensions.get('window').width,
-  height: Dimensions.get('window').height,
+  height: Dimensions.get('window').height
 };
 export const HIDE_TAB_HEIGHT = Platform.OS === 'ios' ? 100 : 50;
 

@@ -1,10 +1,4 @@
-type OrderStatus =
-  | 'PENDING'
-  | 'ACCEPTED'
-  | 'REJECTED'
-  | 'DELIVERED'
-  | 'CANCELED'
-  | 'IN_TRANSPORT';
+type OrderStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'DELIVERED' | 'CANCELED' | 'IN_TRANSPORT';
 
 type PaymentMethod = 'CREDIT' | 'CASH' | 'MOMO';
 

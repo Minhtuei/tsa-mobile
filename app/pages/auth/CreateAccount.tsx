@@ -10,15 +10,12 @@ import {
   LastNameInput,
   PasswordInput,
   PhoneNumberInput,
-  RoomSelect,
+  RoomSelect
 } from './components/AuthForm';
 import { View } from 'react-native';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {
-  createAccountSchema,
-  CreateAccountSchemaType,
-} from '@validations/auth.schema';
+import { createAccountSchema, CreateAccountSchemaType } from '@validations/auth.schema';
 import { BUILDINGS, DOMITORIES, ROOMS } from '@constants/domitory';
 import { ActivityIndicator, Button, Portal } from 'react-native-paper';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
@@ -39,7 +36,7 @@ export const CreateAccount = (
     control,
     handleSubmit,
     formState: { errors },
-    setValue,
+    setValue
   } = useForm({
     resolver: yupResolver(createAccountSchema),
     defaultValues: {
@@ -50,8 +47,8 @@ export const CreateAccount = (
       phoneNumber: '',
       dormitory: '',
       room: '',
-      building: '',
-    },
+      building: ''
+    }
   });
 
   useEffect(() => {
@@ -82,18 +79,14 @@ export const CreateAccount = (
   return (
     <SignUpLayout
       position={2}
-      title="Tạo tài khoản"
+      title='Tạo tài khoản'
       onRedirect={() => {
         props.navigation.navigate('SignIn');
       }}
       hideGoogleBtn={true}
     >
       <Portal>
-        <IconModal
-          variant={msgType}
-          message={msg}
-          onDismiss={() => handleOnDismiss(msgType)}
-        />
+        <IconModal variant={msgType} message={msg} onDismiss={() => handleOnDismiss(msgType)} />
       </Portal>
       <View>
         <LastNameInput control={control} errors={errors} />
@@ -101,33 +94,18 @@ export const CreateAccount = (
         <PhoneNumberInput control={control} errors={errors} />
         <PasswordInput control={control} errors={errors} />
         <ConfirmPasswordInput control={control} errors={errors} />
-        <DormitorySelect
-          control={control}
-          errors={errors}
-          dormitories={DOMITORIES}
-        />
-        <BuildingSelect
-          control={control}
-          errors={errors}
-          buildings={BUILDINGS}
-        />
+        <DormitorySelect control={control} errors={errors} dormitories={DOMITORIES} />
+        <BuildingSelect control={control} errors={errors} buildings={BUILDINGS} />
         <RoomSelect control={control} errors={errors} rooms={ROOMS} />
       </View>
       <Button
         onPress={handleSubmit(onSubmit)}
-        mode="contained"
+        mode='contained'
         style={[globalStyles.wideButton]}
-        labelStyle={[
-          globalStyles.text,
-          { color: theme.colors.onPrimary, fontWeight: 'bold' },
-        ]}
+        labelStyle={[globalStyles.text, { color: theme.colors.onPrimary, fontWeight: 'bold' }]}
         disabled={isLoading}
       >
-        {isLoading ? (
-          <ActivityIndicator color={theme.colors.onPrimary} />
-        ) : (
-          'Hoàn tất'
-        )}
+        {isLoading ? <ActivityIndicator color={theme.colors.onPrimary} /> : 'Hoàn tất'}
       </Button>
     </SignUpLayout>
   );

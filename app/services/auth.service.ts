@@ -1,7 +1,7 @@
 import {
   CreateAccountSchemaType,
   SignInSchemaType,
-  SignUpSchemaType,
+  SignUpSchemaType
 } from '@validations/auth.schema';
 import { apiService } from './api.service';
 import { AuthState, UserInfo } from '@slices/auth.slice';
@@ -12,45 +12,42 @@ const authService = apiService.injectEndpoints({
       query: (body) => ({
         url: `auth/signin`,
         method: 'POST',
-        body,
-      }),
+        body
+      })
     }),
     signUp: build.mutation<void, SignUpSchemaType>({
       query: (body) => ({
         url: `auth/signup/initiate`,
         method: 'POST',
-        body,
-      }),
+        body
+      })
     }),
     verifyEmail: build.query({
-      query: (token: string) => `auth/signup/verify?token=${token}`,
+      query: (token: string) => `auth/signup/verify?token=${token}`
     }),
 
-    completeRegistration: build.mutation<
-      void,
-      Omit<CreateAccountSchemaType, 'confirmPassword'>
-    >({
+    completeRegistration: build.mutation<void, Omit<CreateAccountSchemaType, 'confirmPassword'>>({
       query: (body) => ({
         url: `auth/signup/complete`,
         method: 'POST',
-        body,
-      }),
+        body
+      })
     }),
     refreshToken: build.mutation({
       query: (body) => ({
         url: `auth/refresh`,
         method: 'POST',
-        body,
-      }),
+        body
+      })
     }),
     logout: build.mutation<void, { refreshToken: string }>({
       query: (body) => ({
         url: `auth/signout`,
         method: 'POST',
-        body,
-      }),
-    }),
-  }),
+        body
+      })
+    })
+  })
 });
 export const {
   useSignInMutation,
@@ -58,5 +55,5 @@ export const {
   useVerifyEmailQuery,
   useCompleteRegistrationMutation,
   useRefreshTokenMutation,
-  useLogoutMutation,
+  useLogoutMutation
 } = authService;

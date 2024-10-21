@@ -8,16 +8,16 @@ import { Appbar } from 'react-native-paper';
 export const Header = (props: NativeStackHeaderProps) => {
   const theme = useAppTheme();
   const [canGoBack, setCanGoBack] = useState(false);
+
   useEffect(() => {
     ['Dashboard', 'OrderList'].includes(props.route.name)
       ? setCanGoBack(false)
       : setCanGoBack(true);
   }, [props.route.name]);
+
   return canGoBack ? (
     <Appbar.Header
-      statusBarHeight={
-        Platform.OS === 'android' ? 0 : Constants.statusBarHeight
-      }
+      statusBarHeight={Platform.OS === 'android' ? 0 : Constants.statusBarHeight}
       elevated={true}
       theme={theme}
     >

@@ -5,8 +5,8 @@ const orderService = apiService.injectEndpoints({
   endpoints: (build) => ({
     getOrders: build.query<Order[], void>({
       query: () => 'orders',
-      providesTags: ['Orders'],
-    }),
-  }),
+      providesTags: ['Orders']
+    })
+  })
 });
 export const { useGetOrdersQuery } = orderService;

@@ -10,27 +10,18 @@ interface QueryTypeBtnTabProps {
   setSelectedType: (type: QueryType) => void;
 }
 
-const QueryTypeBtnTab: React.FC<QueryTypeBtnTabProps> = ({
-  selectedType,
-  setSelectedType,
-}) => {
+const QueryTypeBtnTab: React.FC<QueryTypeBtnTabProps> = ({ selectedType, setSelectedType }) => {
   const theme = useAppTheme();
 
   const getButtonStyle = (type: QueryType): ViewStyle => ({
     borderWidth: 0,
     borderBottomWidth: 2,
     borderRadius: 0,
-    borderBottomColor:
-      selectedType === type
-        ? theme.colors.primary
-        : theme.colors.outlineVariant,
+    borderBottomColor: selectedType === type ? theme.colors.primary : theme.colors.outlineVariant
   });
 
   const getLabelStyle = (type: QueryType): TextStyle => ({
-    color:
-      selectedType === type
-        ? theme.colors.primary
-        : theme.colors.outlineVariant,
+    color: selectedType === type ? theme.colors.primary : theme.colors.outlineVariant
   });
 
   return (
@@ -45,7 +36,7 @@ const QueryTypeBtnTab: React.FC<QueryTypeBtnTabProps> = ({
         <View key={type} style={[getButtonStyle(type as QueryType)]}>
           <Button
             labelStyle={getLabelStyle(type as QueryType)}
-            mode="outlined"
+            mode='outlined'
             onPress={() => {
               setSelectedType(type as QueryType);
             }}

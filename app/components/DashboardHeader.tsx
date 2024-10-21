@@ -12,7 +12,7 @@ import Constants from 'expo-constants';
 import { useState } from 'react';
 export const DashboardHeader = ({
   opacity,
-  animation,
+  animation
 }: {
   opacity: Animated.AnimatedInterpolation<string | number>;
   animation: any;
@@ -20,21 +20,20 @@ export const DashboardHeader = ({
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   const auth = useAppSelector((state) => state.auth);
-  const [selectedType, setSelectedType] = useState<
-    'today' | 'yesterday' | 'week' | 'month'
-  >('today');
-  const AnimatedImageBackground =
-    Animated.createAnimatedComponent(ImageBackground);
+  const [selectedType, setSelectedType] = useState<'today' | 'yesterday' | 'week' | 'month'>(
+    'today'
+  );
+  const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
   return (
-    <View style={{ height: SCREEN.height / 2 }}>
+    <View style={auth.userInfo?.role === 'STUDENT' && { height: SCREEN.height / 2 }}>
       <AnimatedImageBackground
         source={BackgroundImg}
         style={[
           {
             width: SCREEN.width,
-            height: DASHBOARD_HEADER_HEIGHT,
+            height: DASHBOARD_HEADER_HEIGHT
           },
-          animation,
+          animation
         ]}
       >
         <View
@@ -43,11 +42,11 @@ export const DashboardHeader = ({
               flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: -60,
+              marginTop: -60
             },
             Platform.OS === 'ios' && {
-              paddingTop: Constants.statusBarHeight,
-            },
+              paddingTop: Constants.statusBarHeight
+            }
           ]}
         >
           <HeaderLogo width={SCREEN.width / 2} height={SCREEN.width / 2} />
@@ -55,17 +54,14 @@ export const DashboardHeader = ({
             style={[
               globalStyles.SurfaceContainer,
               {
-                width:
-                  Platform.OS === 'ios'
-                    ? SCREEN.width * 0.8
-                    : SCREEN.width * 0.9,
+                width: Platform.OS === 'ios' ? SCREEN.width * 0.8 : SCREEN.width * 0.9,
                 alignItems: 'center',
                 marginTop: 24,
                 position: 'absolute',
                 top: Platform.OS === 'android' ? '50%' : '75%',
                 zIndex: 1,
-                opacity,
-              },
+                opacity
+              }
             ]}
           >
             <View
@@ -75,7 +71,7 @@ export const DashboardHeader = ({
                 alignItems: 'center',
                 marginBottom: 16,
                 paddingHorizontal: 16,
-                paddingTop: 16,
+                paddingTop: 16
               }}
             >
               <View
@@ -85,22 +81,18 @@ export const DashboardHeader = ({
                   height: 48,
                   borderRadius: 24,
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  justifyContent: 'center'
                 }}
               >
-                <FontAwesome
-                  name="user"
-                  size={24}
-                  color={theme.colors.onPrimary}
-                />
+                <FontAwesome name='user' size={24} color={theme.colors.onPrimary} />
               </View>
               <View style={{ gap: 2, flex: 1 }}>
                 <Text
                   style={[
                     globalStyles.text,
                     {
-                      fontStyle: 'italic',
-                    },
+                      fontStyle: 'italic'
+                    }
                   ]}
                 >
                   Xin chào,
@@ -111,36 +103,37 @@ export const DashboardHeader = ({
                     {
                       fontWeight: 'bold',
                       fontSize: 18,
-                      textTransform: 'capitalize',
-                    },
+                      textTransform: 'capitalize'
+                    }
                   ]}
                 >{`${auth.userInfo?.lastName} ${auth.userInfo?.firstName}`}</Text>
               </View>
-              <FontAwesome name="bell" size={24} color={theme.colors.primary} />
+              <FontAwesome name='bell' size={24} color={theme.colors.primary} />
             </View>
-            <QueryTypeBtnTab
-              selectedType={selectedType}
-              setSelectedType={setSelectedType}
-            />
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                width: '100%',
-                flexWrap: 'wrap',
-                padding: 16,
-              }}
-            >
-              <InfoCard iconName="account-box" itemName="Đơn hàng" value={25} />
-              <InfoCard
-                iconName="attach-money"
-                itemName="Phí Ship"
-                value={Intl.NumberFormat('vi-VN', {
-                  style: 'currency',
-                  currency: 'VND',
-                }).format(250000)}
-              />
-            </View>
+            {auth.userInfo?.role === 'STUDENT' && (
+              <>
+                <QueryTypeBtnTab selectedType={selectedType} setSelectedType={setSelectedType} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    flexWrap: 'wrap',
+                    padding: 16
+                  }}
+                >
+                  <InfoCard iconName='account-box' itemName='Đơn hàng' value={25} />
+                  <InfoCard
+                    iconName='attach-money'
+                    itemName='Phí Ship'
+                    value={Intl.NumberFormat('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND'
+                    }).format(250000)}
+                  />
+                </View>
+              </>
+            )}
           </Animated.View>
         </View>
       </AnimatedImageBackground>
