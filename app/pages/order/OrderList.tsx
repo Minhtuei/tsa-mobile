@@ -7,7 +7,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { useGetOrdersQuery } from '@services/order.service';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   Keyboard,
@@ -29,18 +29,22 @@ import {
   RootStackParamList,
 } from 'app/types/navigation';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { OrderListHeader } from '@components/OrderListHeader';
+import { shortenUUID } from '@utils/order';
 
 export const OrderList = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>
 ) => {
+  const theme = useAppTheme();
+  const globalStyles = useGlobalStyles();
+
   const [orderId, setOrderId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
   const [data, setData] = useState<STATUS_DATA_TYPE[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [showDatePickerBtn, setShowDatePickerBtn] = useState(false);
-  const [isDatePicker, setIsDatePicker] = useState(false);
+
   const {
     data: orders,
     isLoading,
@@ -49,16 +53,7 @@ export const OrderList = (
     isFetching,
     error,
   } = useGetOrdersQuery();
-  const theme = useAppTheme();
-  const globalStyles = useGlobalStyles();
-  console.log('orders', orders);
-  useEffect(() => {
-    if (filterType !== 'TIME') {
-      setShowDatePickerBtn(false);
-    } else {
-      setShowDatePickerBtn(true);
-    }
-  }, [status, filterType]);
+
   useEffect(() => {
     if (isError) {
       Toast.show(getErrorMessage(error), {
@@ -72,104 +67,55 @@ export const OrderList = (
       });
     }
   }, [isError, error]);
+
+  const filteredOrders = useMemo(() => {
+    if (!orders) return [];
+    let result = orders;
+    // Filter by orderId
+    if (orderId) {
+      result = result.filter((order) =>
+        shortenUUID(order.id).includes(orderId)
+      );
+    }
+    // Filter by status
+    if (status) {
+      result = result.filter((order) => order.latestStatus === status);
+    }
+    // Filter by time range if filterType is 'TIME'
+    if (filterType === 'TIME' && startDate && endDate) {
+      result = result.filter((order) => {
+        return (
+          moment(startDate).isSameOrBefore(
+            moment.unix(Number(order.historyTime[0].time)),
+            'day'
+          ) &&
+          moment(endDate).isSameOrAfter(
+            moment.unix(Number(order.historyTime[0].time)),
+            'day'
+          )
+        );
+      });
+    }
+
+    return result;
+  }, [orders, orderId, status, filterType, startDate, endDate]);
+
   return (
     <View style={{ flex: 1 }}>
-      <TouchableWithoutFeedback
-        onPress={() => Keyboard.dismiss()}
-        accessible={false}
-      >
-        <View
-          style={{
-            height: Platform.OS === 'android' ? 180 : 200,
-            backgroundColor: theme.colors.primary,
-            justifyContent: 'flex-end',
-            paddingHorizontal: 16,
-            paddingTop: Platform.OS === 'android' ? 0 : 16,
-            paddingBottom: 16,
-          }}
-        >
-          <Text
-            style={[
-              globalStyles.title,
-              {
-                color: theme.colors.onPrimary,
-                fontSize: 24,
-                textTransform: 'uppercase',
-                marginBottom: 8,
-              },
-            ]}
-          >
-            Danh sách đơn hàng
-          </Text>
-          <SearchInput
-            value={orderId ?? ''}
-            onChange={setOrderId}
-            placeholder="Tìm kiếm"
-            pressable={false}
-            left={
-              <MaterialIcons
-                name="search"
-                size={24}
-                color={theme.colors.onBackground}
-              />
-            }
-          />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginTop: 8,
-            }}
-          >
-            <View style={{ width: '70%' }}>
-              {showDatePickerBtn ? (
-                <SearchInput
-                  value={
-                    startDate && endDate
-                      ? `${moment(startDate).format('DD/MM/YYYY')} - ${moment(endDate).format('DD/MM/YYYY')}`
-                      : 'Từ ngày - Đến ngày'
-                  }
-                  onChange={() => {}}
-                  placeholder="Từ ngày"
-                  pressable={true}
-                  disabled={true}
-                  onPress={() => setIsDatePicker(true)}
-                  right={
-                    <MaterialIcons
-                      name="date-range"
-                      size={24}
-                      color={theme.colors.onBackground}
-                    />
-                  }
-                />
-              ) : (
-                <DropDownList
-                  data={STATUS_DATA}
-                  value={status}
-                  setValue={setStatus}
-                  placeholder="Tất cả trạng thái"
-                />
-              )}
-            </View>
-            <FilterBtnDropdown
-              data={FILTER_DATA}
-              value={filterType}
-              setValue={setFilterType}
-            />
-          </View>
-          {isDatePicker && (
-            <DatePicker
-              shown={isDatePicker}
-              setShown={setIsDatePicker}
-              setStartDate={setStartDate}
-              setEndDate={setEndDate}
-              startDate={startDate}
-              endDate={endDate}
-            />
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+      <OrderListHeader
+        {...{
+          orderId,
+          setOrderId,
+          status,
+          setStatus,
+          filterType,
+          setFilterType,
+          startDate,
+          setStartDate,
+          endDate,
+          setEndDate,
+        }}
+      />
       <FlatList
         refreshControl={
           <RefreshControl refreshing={isFetching} onRefresh={refetch} />
@@ -180,7 +126,22 @@ export const OrderList = (
           gap: 16,
         }}
         showsVerticalScrollIndicator={false}
-        data={orders}
+        data={filteredOrders}
+        keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={globalStyles.title}>Danh sách đơn hàng</Text>
+            <Text style={globalStyles.text}>
+              {`${filteredOrders?.length ?? 0} đơn hàng`}
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <OrderItem
             order={item}

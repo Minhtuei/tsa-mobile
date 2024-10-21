@@ -39,7 +39,7 @@ export const Dashboard = () => {
           opacity={millipedeOpacity}
         />
 
-        <View
+        {/* <View
           style={{
             position: 'absolute',
             top: '50%',
@@ -55,7 +55,7 @@ export const Dashboard = () => {
             Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
           </Text>
           <BackgroundIcon width={SCREEN.width} height={SCREEN.height * 0.3} />
-        </View>
+        </View> */}
       </ScrollView>
       <Animated.View
         style={{

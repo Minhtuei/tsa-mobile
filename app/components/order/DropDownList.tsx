@@ -14,7 +14,6 @@ export const DropDownList = ({
   placeholder?: string;
 }) => {
   const [isFocus, setIsFocus] = useState(false);
-
   return (
     <Dropdown
       style={[styles.dropdown, isFocus && { borderColor: 'black' }]}
@@ -28,7 +27,7 @@ export const DropDownList = ({
       autoScroll={false}
       labelField="label"
       valueField="value"
-      placeholder={!isFocus ? placeholder : ''}
+      placeholder={!isFocus ? placeholder : 'Chọn'}
       searchPlaceholder="Search..."
       value={value}
       onFocus={() => setIsFocus(true)}

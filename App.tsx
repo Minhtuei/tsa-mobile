@@ -156,7 +156,7 @@ const MainTab = (
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
-  if (auth.accessToken === null) {
+  if (auth.refreshToken === null) {
     dispatch(stopTimer());
     dispatch(apiService.util.resetApiState());
     props.navigation.dispatch(
@@ -211,18 +211,18 @@ const MainTab = (
           }}
           name="Order"
           component={Order}
-          listeners={{
+          listeners={({ navigation }) => ({
             tabPress: (e) => {
               // Prevent default action
               e.preventDefault();
-              props.navigation.reset({
+              navigation.reset({
                 index: 0,
                 routes: [
                   { name: 'MainTab', state: { routes: [{ name: 'Order' }] } },
                 ],
               });
             },
-          }}
+          })}
         />
         <Tab.Screen
           options={{

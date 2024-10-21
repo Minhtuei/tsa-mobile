@@ -67,7 +67,7 @@ export const baseQueryWithReauth: BaseQueryFn<
             await AsyncStorage.removeItem('accessToken');
             await AsyncStorage.removeItem('refreshToken');
           }
-          api.dispatch(setToken({ accessToken: '', refreshToken: '' }));
+          api.dispatch(setToken({ accessToken: null, refreshToken: null }));
         }, 3000);
       }
     } else {

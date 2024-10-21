@@ -15,7 +15,7 @@ export const OrderItem = ({
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
 
-  const statusRender = getStatusRender(order.latestStatus);
+  const statusRender = getStatusRender(order.historyTime[0].status);
   return (
     <TouchableOpacity disabled={!onPress} onPress={() => onPress?.()}>
       <View
