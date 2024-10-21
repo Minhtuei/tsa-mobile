@@ -10,9 +10,11 @@ export const Header = (props: NativeStackHeaderProps) => {
   const [canGoBack, setCanGoBack] = useState(false);
 
   useEffect(() => {
-    ['Dashboard', 'OrderList'].includes(props.route.name)
-      ? setCanGoBack(false)
-      : setCanGoBack(true);
+    if (['Dashboard', 'OrderList'].includes(props.route.name)) {
+      setCanGoBack(false);
+    } else {
+      setCanGoBack(true);
+    }
   }, [props.route.name]);
 
   return canGoBack ? (

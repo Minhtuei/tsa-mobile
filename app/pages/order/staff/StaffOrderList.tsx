@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Card, Chip, Divider } from 'react-native-paper';
 import { OrderDetail } from '@slices/order.slice';
@@ -7,6 +7,8 @@ import { OrderStackParamList } from 'app/types/navigation';
 import Feather from '@expo/vector-icons/Feather';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/format';
+import { initialOrderList } from '@utils/mockData';
+import { OrderListHeader } from '../components/OrderListHeader';
 
 type OrderListProps = NativeStackScreenProps<OrderStackParamList, 'OrderList'> & {
   orders: OrderDetail[];
@@ -101,20 +103,61 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
   );
 };
 
-export const StaffOrderList: React.FC<OrderListProps> = ({ orders, loading }) => {
+export const StaffOrderList = (props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>) => {
+  const [filteredOrders, setFilteredOrders] = useState(initialOrderList.slice(0, 16));
+  const [loading, setLoading] = useState(false);
+
+  const handleSearch = (searchText: string) => {
+    setLoading(true);
+    setTimeout(() => {
+      const filtered = initialOrderList
+        .slice(0, 16)
+        .filter((order) => order.checkCode.toLowerCase().includes(searchText.toLowerCase()));
+      setFilteredOrders(filtered);
+      setLoading(false);
+    }, 500); // Simulate a delay for loading
+  };
+
+  const handleFilter = (status: boolean | null, date: Date | null, orderStatus: string | null) => {
+    setLoading(true);
+    setTimeout(() => {
+      let filtered = initialOrderList.slice(0, 16);
+
+      if (status !== null) {
+        filtered = filtered.filter((order) => order.isPaid === status);
+      }
+
+      if (date) {
+        filtered = filtered.filter(
+          (order) => new Date(order.deliveryDate).toDateString() === date.toDateString()
+        );
+      }
+
+      if (orderStatus) {
+        filtered = filtered.filter((order) => order.latestStatus === orderStatus);
+      }
+
+      setFilteredOrders(filtered);
+      setLoading(false);
+    }, 500); // Simulate a delay for loading
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{orders.length} đơn hàng</Text>
-      {loading ? (
-        <ActivityIndicator size='large' color='#34A853' />
-      ) : (
-        <ScrollView>
-          {orders.map((order) => (
-            <OrderItem key={order.id} order={order} />
-          ))}
-        </ScrollView>
-      )}
-    </View>
+    <>
+      <OrderListHeader onSearch={handleSearch} onFilter={handleFilter} />
+      <View style={styles.container}>
+        <Text style={styles.header}>{filteredOrders.length} đơn hàng</Text>
+        {loading ? (
+          <ActivityIndicator size='large' color='#34A853' />
+        ) : (
+          <ScrollView>
+            {filteredOrders.map((order) => (
+              <OrderItem key={order.id} order={order} />
+            ))}
+          </ScrollView>
+        )}
+      </View>
+    </>
   );
 };
 

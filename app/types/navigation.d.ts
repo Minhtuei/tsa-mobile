@@ -33,7 +33,6 @@ type DeliveryStackParamList = {
 };
 
 type OrderStackParamList = {
-  StaffOrderList: { orders: OrderDetail[] };
   OrderList: undefined;
   OrderDetail: { order: Order };
 };

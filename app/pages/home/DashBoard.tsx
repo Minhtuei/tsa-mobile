@@ -20,7 +20,8 @@ export const Dashboard = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const { millipedeOpacity, stickyTop, stickyOpacity, InfoCardAnimation } =
     getInterpolatedValues(scrollY);
-  const { data, isLoading, isError, refetch, error } = useGetOrdersQuery();
+  // const { data, isLoading, isError, refetch, error } = useGetOrdersQuery();
+
   return (
     <View style={[globalStyles.background]}>
       <ScrollView
@@ -35,14 +36,6 @@ export const Dashboard = () => {
         <DashboardHeader animation={InfoCardAnimation} opacity={millipedeOpacity} />
         {auth.userInfo?.role === 'STUDENT' && (
           <>
-            {Array.from({ length: 12 }).map((_, index) => (
-              <Text
-                key={index}
-                style={[globalStyles.title, { marginTop: 24, textAlign: 'center' }]}
-              >
-                Bạn chưa có đơn hàng nào! Hãy tạo đơn hàng đầu tiên của bạn
-              </Text>
-            ))}
             <Animated.View
               style={{
                 flex: 1,

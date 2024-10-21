@@ -7,62 +7,25 @@ import { OrderListHeader } from './components/OrderListHeader';
 import { OrderDetail } from './OrderDetail';
 import { StaffOrderList } from './staff/StaffOrderList';
 import { OrderList } from './OrderList';
+import { useAppSelector } from '@hooks/redux';
+import { Header } from '@components/Header';
 
 const Stack = createNativeStackNavigator<OrderStackParamList>();
 
 export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) => {
-  const [filteredOrders, setFilteredOrders] = useState(initialOrderList.slice(0, 16));
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = (searchText: string) => {
-    setLoading(true);
-    setTimeout(() => {
-      const filtered = initialOrderList
-        .slice(0, 16)
-        .filter((order) => order.checkCode.toLowerCase().includes(searchText.toLowerCase()));
-      setFilteredOrders(filtered);
-      setLoading(false);
-    }, 500); // Simulate a delay for loading
-  };
-
-  const handleFilter = (status: boolean | null, date: Date | null, orderStatus: string | null) => {
-    setLoading(true);
-    setTimeout(() => {
-      let filtered = initialOrderList.slice(0, 16);
-
-      if (status !== null) {
-        filtered = filtered.filter((order) => order.isPaid === status);
-      }
-
-      if (date) {
-        filtered = filtered.filter(
-          (order) => new Date(order.deliveryDate).toDateString() === date.toDateString()
-        );
-      }
-
-      if (orderStatus) {
-        filtered = filtered.filter((order) => order.latestStatus === orderStatus);
-      }
-
-      setFilteredOrders(filtered);
-      setLoading(false);
-    }, 500); // Simulate a delay for loading
-  };
-
   return (
     <Stack.Navigator
       screenOptions={{
-        header: () => <OrderListHeader onSearch={handleSearch} onFilter={handleFilter} />
+        header: (props) => <Header {...props} />
       }}
+      initialRouteName='OrderList'
     >
       <Stack.Screen
-        name='StaffOrderList'
-        component={(props: any) => (
-          <StaffOrderList {...props} orders={filteredOrders} loading={loading} />
-        )}
+        name='OrderList'
+        component={OrderList} // Using the function to render
         options={{ title: 'Danh sách đơn hàng' }}
       />
-      <Stack.Screen name='OrderList' component={OrderList} />
+
       <Stack.Screen
         name='OrderDetail'
         component={OrderDetail}

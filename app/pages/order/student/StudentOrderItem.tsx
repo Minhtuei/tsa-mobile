@@ -5,13 +5,7 @@ import moment from 'moment';
 import Feather from '@expo/vector-icons/Feather';
 import { getStatusRender, shortenUUID } from '@utils/order';
 
-export const OrderItem = ({
-  order,
-  onPress,
-}: {
-  order: Order;
-  onPress?: () => void;
-}) => {
+export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: () => void }) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
 
@@ -27,8 +21,8 @@ export const OrderItem = ({
             padding: 16,
             gap: 12,
             alignItems: 'center',
-            height: 100,
-          },
+            height: 100
+          }
         ]}
       >
         <View
@@ -39,10 +33,10 @@ export const OrderItem = ({
             justifyContent: 'center',
             alignItems: 'center',
             width: 48,
-            height: 48,
+            height: 48
           }}
         >
-          <Feather name="package" size={24} color={theme.colors.onPrimary} />
+          <Feather name='package' size={24} color={theme.colors.onPrimary} />
         </View>
         <View style={{ flex: 1 }}>
           <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
@@ -54,19 +48,13 @@ export const OrderItem = ({
               flexDirection: 'row',
               gap: 4,
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
-            <View
-              style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}
-            >
-              <Feather name="clock" size={18} color={theme.colors.onSurface} />
-              <Text
-                style={[globalStyles.text, { color: theme.colors.onSurface }]}
-              >
-                {moment
-                  .unix(Number(order.historyTime[0].time))
-                  .format('DD/MM/YYYY')}
+            <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+              <Feather name='clock' size={18} color={theme.colors.onSurface} />
+              <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
+                {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY')}
               </Text>
             </View>
             <Badge size={24} style={{ backgroundColor: statusRender.color }}>
@@ -74,10 +62,8 @@ export const OrderItem = ({
             </Badge>
           </View>
           <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-            <Feather name="home" size={18} color={theme.colors.onSurface} />
-            <Text
-              style={[globalStyles.text, { color: theme.colors.onSurface }]}
-            >
+            <Feather name='home' size={18} color={theme.colors.onSurface} />
+            <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
               {`${order.building} - ${order.room}`}
             </Text>
           </View>

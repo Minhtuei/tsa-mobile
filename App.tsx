@@ -32,12 +32,10 @@ registerTranslation('vi', {
   selectSingle: 'Chọn ngày',
   selectMultiple: 'Chọn nhiều ngày',
   selectRange: 'Chọn khoảng ngày',
-  notAccordingToDateFormat: (inputFormat) =>
-    `Định dạng ngày phải là ${inputFormat}`,
+  notAccordingToDateFormat: (inputFormat) => `Định dạng ngày phải là ${inputFormat}`,
   mustBeHigherThan: (date) => `Phải sau ${date}`,
   mustBeLowerThan: (date) => `Phải trước ${date}`,
-  mustBeBetween: (startDate, endDate) =>
-    `Phải nằm trong khoảng ${startDate} và ${endDate}`,
+  mustBeBetween: (startDate, endDate) => `Phải nằm trong khoảng ${startDate} và ${endDate}`,
   dateIsDisabled: 'Ngày bị vô hiệu hóa',
   previous: 'Trước đó',
   next: 'Tiếp theo',
@@ -45,7 +43,7 @@ registerTranslation('vi', {
   pickDateFromCalendar: 'Chọn ngày từ lịch',
   close: 'Đóng',
   hour: '',
-  minute: '',
+  minute: ''
 });
 
 const prefix = Linking.createURL('/');
@@ -198,11 +196,9 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
               e.preventDefault();
               navigation.reset({
                 index: 0,
-                routes: [
-                  { name: 'MainTab', state: { routes: [{ name: 'Order' }] } },
-                ],
+                routes: [{ name: 'MainTab', state: { routes: [{ name: 'Order' }] } }]
               });
-            },
+            }
           })}
         />
         {auth.userInfo?.role === 'STUDENT' && (
