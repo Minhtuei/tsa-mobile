@@ -67,9 +67,20 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
   });
   useEffect(() => {
     const getEmail = async () => {
-      const user = (await AsyncStorage.getItem('user')) as UserInfo | null;
-      if (user) {
-        setValue('email', user.email, { shouldValidate: true });
+      try {
+        const userString = await AsyncStorage.getItem('user');
+        if (userString) {
+          const user = JSON.parse(userString) as UserInfo;
+          setValue('email', user.email, { shouldValidate: true });
+        }
+      } catch (error) {
+        Toast.show(getErrorMessage(error), {
+          position: Toast.positions.BOTTOM,
+          backgroundColor: theme.colors.error,
+          shadow: true,
+          animation: true,
+          hideOnPress: true
+        });
       }
     };
     getEmail();

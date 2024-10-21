@@ -20,14 +20,20 @@ type MainTabParamList = {
   Order: undefined;
   Report: undefined;
   Setting: undefined;
+  Delivery: undefined;
 };
 
 type HomeStackParamList = {
   Dashboard: undefined;
 };
 
+type DeliveryStackParamList = {
+  DeliveryList: { deliveries: DeliveryDetail[] };
+  DeliveryDetail: undefined;
+};
+
 type OrderStackParamList = {
-  OrderList: undefined;
+  OrderList: { orders: OrderDetail[] };
   OrderDetail: undefined;
 };
 

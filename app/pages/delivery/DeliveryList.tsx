@@ -1,29 +1,29 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Card, Chip, Divider } from 'react-native-paper';
-import { OrderDetail } from '@slices/order.slice';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { OrderStackParamList } from 'app/types/navigation';
-import Feather from '@expo/vector-icons/Feather';
+import { DeliveryStackParamList } from 'app/types/navigation';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/format';
+import { Delivery } from '@slices/delivery.slice';
 
-type OrderListProps = NativeStackScreenProps<OrderStackParamList, 'OrderList'> & {
-  orders: OrderDetail[];
+type DeliveryListProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryList'> & {
+  deliveries: Delivery[];
   loading: boolean;
 };
 
-const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
+const DeliveryItem: React.FC<{ delivery: Delivery }> = ({ delivery }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'CANCELLED':
-        return 'red';
-      case 'DELIVERED':
-        return 'green';
-      case 'IN_TRANSPORT':
-        return 'blue';
       case 'PENDING':
         return 'orange';
+      case 'ACCEPTED':
+        return 'blue';
+      case 'FINISHED':
+        return 'green';
+      case 'CANCELED':
+        return 'red';
       default:
         return 'red';
     }
@@ -31,16 +31,16 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'CANCELLED':
-        return 'Đã hủy';
-      case 'DELIVERED':
-        return 'Đã giao';
-      case 'IN_TRANSPORT':
-        return 'Đang giao';
       case 'PENDING':
         return 'Chờ xử lý';
+      case 'ACCEPTED':
+        return 'Chấp nhận';
+      case 'FINISHED':
+        return 'Hoàn thành';
+      case 'CANCELED':
+        return 'Đã hủy';
       default:
-        return 'Bị từ chối';
+        return 'Chờ xử lý';
     }
   };
 
@@ -49,7 +49,7 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
       <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <View style={{ width: '25%' }}>
           <View style={styles.square}>
-            <Feather name='box' size={42} color='red' />
+            <MaterialCommunityIcons name='motorbike' size={32} color='green' />
           </View>
         </View>
         <View style={{ flexDirection: 'column', gap: 12, width: '75%' }}>
@@ -64,22 +64,22 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
                   fontSize: 20
                 }}
               >
-                #{order.checkCode}
+                #{delivery.id}
               </Text>
               <Text style={{ opacity: 0.4 }}>
-                {formatDate(formatUnixTimestamp(order.deliveryDate))}
+                {formatDate(formatUnixTimestamp(delivery.createdAt))}
               </Text>
             </View>
             <Chip
               style={{
-                backgroundColor: getStatusColor(order.latestStatus)
+                backgroundColor: getStatusColor(delivery.status)
               }}
               textStyle={{
                 fontWeight: 'bold',
                 color: 'white'
               }}
             >
-              {getStatusLabel(order.latestStatus)}
+              {getStatusLabel(delivery.status)}
             </Chip>
           </View>
           <Divider />
@@ -87,11 +87,7 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
             style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
           >
             <View>
-              <Text>{order.product}</Text>
-              <Text>
-                R.{order.room}, D.{order.building}, khu {order.dormitory}
-              </Text>
-              <Text style={{ fontWeight: 'bold' }}>{formatVNDcurrency(order.shippingFee)}</Text>
+              <Text style={{ fontWeight: 'bold' }}>{delivery.orders.length} đơn hàng</Text>
             </View>
             <EvilIcons name='pencil' size={32} color='blue' />
           </View>
@@ -101,16 +97,16 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
   );
 };
 
-export const OrderList: React.FC<OrderListProps> = ({ orders, loading }) => {
+export const DeliveryList: React.FC<DeliveryListProps> = ({ deliveries, loading }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{orders.length} đơn hàng</Text>
+      <Text style={styles.header}>{deliveries.length} chuyến đi</Text>
       {loading ? (
         <ActivityIndicator size='large' color='#34A853' />
       ) : (
         <ScrollView>
-          {orders.map((order) => (
-            <OrderItem key={order.id} order={order} />
+          {deliveries.map((delivery) => (
+            <DeliveryItem key={delivery.id} delivery={delivery} />
           ))}
         </ScrollView>
       )}
@@ -146,4 +142,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default OrderList;
+export default DeliveryList;

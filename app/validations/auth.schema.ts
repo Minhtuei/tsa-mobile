@@ -3,15 +3,15 @@ import { emailPattern, emailSchema, passwordPattern } from './common.schema';
 
 export const signInSchema = Yup.object({
   email: emailSchema,
-  password: Yup.string().required('Mật khẩu không được để trống'),
+  password: Yup.string().required('Mật khẩu không được để trống')
 });
 
 export const signUpSchema = Yup.object({
-  email: emailSchema,
+  email: emailSchema
 });
 
 export const verifyEmailSchema = Yup.object({
-  token: Yup.string().required('Mã xác thực không được để trống'),
+  token: Yup.string().required('Mã xác thực không được để trống')
 });
 
 export const createAccountSchema = Yup.object({
@@ -30,6 +30,7 @@ export const createAccountSchema = Yup.object({
   confirmPassword: Yup.string()
     .required('Nhập lại mật khẩu không được để trống')
     .oneOf([Yup.ref('password')], 'Mật khẩu không khớp'),
+  token: Yup.string().required('Mã xác thực không được để trống')
 });
 
 export type SignInSchemaType = Yup.InferType<typeof signInSchema>;
