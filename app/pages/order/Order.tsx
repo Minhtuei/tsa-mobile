@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import { Header } from '@components/Header';
-import { OrderListHeader } from './components/OrderListHeader';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList, MainTabParamList, OrderStackParamList } from 'app/types/navigation';
-import { OrderList } from './staff/OrderList';
-import { OrderDetail } from './OrderDetail';
 import { initialOrderList } from '@utils/mockData';
+import { MainTabParamList, OrderStackParamList } from 'app/types/navigation';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { OrderListHeader } from './components/OrderListHeader';
+import { OrderDetail } from './OrderDetail';
+import { StaffOrderList } from './staff/StaffOrderList';
+import { OrderList } from './OrderList';
 
 const Stack = createNativeStackNavigator<OrderStackParamList>();
 
@@ -56,12 +56,13 @@ export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) 
       }}
     >
       <Stack.Screen
-        name='OrderList'
+        name='StaffOrderList'
         component={(props: any) => (
-          <OrderList {...props} orders={filteredOrders} loading={loading} />
+          <StaffOrderList {...props} orders={filteredOrders} loading={loading} />
         )}
         options={{ title: 'Danh sách đơn hàng' }}
       />
+      <Stack.Screen name='OrderList' component={OrderList} />
       <Stack.Screen
         name='OrderDetail'
         component={OrderDetail}

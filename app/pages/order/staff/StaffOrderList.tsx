@@ -101,7 +101,7 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
   );
 };
 
-export const OrderList: React.FC<OrderListProps> = ({ orders, loading }) => {
+export const StaffOrderList: React.FC<OrderListProps> = ({ orders, loading }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{orders.length} đơn hàng</Text>
@@ -145,5 +145,3 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   }
 });
-
-export default OrderList;
