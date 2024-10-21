@@ -28,7 +28,7 @@ type HomeStackParamList = {
 
 type OrderStackParamList = {
   OrderList: undefined;
-  OrderDetail: undefined;
+  OrderDetail: { order: Order };
 };
 
 type ReportStackParamList = {
