@@ -153,7 +153,10 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
         ]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView style={[styles.scrollView, { backgroundColor: theme.colors.background }]}>
+        <ScrollView
+          keyboardShouldPersistTaps='handled'
+          style={[styles.scrollView, { backgroundColor: theme.colors.background }]}
+        >
           <View style={styles.formContainer}>
             <Text style={[globalStyles.title, styles.title]}>Chào mừng bạn đến với TSA</Text>
             <Text style={globalStyles.text}>

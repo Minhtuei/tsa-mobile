@@ -196,7 +196,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
               e.preventDefault();
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'MainTab', state: { routes: [{ name: 'Order' }] } }]
+                routes: [{ name: 'Order' }]
               });
             }
           })}
@@ -228,6 +228,16 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
           }}
           name='Setting'
           component={Setting}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              // Prevent default action
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Setting' }]
+              });
+            }
+          })}
         />
       </Tab.Navigator>
     </>

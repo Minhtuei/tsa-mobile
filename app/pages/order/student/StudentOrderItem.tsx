@@ -1,9 +1,9 @@
+import Feather from '@expo/vector-icons/Feather';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { getStatusRender } from '@utils/order';
+import moment from 'moment';
 import { TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
-import moment from 'moment';
-import Feather from '@expo/vector-icons/Feather';
-import { getStatusRender, shortenUUID } from '@utils/order';
 
 export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: () => void }) => {
   const globalStyles = useGlobalStyles();
@@ -40,7 +40,7 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
         </View>
         <View style={{ flex: 1 }}>
           <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
-            {shortenUUID(order.id)}
+            #{order.checkCode}
           </Text>
 
           <View

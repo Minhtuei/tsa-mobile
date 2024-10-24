@@ -22,9 +22,15 @@ export const Header = (props: NativeStackHeaderProps) => {
       statusBarHeight={Platform.OS === 'android' ? 0 : Constants.statusBarHeight}
       elevated={true}
       theme={theme}
+      style={{ backgroundColor: theme.colors.primary }}
     >
-      {canGoBack && <Appbar.BackAction onPress={props.navigation.goBack} />}
-      <Appbar.Content title={props.options.title ?? 'TSA Mobile'} />
+      {canGoBack && (
+        <Appbar.BackAction color={theme.colors.onPrimary} onPress={props.navigation.goBack} />
+      )}
+      <Appbar.Content
+        titleStyle={{ color: theme.colors.onPrimary }}
+        title={props.options.title ?? 'TSA Mobile'}
+      />
     </Appbar.Header>
   ) : (
     <></>

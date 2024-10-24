@@ -1,11 +1,9 @@
 import { OrderListHeader } from '@components/OrderListHeader';
-import { STATUS_DATA_TYPE } from '@constants/filter';
 import { SCREEN } from '@constants/screen';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from '@services/order.service';
 import { getErrorMessage } from '@utils/helper';
-import { shortenUUID } from '@utils/order';
 import { OrderStackParamList } from 'app/types/navigation';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
@@ -24,12 +22,10 @@ export const StudentOrderList = (
   const [orderId, setOrderId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [filterType, setFilterType] = useState<string | null>(null);
-  const [data, setData] = useState<STATUS_DATA_TYPE[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const { data: orders, isLoading, isError, refetch, isFetching, error } = useGetOrdersQuery();
-  console.log('orders', orders);
+  const { data: orders, isError, refetch, isFetching, error } = useGetOrdersQuery();
   useEffect(() => {
     if (isError) {
       Toast.show(getErrorMessage(error), {
@@ -49,7 +45,7 @@ export const StudentOrderList = (
     let result = orders;
     // Filter by orderId
     if (orderId) {
-      result = result.filter((order) => shortenUUID(order.id).includes(orderId));
+      result = result.filter((order) => order.checkCode.includes(orderId));
     }
     // Filter by status
     if (status) {
@@ -137,7 +133,7 @@ export const StudentOrderList = (
         }}
         style={{
           position: 'absolute',
-          bottom: 16,
+          bottom: 40,
           right: 16,
           backgroundColor: theme.colors.primaryContainer,
           borderRadius: 50
