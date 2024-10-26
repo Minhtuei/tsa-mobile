@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { StyleSheet, ViewStyle } from 'react-native';
-import { Dropdown } from 'react-native-element-dropdown';
+import { SelectCountry } from 'react-native-element-dropdown';
 
-export const DropDownList = ({
+export const DropDownListWithImg = ({
   data,
   value,
   setValue,
   placeholder,
   containerStyle
 }: {
-  data: { label: string; value: string }[];
+  data: {
+    label: string;
+    value: string;
+    image: {
+      uri: string;
+    };
+  }[];
   value: string | null;
   setValue: (value: string | null) => void;
   placeholder?: string;
@@ -17,23 +23,26 @@ export const DropDownList = ({
 }) => {
   const [isFocus, setIsFocus] = useState(false);
   return (
-    <Dropdown
+    <SelectCountry
       style={[styles.dropdown, isFocus && { borderColor: 'black' }, containerStyle]}
       placeholderStyle={styles.placeholderStyle}
       selectedTextStyle={styles.selectedTextStyle}
       inputSearchStyle={styles.inputSearchStyle}
       iconStyle={styles.iconStyle}
+      containerStyle={styles.containerStyle}
       data={data}
       maxHeight={200}
       minHeight={100}
       autoScroll={false}
       labelField='label'
       valueField='value'
+      imageField='image'
       placeholder={!isFocus ? placeholder : 'Chọn'}
       searchPlaceholder='Search...'
       value={value}
       onFocus={() => setIsFocus(true)}
       onBlur={() => setIsFocus(false)}
+      imageStyle={{ width: 20, height: 20, marginRight: 10 }}
       onChange={(item) => {
         setValue(item.value);
         setIsFocus(false);
@@ -59,6 +68,9 @@ const styles = StyleSheet.create({
     zIndex: 999,
     paddingHorizontal: 8,
     fontSize: 14
+  },
+  containerStyle: {
+    padding: 10
   },
   placeholderStyle: {
     fontSize: 16

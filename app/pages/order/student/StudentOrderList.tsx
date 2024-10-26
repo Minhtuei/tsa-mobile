@@ -129,7 +129,7 @@ export const StudentOrderList = (
       />
       <FAB
         onPress={() => {
-          console.log('FAB');
+          props.navigation.navigate('CreateOrder');
         }}
         style={{
           position: 'absolute',

@@ -35,6 +35,7 @@ type DeliveryStackParamList = {
 type OrderStackParamList = {
   OrderList: undefined;
   OrderDetail: { order: Order };
+  CreateOrder: undefined;
 };
 
 type ReportStackParamList = {

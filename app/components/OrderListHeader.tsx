@@ -1,19 +1,14 @@
+import { FILTER_DATA, STATUS_DATA } from '@constants/filter';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import {
-  Keyboard,
-  Platform,
-  View,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { Keyboard, Platform, TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import { SearchInput } from './order/SearchInput';
+import DatePicker from './order/DatePicker';
 import { DropDownList } from './order/DropDownList';
 import { FilterBtnDropdown } from './order/FilterBtnDropdown';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useEffect, useState } from 'react';
-import DatePicker from './order/DatePicker';
-import { FILTER_DATA, STATUS_DATA, STATUS_DATA_TYPE } from '@constants/filter';
-import moment from 'moment';
+import { SearchInput } from './order/SearchInput';
 
 type OrderListHeaderProps = {
   orderId: string | null;
@@ -37,7 +32,7 @@ export const OrderListHeader = ({
   startDate,
   setStartDate,
   endDate,
-  setEndDate,
+  setEndDate
 }: OrderListHeaderProps) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -54,17 +49,14 @@ export const OrderListHeader = ({
     }
   }, [filterType]);
   return (
-    <TouchableWithoutFeedback
-      onPress={() => Keyboard.dismiss()}
-      accessible={false}
-    >
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
       <View
         style={{
           height: Platform.OS === 'android' ? 180 : 200,
           backgroundColor: theme.colors.primary,
           justifyContent: 'flex-end',
           paddingHorizontal: 16,
-          paddingBottom: 16,
+          paddingBottom: 16
         }}
       >
         <Text
@@ -74,8 +66,8 @@ export const OrderListHeader = ({
               color: theme.colors.onPrimary,
               fontSize: 24,
               textTransform: 'uppercase',
-              marginBottom: 8,
-            },
+              marginBottom: 8
+            }
           ]}
         >
           Danh sách đơn hàng
@@ -83,22 +75,16 @@ export const OrderListHeader = ({
         <SearchInput
           value={orderId ?? ''}
           onChange={setOrderId}
-          placeholder="Tìm kiếm"
+          placeholder='Tìm kiếm'
           pressable={false}
-          left={
-            <MaterialIcons
-              name="search"
-              size={24}
-              color={theme.colors.onBackground}
-            />
-          }
+          left={<MaterialIcons name='search' size={24} color={theme.colors.onBackground} />}
         />
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 8,
+            marginTop: 8
           }}
         >
           <View style={{ width: '70%' }}>
@@ -110,16 +96,12 @@ export const OrderListHeader = ({
                     : 'Từ ngày - Đến ngày'
                 }
                 onChange={() => {}}
-                placeholder="Từ ngày"
+                placeholder='Từ ngày'
                 pressable={true}
                 disabled={true}
                 onPress={() => setIsDatePickerVisible(true)}
                 right={
-                  <MaterialIcons
-                    name="date-range"
-                    size={24}
-                    color={theme.colors.onBackground}
-                  />
+                  <MaterialIcons name='date-range' size={24} color={theme.colors.onBackground} />
                 }
               />
             ) : (
@@ -127,15 +109,11 @@ export const OrderListHeader = ({
                 data={STATUS_DATA}
                 value={status}
                 setValue={setStatus}
-                placeholder="Tất cả trạng thái"
+                placeholder='Tất cả trạng thái'
               />
             )}
           </View>
-          <FilterBtnDropdown
-            data={FILTER_DATA}
-            value={filterType}
-            setValue={setFilterType}
-          />
+          <FilterBtnDropdown data={FILTER_DATA} value={filterType} setValue={setFilterType} />
         </View>
         {isDatePickerVisible && (
           <DatePicker
@@ -145,6 +123,7 @@ export const OrderListHeader = ({
             setEndDate={setEndDate}
             startDate={startDate}
             endDate={endDate}
+            mode='range'
           />
         )}
       </View>

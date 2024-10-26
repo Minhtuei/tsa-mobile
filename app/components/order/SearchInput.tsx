@@ -1,11 +1,4 @@
-import {
-  TextStyle,
-  ViewStyle,
-  TextInput,
-  View,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
+import { TextStyle, ViewStyle, TextInput, View, Platform, TouchableOpacity } from 'react-native';
 
 type SearchInputProps = {
   value: string;
@@ -18,6 +11,7 @@ type SearchInputProps = {
   disabled?: boolean;
   pressable?: boolean;
   onPress?: () => void;
+  placeholderTextColor?: string;
 };
 export const SearchInput = ({
   value,
@@ -30,6 +24,7 @@ export const SearchInput = ({
   disabled,
   pressable,
   onPress,
+  placeholderTextColor
 }: SearchInputProps) => {
   return (
     <TouchableOpacity onPress={onPress} disabled={!pressable}>
@@ -42,9 +37,9 @@ export const SearchInput = ({
             borderRadius: 10,
             paddingLeft: 16,
             paddingRight: 24,
-            paddingVertical: Platform.OS === 'android' ? 0 : 8,
+            paddingVertical: Platform.OS === 'android' ? 0 : 8
           },
-          containerStyle,
+          containerStyle
         ]}
       >
         {left}
@@ -52,16 +47,17 @@ export const SearchInput = ({
           value={value}
           onChangeText={onChange}
           placeholder={placeholder}
+          placeholderTextColor={placeholderTextColor || '#9E9E9E'}
           editable={!disabled}
           numberOfLines={2}
           style={[
             {
               flex: 1,
               marginLeft: 10,
-              fontSize: 16,
+              fontSize: 16
             },
             inputStyle,
-            pressable && { color: 'black' },
+            pressable && { color: 'black' }
           ]}
         />
         {right}
