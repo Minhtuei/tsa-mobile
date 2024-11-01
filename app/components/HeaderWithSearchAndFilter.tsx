@@ -1,4 +1,3 @@
-import { FILTER_DATA, STATUS_DATA } from '@constants/filter';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import moment from 'moment';
@@ -11,8 +10,8 @@ import { FilterBtnDropdown } from './order/FilterBtnDropdown';
 import { SearchInput } from './order/SearchInput';
 
 type OrderListHeaderProps = {
-  orderId: string | null;
-  setOrderId: (value: string | null) => void;
+  searchString: string | null;
+  setSearchString: (value: string | null) => void;
   status: string | null;
   setStatus: (value: string | null) => void;
   filterType: string | null;
@@ -21,10 +20,13 @@ type OrderListHeaderProps = {
   setStartDate: (value: Date | null) => void;
   endDate: Date | null;
   setEndDate: (value: Date | null) => void;
+  title: string;
+  filterList: { label: string; value: string }[];
+  statusList: { label: string; value: string }[];
 };
-export const OrderListHeader = ({
-  orderId,
-  setOrderId,
+export const HeaderWithSearchAndFilter = ({
+  searchString,
+  setSearchString,
   status,
   setStatus,
   filterType,
@@ -32,7 +34,10 @@ export const OrderListHeader = ({
   startDate,
   setStartDate,
   endDate,
-  setEndDate
+  setEndDate,
+  title,
+  filterList,
+  statusList
 }: OrderListHeaderProps) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -44,7 +49,7 @@ export const OrderListHeader = ({
     if (filterType === 'ALL') {
       setStartDate(null);
       setEndDate(null);
-      setOrderId(null);
+      setSearchString(null);
       setStatus(null);
     }
   }, [filterType]);
@@ -70,11 +75,11 @@ export const OrderListHeader = ({
             }
           ]}
         >
-          Danh sách đơn hàng
+          {title}
         </Text>
         <SearchInput
-          value={orderId ?? ''}
-          onChange={setOrderId}
+          value={searchString ?? ''}
+          onChange={setSearchString}
           placeholder='Tìm kiếm'
           pressable={false}
           left={<MaterialIcons name='search' size={24} color={theme.colors.onBackground} />}
@@ -106,14 +111,14 @@ export const OrderListHeader = ({
               />
             ) : (
               <DropDownList
-                data={STATUS_DATA}
+                data={statusList}
                 value={status}
                 setValue={setStatus}
                 placeholder='Tất cả trạng thái'
               />
             )}
           </View>
-          <FilterBtnDropdown data={FILTER_DATA} value={filterType} setValue={setFilterType} />
+          <FilterBtnDropdown data={filterList} value={filterType} setValue={setFilterType} />
         </View>
         {isDatePickerVisible && (
           <DatePicker
