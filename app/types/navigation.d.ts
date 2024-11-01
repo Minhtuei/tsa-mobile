@@ -41,6 +41,7 @@ type OrderStackParamList = {
 type ReportStackParamList = {
   ReportList: undefined;
   ReportDetail: undefined;
+  CreateReport: undefined;
 };
 
 type SettingStackParamList = {

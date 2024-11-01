@@ -15,11 +15,15 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Dialog, Portal, Text, TextInput } from 'react-native-paper';
+import { TimePickerModal } from 'react-native-paper-dates';
 import Toast from 'react-native-root-toast';
 export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, 'CreateOrder'>) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
+  const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
+  const [hour, setHour] = useState(0);
+  const [minute, setMinute] = useState(0);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [visible, setVisible] = useState(false);
   const [createOrder, { isLoading }] = useCreateOrdersMutation();
@@ -34,18 +38,26 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
     defaultValues: {
       checkCode: '',
       product: '',
-      weight: 0,
+      weight: '',
       deliveryDate: '',
       dormitory: '',
       building: '',
       room: '',
-      paymentMethod: ''
+      paymentMethod: '',
+      time: ''
     }
   });
   const domitory = watch('dormitory') as keyof typeof BUILDING_DATA;
   const onSubmit = (data: CreateOrderSchemaType) => {
-    console.log(data);
-    createOrder(data)
+    const { time, ...rest } = data;
+    const validateData = {
+      ...rest,
+      deliveryDate: moment(data.deliveryDate + ' ' + time)
+        .format('YYYY-MM-DDTHH:mm')
+        .toString(),
+      weight: parseFloat(data.weight.replace(',', '.'))
+    };
+    createOrder(validateData)
       .unwrap()
       .then(() => {
         Toast.show('Tạo đơn hàng thành công', {
@@ -75,7 +87,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
   };
   useEffect(() => {
     if (startDate) {
-      setValue('deliveryDate', moment(startDate).format('X'));
+      setValue('deliveryDate', moment(startDate).format('YYYY-MM-DD'));
     }
   }, [startDate]);
   return (
@@ -87,6 +99,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       <ScrollView
         keyboardShouldPersistTaps={'handled'}
         style={{ flex: 1, backgroundColor: theme.colors.background }}
+        contentContainerStyle={{ paddingBottom: 40 }}
       >
         <View style={{ flex: 1, padding: 16 }}>
           <View style={{ gap: 24 }}>
@@ -158,16 +171,57 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                     <TextInput
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value.toString()}
+                      value={value}
                       style={{ backgroundColor: theme.colors.surface, height: 40 }}
                       mode='outlined'
-                      keyboardType='numeric'
+                      keyboardType='decimal-pad'
                       placeholder='Nhập cân nặng'
                     />
                   )}
                   name={'weight'}
                 />
                 {errors.weight && <Text style={{ color: 'red' }}>{errors.weight.message}</Text>}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Thời gian giao hàng
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange } }) => (
+                    <SearchInput
+                      value={moment({ hour, minute }).format('HH:mm')}
+                      onChange={onChange}
+                      placeholder='Thời gian giao hàng'
+                      pressable={true}
+                      containerStyle={{
+                        backgroundColor: theme.colors.surface,
+                        borderRadius: 0,
+                        borderWidth: 1,
+                        borderColor: theme.colors.outline,
+                        height: 40,
+                        pointerEvents: 'none',
+                        paddingLeft: 6
+                      }}
+                      placeholderTextColor={theme.colors.onSurface}
+                      onPress={() => setIsTimePickerVisible(true)}
+                      right={
+                        <MaterialIcons
+                          name='schedule'
+                          size={24}
+                          color={theme.colors.onBackground}
+                        />
+                      }
+                    />
+                  )}
+                  name={'time'}
+                />
+                {errors.time && <Text style={{ color: 'red' }}>{errors.time.message}</Text>}
               </View>
               <View
                 style={{
@@ -352,6 +406,25 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
               mode='single'
               setStartDate={setStartDate}
               startDate={startDate}
+            />
+          )}
+          {isTimePickerVisible && (
+            <TimePickerModal
+              visible={isTimePickerVisible}
+              onDismiss={() => setIsTimePickerVisible(false)}
+              onConfirm={({ hours, minutes }) => {
+                setHour(hours);
+                setMinute(minutes);
+                setValue('time', moment({ hours, minutes }).format('HH:mm'));
+                setIsTimePickerVisible(false);
+              }}
+              hours={hour}
+              minutes={minute}
+              label='Chọn giờ'
+              cancelLabel='Hủy'
+              confirmLabel='Xác nhận'
+              animationType='fade'
+              locale='vi'
             />
           )}
         </View>

@@ -42,8 +42,8 @@ registerTranslation('vi', {
   typeInDate: 'Nhập ngày',
   pickDateFromCalendar: 'Chọn ngày từ lịch',
   close: 'Đóng',
-  hour: '',
-  minute: ''
+  hour: 'Giờ',
+  minute: 'Phút'
 });
 
 const prefix = Linking.createURL('/');

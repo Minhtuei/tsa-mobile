@@ -85,25 +85,25 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={[globalStyles.title, { fontSize: 24 }]}>#{order.checkCode}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Mã Đơn hàng:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
               {shortenUUID(order.id)}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Sản phẩm</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
               {order.product}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Địa chỉ</Text>
             <Text
               style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}
             >{`${order.building} - ${order.room}`}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Trạng thái:</Text>
             <Text
               style={[
@@ -114,19 +114,19 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
               {statusRender.label}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Thời gian:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
               {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY') ?? 'N/A'}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Giá tiền:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
               {order.shippingFee ?? 'N/A'}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Phương thức thanh toán:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
               {order.paymentMethod}
@@ -153,7 +153,7 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           >
             <Button
               mode='contained'
-              style={[{ backgroundColor: theme.colors.error, width: '40%' }]}
+              style={[{ backgroundColor: theme.colors.error, minWidth: 60 }]}
               onPress={() => {
                 // prop.navigation.navigate('OrderHistory', { order: order });
               }}
@@ -162,7 +162,7 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
             </Button>
             <Button
               mode='contained'
-              style={{ width: '40%' }}
+              style={{ minWidth: 60 }}
               onPress={() => {
                 // prop.navigation.navigate('OrderHistory', { order: order });
               }}
