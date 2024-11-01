@@ -1,5 +1,6 @@
 import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
+import { CreateReportSchemaType } from '@validations/report.schema';
 
 const reportService = apiService.injectEndpoints({
   overrideExisting: true,
@@ -8,14 +9,25 @@ const reportService = apiService.injectEndpoints({
       query: () => 'reports',
       providesTags: ['Reports']
     }),
-    createReport: build.mutation<void, CreateOrderSchemaType>({
+    createReport: build.mutation<void, CreateReportSchemaType>({
       query: (report) => ({
         url: 'reports',
         method: 'POST',
         body: report
       }),
       invalidatesTags: ['Reports']
+    }),
+    upLoadImage: build.mutation<UploadedImage, FormData>({
+      query: (formData) => ({
+        url: 'cloudinary',
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
     })
   })
 });
-export const { useGetReportsQuery, useCreateReportMutation } = reportService;
+export const { useGetReportsQuery, useCreateReportMutation, useUpLoadImageMutation } =
+  reportService;
