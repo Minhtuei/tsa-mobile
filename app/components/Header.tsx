@@ -1,53 +1,38 @@
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { Platform, View } from 'react-native';
-import { Appbar } from 'react-native-paper';
-import Constants from 'expo-constants';
 import { useAppTheme } from '@hooks/theme';
-import HeaderLogo from '../../assets/tsa-header.svg';
-const BackgroundImg = require('../../assets/header-background.png');
-import { ImageBackground } from 'react-native';
-import { SCREEN } from '@constants/screen';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import Constants from 'expo-constants';
+import { useEffect, useState } from 'react';
+import { Platform } from 'react-native';
+import { Appbar } from 'react-native-paper';
 
 export const Header = (props: NativeStackHeaderProps) => {
   const theme = useAppTheme();
-  const canGoBack = props.navigation.canGoBack();
+  const [canGoBack, setCanGoBack] = useState(false);
 
-  return (
-    <>
-      {canGoBack ? (
-        <Appbar.Header
-          statusBarHeight={
-            Platform.OS === 'android' ? 0 : Constants.statusBarHeight
-          }
-          theme={theme}
-        >
-          {canGoBack && <Appbar.BackAction onPress={props.navigation.goBack} />}
-          <Appbar.Content title={props.options.title ?? 'TSA Mobile'} />
-        </Appbar.Header>
-      ) : (
-        <ImageBackground
-          source={BackgroundImg}
-          style={{
-            width: SCREEN.width,
-            height: 177,
-          }}
-        >
-          <View
-            style={[
-              {
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              },
-              Platform.OS === 'ios' && {
-                paddingTop: Constants.statusBarHeight,
-              },
-            ]}
-          >
-            <HeaderLogo width={SCREEN.width / 2} height={SCREEN.width / 2} />
-          </View>
-        </ImageBackground>
+  useEffect(() => {
+    if (['Dashboard', 'OrderList', 'ReportList'].includes(props.route.name)) {
+      setCanGoBack(false);
+    } else {
+      setCanGoBack(true);
+    }
+  }, [props.route.name]);
+
+  return canGoBack ? (
+    <Appbar.Header
+      statusBarHeight={Platform.OS === 'android' ? 0 : Constants.statusBarHeight}
+      elevated={true}
+      theme={theme}
+      style={{ backgroundColor: theme.colors.primary }}
+    >
+      {canGoBack && (
+        <Appbar.BackAction color={theme.colors.onPrimary} onPress={props.navigation.goBack} />
       )}
-    </>
+      <Appbar.Content
+        titleStyle={{ color: theme.colors.onPrimary }}
+        title={props.options.title ?? 'TSA Mobile'}
+      />
+    </Appbar.Header>
+  ) : (
+    <></>
   );
 };

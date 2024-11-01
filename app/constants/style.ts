@@ -133,6 +133,10 @@ const createStyles = (theme: MD3Theme) =>
       padding: 16,
       height: '100%',
     },
+    background: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
     center: {
       alignItems: 'center',
       justifyContent: 'center',
@@ -187,6 +191,19 @@ const createStyles = (theme: MD3Theme) =>
       fontSize: 18,
       fontWeight: 'bold',
       fontFamily: 'Roboto',
+    },
+    SurfaceContainer: {
+      alignSelf: 'center',
+      borderRadius: 10,
+      backgroundColor: theme.colors.background,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 2,
     },
   });
 
