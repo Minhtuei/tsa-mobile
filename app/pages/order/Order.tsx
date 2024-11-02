@@ -5,6 +5,7 @@ import React from 'react';
 import { OrderDetail } from './OrderDetail';
 import { OrderList } from './OrderList';
 import { CreateOrder } from './CreateOrder';
+import { TrackOrder } from './student/TrackOrder';
 
 const Stack = createNativeStackNavigator<OrderStackParamList>();
 
@@ -31,6 +32,11 @@ export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) 
         name='CreateOrder'
         component={CreateOrder}
         options={{ title: 'Tạo đơn hàng' }}
+      />
+      <Stack.Screen
+        name='TrackOrder'
+        component={TrackOrder}
+        options={{ title: 'Theo dõi đơn hàng' }}
       />
     </Stack.Navigator>
   );

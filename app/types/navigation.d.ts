@@ -36,6 +36,7 @@ type OrderStackParamList = {
   OrderList: undefined;
   OrderDetail: { order: Order };
   CreateOrder: undefined;
+  TrackOrder: undefined;
 };
 
 type ReportStackParamList = {

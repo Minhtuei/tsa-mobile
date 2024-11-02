@@ -1,31 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCreateOrdersMutation, useGetOrdersQuery } from '@services/order.service';
+import { useGetOrdersQuery } from '@services/order.service';
 import { OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
 import { useMemo, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import {
-  Image,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  View
-} from 'react-native';
-import { Button, Dialog, IconButton, Modal, Portal, Text, TextInput } from 'react-native-paper';
+import { useForm } from 'react-hook-form';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { Button, Portal } from 'react-native-paper';
 
 import { ChooseImageModal } from '@components/ChooseImageModal';
-import { DropDownList } from '@components/order/DropDownList';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { PreViewImageModal } from '@components/PreviewImageModal';
 import { useAppSelector } from '@hooks/redux';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { createReportSchema, CreateReportSchemaType } from '@validations/report.schema';
-import { SCREEN } from '@constants/screen';
 import { useCreateReportMutation, useUpLoadImageMutation } from '@services/report.service';
+import { createReportSchema, CreateReportSchemaType } from '@validations/report.schema';
 import Toast from 'react-native-root-toast';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import { ConfirmationDialog } from '@components/ConfirmDialog';
 import { ContentInput, OrderIdInput, ProofInput } from './ReportField';
 export const CreateReport = (
   props: CompositeScreenProps<

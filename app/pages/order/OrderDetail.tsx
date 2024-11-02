@@ -8,11 +8,12 @@ import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native';
 import { SCREEN } from '@constants/screen';
+import BottomSheet from '@gorhom/bottom-sheet';
 
-export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>) => {
+export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
-  const order = prop.route.params.order;
+  const order = props.route.params.order;
   const statusRender = getStatusRender(order.latestStatus);
 
   return (
@@ -164,7 +165,7 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
               mode='contained'
               style={{ minWidth: 60 }}
               onPress={() => {
-                // prop.navigation.navigate('OrderHistory', { order: order });
+                props.navigation.navigate('TrackOrder');
               }}
             >
               Theo dõi

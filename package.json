@@ -12,6 +12,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@gorhom/bottom-sheet": "^5.0.5",
     "@hookform/resolvers": "^3.9.0",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/datetimepicker": "^8.2.0",
@@ -19,9 +20,12 @@
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@reduxjs/toolkit": "^2.2.7",
+    "@rnmapbox/maps": "^10.1.33",
     "async-mutex": "^0.5.0",
     "expo": "~51.0.28",
     "expo-constants": "~16.0.2",
+    "expo-image-picker": "~15.0.7",
+    "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-secure-store": "~13.0.2",
     "expo-status-bar": "~1.12.1",
@@ -30,9 +34,10 @@
     "react-hook-form": "^7.53.0",
     "react-native": "0.74.5",
     "react-native-daterange-picker": "^1.5.1",
+    "react-native-dotenv": "^3.4.11",
+    "react-native-element-dropdown": "^2.12.2",
     "react-native-gesture-handler": "^2.20.0",
     "react-native-onboard": "^2.6.0",
-    "react-native-element-dropdown": "^2.12.2",
     "react-native-paper": "^5.12.5",
     "react-native-paper-dates": "^0.22.26",
     "react-native-paper-dropdown": "^2.3.1",
@@ -46,9 +51,7 @@
     "react-native-vector-icons": "^10.2.0",
     "react-redux": "^9.1.2",
     "uuid": "^10.0.0",
-    "yup": "^1.4.0",
-    "expo-linear-gradient": "~13.0.2",
-    "expo-image-picker": "~15.0.7"
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
@@ -57,7 +60,7 @@
     "@types/react": "~18.2.45",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.9.0",
-    "@typescript-eslint/parser": "^6.2.1",
+    "@typescript-eslint/parser": "^8.12.2",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^4.6.2",

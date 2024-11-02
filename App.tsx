@@ -27,6 +27,7 @@ import IconModal from '@components/IconModal';
 import { useState } from 'react';
 import * as Linking from 'expo-linking';
 import { registerTranslation } from 'react-native-paper-dates';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -71,7 +72,9 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <AppContent />
+        <GestureHandlerRootView>
+          <AppContent />
+        </GestureHandlerRootView>
       </Provider>
     </SafeAreaProvider>
   );
