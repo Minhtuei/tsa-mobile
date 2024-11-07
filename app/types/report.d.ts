@@ -1,4 +1,4 @@
-type ReportStatus = 'PENDING' | 'REPLIED';
+export type ReportStatus = 'PENDING' | 'REPLIED';
 type ReportType = {
   content: string;
   id: string;

@@ -87,7 +87,7 @@ const DeliveryItem: React.FC<{ delivery: Delivery }> = ({ delivery }) => {
             style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
           >
             <View>
-              <Text style={{ fontWeight: 'bold' }}>{delivery.orders.length} đơn hàng</Text>
+              <Text style={{ fontWeight: 'bold' }}>{delivery?.orders?.length || 0} đơn hàng</Text>
             </View>
             <EvilIcons name='pencil' size={32} color='blue' />
           </View>
@@ -98,18 +98,16 @@ const DeliveryItem: React.FC<{ delivery: Delivery }> = ({ delivery }) => {
 };
 
 export const DeliveryList: React.FC<DeliveryListProps> = ({ deliveries, loading }) => {
+  if (loading) {
+    return <ActivityIndicator size='large' color='#34A853' />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{deliveries.length} chuyến đi</Text>
-      {loading ? (
-        <ActivityIndicator size='large' color='#34A853' />
-      ) : (
-        <ScrollView>
-          {deliveries.map((delivery) => (
-            <DeliveryItem key={delivery.id} delivery={delivery} />
-          ))}
-        </ScrollView>
-      )}
+      <Text style={styles.header}>{deliveries?.length} chuyến đi</Text>
+      <ScrollView>
+        {deliveries?.map((delivery) => <DeliveryItem key={delivery.id} delivery={delivery} />)}
+      </ScrollView>
     </View>
   );
 };

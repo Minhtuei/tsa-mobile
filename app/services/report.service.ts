@@ -1,6 +1,7 @@
 import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
 import { CreateReportSchemaType } from '@validations/report.schema';
+import { ReportType, UploadedImage } from 'app/types/report';
 
 const reportService = apiService.injectEndpoints({
   overrideExisting: true,

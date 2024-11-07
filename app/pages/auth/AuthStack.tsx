@@ -3,7 +3,7 @@ import { AuthStackParamList, RootStackParamList } from 'app/types/navigation';
 import { useAppTheme } from '@hooks/theme';
 import { StatusBar } from 'expo-status-bar';
 import { SignIn } from './SignIn';
-import { SignUp } from './SignUp';
+import { SignUp } from './Signup';
 import { ForgotPassword } from './ForgotPassword';
 import { VerifyEmail } from './VerifyEmail';
 import { CreateAccount } from './CreateAccount';
