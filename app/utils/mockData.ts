@@ -1,6 +1,6 @@
 import { Order, OrderDetail, OrderStatus } from '@slices/order.slice';
-import { Delivery, DeliveryDetail } from '@slices/delivery.slice';
-import { ReportDetail } from '@slices/report.slice';
+import { Delivery } from '@slices/delivery.slice';
+import { Report } from '@slices/report.slice';
 import { ReportStatus } from 'app/types/report';
 import { PaymentMethod } from 'app/types/order';
 import { DeliveryStatus } from 'app/types/delivery';
@@ -65,7 +65,7 @@ export const AddressData = {
 };
 
 // Generating mock reports
-export const initialReportList: ReportDetail[] = [];
+export const initialReportList: Report[] = [];
 
 const getRandomContent = (): string => {
   const contents = [

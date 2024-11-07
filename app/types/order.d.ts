@@ -1,6 +1,6 @@
 type OrderStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'DELIVERED' | 'CANCELED' | 'IN_TRANSPORT';
 
-type PaymentMethod = 'CREDIT' | 'CASH' | 'MOMO';
+export type PaymentMethod = 'CREDIT' | 'CASH' | 'MOMO';
 
 type Order = {
   adminId: string | null;
