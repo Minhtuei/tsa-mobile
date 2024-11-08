@@ -129,7 +129,11 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Phương thức thanh toán:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
-              {order.paymentMethod}
+              {order.paymentMethod === 'CASH'
+                ? 'Tiền mặt'
+                : order.paymentMethod === 'MOMO'
+                  ? 'Momo'
+                  : 'Qua ngân hàng'}
             </Text>
           </View>
           <View
