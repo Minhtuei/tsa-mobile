@@ -17,7 +17,12 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
   const statusRender = getStatusRender(order.latestStatus);
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{
+        position: 'relative'
+      }}
+    >
       <LinearGradient
         colors={[theme.colors.background, theme.colors.primary]}
         start={{ x: 0.1, y: 0.1 }}
@@ -28,7 +33,7 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
           left: 0,
           right: 0,
           width: SCREEN.width,
-          height: SCREEN.height
+          height: '100%'
         }}
       />
       <View
@@ -37,7 +42,7 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
           alignItems: 'center',
           backgroundColor: 'transparent',
           paddingHorizontal: 8,
-          paddingVertical: 16,
+          paddingVertical: 32,
           gap: 32
         }}
       >
@@ -151,9 +156,7 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
               flexDirection: 'row',
               alignItems: 'center',
               width: '100%',
-              justifyContent: 'space-between',
-              paddingVertical: 8,
-              paddingHorizontal: 16
+              justifyContent: 'space-between'
             }}
           >
             <Button
@@ -169,7 +172,7 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
               mode='contained'
               style={{ minWidth: 60 }}
               onPress={() => {
-                props.navigation.navigate('TrackOrder');
+                props.navigation.navigate('TrackOrder', { order: order });
               }}
             >
               Theo dõi
@@ -177,6 +180,6 @@ export const OrderDetail = (props: NativeStackScreenProps<OrderStackParamList, '
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };

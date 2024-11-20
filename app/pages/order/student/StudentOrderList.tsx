@@ -87,7 +87,6 @@ export const StudentOrderList = (
       <FlatList
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         contentContainerStyle={{
-          height: '100%',
           padding: 24,
           gap: 16
         }}

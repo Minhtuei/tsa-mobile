@@ -1,17 +1,34 @@
-import React, { useMemo } from 'react';
-import { View, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { View, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import { Divider, Text, Card } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DeliveryStackParamList } from 'app/types/navigation';
 import { useGetDeliveryQuery } from '@services/delivery.service';
 import { Feather, AntDesign, FontAwesome } from '@expo/vector-icons';
 import { formatUnixTimestamp, formatDate, formatVNDcurrency } from '@utils/format';
+import { useSocketContext } from 'socket';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
 const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route }) => {
   const { deliveryId } = route.params;
   const { data: delivery, isLoading } = useGetDeliveryQuery(deliveryId);
+  const [location, setLocation] = useState<any>();
+  const { socket } = useSocketContext();
+  useEffect(() => {
+    if (!socket) return;
+
+    const intervalId = setInterval(() => {
+      socket.emit('locationUpdate', {
+        staffId: 'cm1isbgcl00008mcgm7dzftgc',
+        orderId: 'cm3pf1jvt0001zb1n16nch6p1',
+        latitude: 106.806709613827,
+        longitude: 10.877568988757174
+      });
+    }, 5000); // Send location update every 5 seconds
+
+    return () => clearInterval(intervalId); // Cleanup interval on component unmount
+  }, [socket]);
 
   const deliveryInfo = useMemo(
     () => [
@@ -96,7 +113,9 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route }) => {
         </View>
       </ScrollView>
       <View style={styles.circleButton}>
-        <Text style={styles.circleButtonText}>Bắt đầu</Text>
+        <TouchableOpacity>
+          <Text style={styles.circleButtonText}>Bắt đầu</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

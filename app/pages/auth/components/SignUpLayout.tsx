@@ -14,7 +14,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -22,9 +22,9 @@ import GoogleIcon from '../../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './AuthForm';
 import { AuthSeparator } from './AuthSeparator';
 import StepIndicator from 'react-native-step-indicator';
-import { STEPPER_STYLE } from '@constants/stepper';
 import { MaterialIcons } from '@expo/vector-icons';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { getStepperStyles } from '@constants/stepper';
 type SignUpLayoutProps = {
   title: string;
   onRedirect?: () => void;
@@ -38,14 +38,9 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const { title, onRedirect, children, position, hideGoogleBtn } = props;
-  const renderStepIndicator = (params: {
-    position: number;
-    stepStatus: string;
-  }) => {
+  const renderStepIndicator = (params: { position: number; stepStatus: string }) => {
     if (params.stepStatus === 'finished') {
-      return (
-        <MaterialIcons name="check" size={24} color={theme.colors.onPrimary} />
-      );
+      return <MaterialIcons name='check' size={24} color={theme.colors.onPrimary} />;
     }
     return <Text style={globalStyles.text}>{params.position}</Text>;
   };
@@ -57,15 +52,15 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
         { backgroundColor: theme.colors.primary },
         Platform.OS === 'ios' && {
           top: -insets.top,
-          minHeight: SCREEN.height + insets.top + insets.bottom,
-        },
+          minHeight: SCREEN.height + insets.top + insets.bottom
+        }
       ]}
     >
       <Text
         style={[
           globalStyles.title,
           styles.header,
-          { color: theme.colors.onPrimary, marginTop: insets.top + 16 },
+          { color: theme.colors.onPrimary, marginTop: insets.top + 16 }
         ]}
       >
         Đăng ký
@@ -74,31 +69,28 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
         style={[
           globalStyles.keyboardAvoidingView,
           {
-            borderTopLeftRadius: 24,
             borderTopRightRadius: 24,
-          },
+            borderTopLeftRadius: 24
+          }
         ]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 40}
       >
         <ScrollView
-          style={[
-            styles.scrollView,
-            {
-              backgroundColor: theme.colors.background,
-            },
-          ]}
-          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps='handled'
+          style={{ flex: 1 }}
+          contentContainerStyle={[styles.scrollView, { backgroundColor: theme.colors.background }]}
         >
           <View
             style={[
               styles.formContainer,
               {
-                marginBottom: Platform.OS === 'ios' ? 64 : 80,
-              },
+                marginBottom: Platform.OS === 'ios' ? 64 : 80
+              }
             ]}
           >
             <StepIndicator
-              customStyles={STEPPER_STYLE}
+              customStyles={getStepperStyles('center')}
               currentPosition={position}
               stepCount={3}
               renderStepIndicator={(params) => renderStepIndicator(params)}
@@ -115,7 +107,7 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
                       style={[
                         globalStyles.text,
                         styles.signUpText,
-                        { color: theme.colors.primary },
+                        { color: theme.colors.primary }
                       ]}
                     >
                       Đăng nhập
@@ -124,21 +116,13 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
                 </View>
                 <AuthSeparator />
                 <Button
-                  mode="outlined"
+                  mode='outlined'
                   onPress={() => {}}
                   style={styles.googleButton}
+                  labelStyle={styles.googleButtonContent}
                 >
-                  <View style={styles.googleButtonContent}>
-                    <GoogleIcon width={24} height={24} />
-                    <Text
-                      style={[
-                        styles.buttonContent,
-                        { color: theme.colors.onSurface },
-                      ]}
-                    >
-                      Đăng nhập với Google
-                    </Text>
-                  </View>
+                  <GoogleIcon width={24} height={24} />
+                  Đăng nhập với Google
                 </Button>
               </>
             )}
@@ -151,56 +135,54 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
 
 const styles = StyleSheet.create({
   safeAreaView: {
-    flex: 1,
+    flex: 1
   },
   header: {
-    padding: 16,
+    padding: 16
   },
   title: {
     fontSize: 26,
     lineHeight: 39,
-    textAlign: 'center',
+    textAlign: 'center'
   },
   buttonContent: {
     fontSize: 20,
     fontWeight: 'bold',
-    lineHeight: 30,
+    lineHeight: 30
   },
   pressable: {
-    flex: 1,
+    flex: 1
   },
   scrollView: {
     flex: 1,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 32,
+    padding: 32
   },
   formContainer: {
-    gap: 20,
+    gap: 20
   },
   googleButton: {
     borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 5,
+    padding: 5
   },
   googleButtonContent: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 10,
+    transform: [{ translateX: 10 }, { translateY: -6 }]
   },
   forgotPasswordText: {
-    alignSelf: 'flex-end',
+    alignSelf: 'flex-end'
   },
   loginButton: {
-    borderRadius: 50,
+    borderRadius: 50
   },
   signUpContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   signUpText: {
-    marginLeft: 4,
-  },
+    marginLeft: 4
+  }
 });

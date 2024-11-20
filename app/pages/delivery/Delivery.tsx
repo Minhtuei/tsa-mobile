@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
-import DeliveryListHeader from './components/DeliveryListHeader';
+import { useAppSelector } from '@hooks/redux';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainTabParamList, DeliveryStackParamList } from 'app/types/navigation';
-import DeliveryList from './DeliveryList';
-import DeliveryDetail from './DeliveryDetail';
 import { useGetDeliveriesQuery } from '@services/delivery.service';
 import { Delivery as DeliveryEntity } from '@slices/delivery.slice';
-import { useAppSelector } from '@hooks/redux';
+import { DeliveryStackParamList, MainTabParamList } from 'app/types/navigation';
+import React, { useMemo } from 'react';
+import { StyleSheet } from 'react-native';
+import DeliveryListHeader from './components/DeliveryListHeader';
+import DeliveryDetail from './DeliveryDetail';
+import DeliveryList from './DeliveryList';
 
 const Stack = createNativeStackNavigator<DeliveryStackParamList>();
 

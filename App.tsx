@@ -1,33 +1,39 @@
-import { NavigationContainer, CommonActions, LinkingOptions } from '@react-navigation/native';
+import { SCREEN } from '@constants/screen';
+import { darkTheme, lightTheme } from '@constants/style';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
+import { useAppTheme } from '@hooks/theme';
+import { AuthStack } from '@pages/auth/AuthStack';
+import { Delivery } from '@pages/delivery/Delivery';
+import { Home } from '@pages/home/Home';
+import { Onboarding } from '@pages/Onboarding';
+import { Order } from '@pages/order/Order';
+import { Report } from '@pages/report/Report';
+import { SplashScreen } from '@pages/SplashScreen';
+import {
+  CommonActions,
+  LinkingOptions,
+  NavigationContainer,
+  useNavigationState
+} from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { apiService } from '@services/api.service';
+import { stopTimer } from '@slices/timer.slice';
 import { store } from '@utils/store';
+import { MainTabParamList, RootStackParamList } from 'app/types/navigation';
+import { StatusBar } from 'expo-status-bar';
 import { Appearance, Platform, useColorScheme } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
-import { Provider } from 'react-redux';
-import { darkTheme, lightTheme } from '@constants/style';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { SCREEN } from '@constants/screen';
-import { AuthStackParamList, MainTabParamList, RootStackParamList } from 'app/types/navigation';
-import { SplashScreen } from '@pages/SplashScreen';
-import { Onboarding } from '@pages/Onboarding';
-import { useAppTheme } from '@hooks/theme';
-import { StatusBar } from 'expo-status-bar';
-import { AuthStack } from '@pages/auth/AuthStack';
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { stopTimer } from '@slices/timer.slice';
-import { apiService } from '@services/api.service';
 import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
-import { Order } from '@pages/order/Order';
-import { Home } from '@pages/home/Home';
-import { Report } from '@pages/report/Report';
-import { Delivery } from '@pages/delivery/Delivery';
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 
-import { Setting } from '@pages/setting/Setting';
 import IconModal from '@components/IconModal';
-import { useState } from 'react';
+import { Setting } from '@pages/setting/Setting';
 import * as Linking from 'expo-linking';
-import { registerTranslation } from 'react-native-paper-dates';
+import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { registerTranslation } from 'react-native-paper-dates';
+import SocketProvider from 'socket';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -72,9 +78,11 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <GestureHandlerRootView>
-          <AppContent />
-        </GestureHandlerRootView>
+        <SocketProvider>
+          <GestureHandlerRootView>
+            <AppContent />
+          </GestureHandlerRootView>
+        </SocketProvider>
       </Provider>
     </SafeAreaProvider>
   );
@@ -139,6 +147,7 @@ function AppContent() {
 const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) => {
   const theme = useAppTheme();
   const auth = useAppSelector((state) => state.auth);
+  const app = useAppSelector((state) => state.app);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
   if (auth.refreshToken === null) {
@@ -171,7 +180,8 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
         barStyle={{
           justifyContent: 'center',
           maxHeight: Platform.OS === 'ios' ? 64 : 80,
-          backgroundColor: theme.colors.background
+          backgroundColor: theme.colors.background,
+          display: app.isHideTabBar ? 'none' : undefined
         }}
         activeColor={theme.colors.primary}
         activeIndicatorStyle={{
@@ -185,6 +195,15 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
           }}
           name='Home'
           component={Home}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }]
+              });
+            }
+          })}
         />
         <Tab.Screen
           options={{
@@ -212,6 +231,16 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             }}
             name='Report'
             component={Report}
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                // Prevent default action
+                e.preventDefault();
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Report' }]
+                });
+              }
+            })}
           />
         )}
         {auth.userInfo?.role === 'STAFF' && (
@@ -222,6 +251,16 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             }}
             name='Delivery'
             component={Delivery}
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                // Prevent default action
+                e.preventDefault();
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Delivery' }]
+                });
+              }
+            })}
           />
         )}
         <Tab.Screen
