@@ -29,7 +29,7 @@ type HomeStackParamList = {
 
 type DeliveryStackParamList = {
   DeliveryList: { deliveries: DeliveryDetail[] };
-  DeliveryDetail: undefined;
+  DeliveryDetail: { deliveryId: string };
 };
 
 type OrderStackParamList = {

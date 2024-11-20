@@ -12,6 +12,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Divider, Text, TextInput, Button } from 'react-native-paper';
 import Feather from '@expo/vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { DeliveryStackParamList } from 'app/types/navigation';
 
 const deliveryStatusMap: { [key: string]: string } = {
   'Chờ xử lý': 'PENDING',
@@ -28,9 +30,18 @@ const deliveryStatusList = Object.entries(deliveryStatusMap).map(([label, value]
 interface DeliveryListHeaderProps {
   onSearch: (searchText: string) => void;
   onFilter: (status: string | null, date: Date | null) => void;
+  title: string;
+  showFilters: boolean;
+  navigation: NativeStackNavigationProp<DeliveryStackParamList>;
 }
 
-export const DeliveryListHeader: React.FC<DeliveryListHeaderProps> = ({ onSearch, onFilter }) => {
+export const DeliveryListHeader: React.FC<DeliveryListHeaderProps> = ({
+  onSearch,
+  onFilter,
+  title,
+  showFilters,
+  navigation
+}) => {
   const [searchText, setSearchText] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -77,37 +88,42 @@ export const DeliveryListHeader: React.FC<DeliveryListHeaderProps> = ({ onSearch
 
   return (
     <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>DANH SÁCH CHUYẾN ĐI</Text>
-      <View style={{ flexDirection: 'column', gap: 4 }}>
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder='Tìm kiếm theo mã chuyến đi...'
-            placeholderTextColor='rgba(0, 0, 0, 0.6)' // Set placeholder text color with opacity
-            value={searchText}
-            onChangeText={setSearchText}
-            onSubmitEditing={handleSearch}
-          />
-          <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-            <AntDesign name='search1' size={24} color='blue' />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.filterContainer}>
-          <TouchableOpacity style={styles.pickerButton} onPress={toggleModal}>
-            <Text style={styles.pickerButtonText}>
-              {selectedStatus === null
-                ? 'Tất cả'
-                : Object.keys(deliveryStatusMap).find(
-                    (key) => deliveryStatusMap[key as string] === selectedStatus
-                  )}
-            </Text>
-            <MaterialIcons name='arrow-drop-down' size={24} color='black' />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.filterButton} onPress={toggleFilterDialog}>
-            <Feather name='align-center' size={24} color='white' />
-          </TouchableOpacity>
-        </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <AntDesign name='arrowleft' size={24} color='white' onPress={() => navigation.goBack()} />
+        <Text style={styles.headerText}>{title}</Text>
       </View>
+      {showFilters && (
+        <View style={{ flexDirection: 'column', gap: 4 }}>
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder='Tìm kiếm theo mã chuyến đi...'
+              placeholderTextColor='rgba(0, 0, 0, 0.6)' // Set placeholder text color with opacity
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleSearch}
+            />
+            <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
+              <AntDesign name='search1' size={24} color='blue' />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.filterContainer}>
+            <TouchableOpacity style={styles.pickerButton} onPress={toggleModal}>
+              <Text style={styles.pickerButtonText}>
+                {selectedStatus === null
+                  ? 'Tất cả'
+                  : Object.keys(deliveryStatusMap).find(
+                      (key) => deliveryStatusMap[key as string] === selectedStatus
+                    )}
+              </Text>
+              <MaterialIcons name='arrow-drop-down' size={24} color='black' />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.filterButton} onPress={toggleFilterDialog}>
+              <Feather name='align-center' size={24} color='white' />
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
       <Modal visible={isModalVisible} transparent={true} animationType='slide'>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay} />
@@ -188,7 +204,8 @@ const styles = StyleSheet.create({
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,
-    color: 'white'
+    color: 'white',
+    marginLeft: 8
   },
   searchContainer: {
     flexDirection: 'row',
