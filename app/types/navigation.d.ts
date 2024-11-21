@@ -17,11 +17,11 @@ type AuthStackParamList = {
 };
 
 type MainTabParamList = {
-  Home: undefined;
-  Order: undefined;
-  Report: undefined;
-  Setting: undefined;
-  Delivery: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList> | undefined;
+  Order: NavigatorScreenParams<OrderStackParamList> | undefined;
+  Report: NavigatorScreenParams<ReportStackParamList> | undefined;
+  Setting: NavigatorScreenParams<SettingStackParamList> | undefined;
+  Delivery: NavigatorScreenParams<DeliveryStackParamList> | undefined;
 };
 
 type HomeStackParamList = {
@@ -43,7 +43,7 @@ type OrderStackParamList = {
 type ReportStackParamList = {
   ReportList: undefined;
   ReportDetail: undefined;
-  CreateReport: undefined;
+  CreateReport: { orderId: string } | undefined;
 };
 
 type SettingStackParamList = {

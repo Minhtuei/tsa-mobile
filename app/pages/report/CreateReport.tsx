@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from '@services/order.service';
-import { OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
+import { MainTabParamList, OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
@@ -20,7 +20,7 @@ import { ContentInput, OrderIdInput, ProofInput } from './ReportField';
 export const CreateReport = (
   props: CompositeScreenProps<
     NativeStackScreenProps<ReportStackParamList, 'CreateReport'>,
-    NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>
+    NativeStackScreenProps<MainTabParamList, 'Order'>
   >
 ) => {
   const theme = useAppTheme();
@@ -35,13 +35,14 @@ export const CreateReport = (
   const [fileType, setFileType] = useState<string | null | undefined>(null);
   const auth = useAppSelector((state) => state.auth);
   const orderIdList = useMemo(() => {
-    if (orders) {
-      return orders.map((order) => ({
-        label: `#${order.checkCode}`,
-        value: order.id
-      }));
-    }
-    return [];
+    const mapOrders = orders
+      ? orders.map((order) => ({
+          label: `#${order.checkCode}`,
+          value: order.id
+        }))
+      : [];
+
+    return mapOrders;
   }, [orders]);
 
   const {
@@ -55,7 +56,7 @@ export const CreateReport = (
     defaultValues: {
       content: '',
       proof: '',
-      orderId: '',
+      orderId: props.route.params?.orderId || '',
       reportedAt: String(Math.floor(Date.now() / 1000)),
       repliedAt: '',
       reply: '',
@@ -120,12 +121,14 @@ export const CreateReport = (
                 orderIdList={orderIdList}
                 control={control}
                 errors={errors}
+                defaultValue={props.route.params?.orderId}
                 disabled={isUploadImageLoading || isCreateReportLoading || isLoadingOrders}
                 onPress={() => {
                   const foundOrder = orders?.find((order) => order.id === watch('orderId'));
                   if (foundOrder)
-                    props.navigation.navigate('OrderDetail', {
-                      order: foundOrder
+                    props.navigation.navigate('Order', {
+                      screen: 'OrderDetail',
+                      params: { order: foundOrder }
                     });
                 }}
               />

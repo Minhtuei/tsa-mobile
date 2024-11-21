@@ -1,3 +1,6 @@
+import { OrderStatus } from 'app/types/order';
+import { ReportStatus } from 'app/types/report';
+
 export const shortenUUID = (uuid: string) => {
   return `#TSA-${uuid.slice(uuid.length - 8, uuid.length)}`;
 };

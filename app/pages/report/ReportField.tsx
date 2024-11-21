@@ -9,13 +9,15 @@ export const OrderIdInput = ({
   errors,
   onPress,
   disabled,
-  orderIdList
+  orderIdList,
+  defaultValue
 }: {
   control: any;
   errors: any;
   onPress: () => void;
   disabled: boolean;
   orderIdList: { label: string; value: string }[];
+  defaultValue: string | undefined;
 }) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
@@ -44,7 +46,7 @@ export const OrderIdInput = ({
               data={orderIdList}
               value={value}
               setValue={(value) => {
-                console.log(value);
+                onChange(value);
               }}
               placeholder='Chọn mã đơn hàng'
               containerStyle={{

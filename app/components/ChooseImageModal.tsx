@@ -1,4 +1,4 @@
-import { TouchableOpacity, View } from 'react-native';
+import { Alert, Linking, TouchableOpacity, View } from 'react-native';
 import { Modal, Text } from 'react-native-paper';
 
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -25,8 +25,22 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
   const uploadProof = async (mode: 'camera' | 'gallery') => {
     try {
       let result: ImagePicker.ImagePickerResult;
+      let permission: ImagePicker.PermissionResponse;
+
       if (mode === 'gallery') {
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        // Check existing permission
+        permission = await ImagePicker.getMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+          // Request permission if not granted
+          permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        }
+
+        if (!permission.granted) {
+          // If permission is still not granted, show alert
+          showPermissionDeniedModal('gallery');
+          return;
+        }
+
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
           allowsEditing: true,
@@ -34,7 +48,19 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
           quality: 1
         });
       } else {
-        await ImagePicker.requestCameraPermissionsAsync();
+        // Check existing permission
+        permission = await ImagePicker.getCameraPermissionsAsync();
+        if (!permission.granted) {
+          // Request permission if not granted
+          permission = await ImagePicker.requestCameraPermissionsAsync();
+        }
+
+        if (!permission.granted) {
+          // If permission is still not granted, show alert
+          showPermissionDeniedModal('camera');
+          return;
+        }
+
         result = await ImagePicker.launchCameraAsync({
           cameraType: ImagePicker.CameraType.back,
           allowsEditing: true,
@@ -42,6 +68,8 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
           quality: 1
         });
       }
+
+      // Handle result
       if (!result.canceled) {
         console.log(result);
         props.onSuccess({
@@ -52,8 +80,26 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
         props.setVisible(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
+  };
+
+  // Show alert when permission is denied
+  const showPermissionDeniedModal = (mode: 'camera' | 'gallery') => {
+    Alert.alert(
+      `Quyền truy cập ${mode === 'camera' ? 'camera' : 'thư viện ảnh'} bị từ chối`,
+      `Vui lòng vào cài đặt để bật quyền truy cập ${mode === 'camera' ? 'camera' : 'thư viện ảnh'}`,
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel'
+        },
+        {
+          text: 'Đi đến cài đặt',
+          onPress: () => Linking.openSettings()
+        }
+      ]
+    );
   };
   return (
     <Modal
@@ -66,6 +112,7 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
         alignItems: 'center'
       }}
       style={{ padding: 36 }}
+      onDismiss={() => props.setVisible(false)}
     >
       <Text style={[globalStyles.title]}>{props.title}</Text>
       <View

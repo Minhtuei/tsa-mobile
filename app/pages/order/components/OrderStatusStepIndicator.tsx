@@ -12,7 +12,7 @@ interface OrderStatusStepIndicatorProps {
   historyTime: { time: string; status: string }[];
 }
 
-const STATUSES = ['PENDING', 'ACCEPTED', 'IN_TRANSPORT', 'COMPLETED'];
+const STATUSES = ['PENDING', 'ACCEPTED', 'IN_TRANSPORT', 'DELIVERED'];
 
 const OrderStatusStepIndicator: React.FC<OrderStatusStepIndicatorProps> = ({ historyTime }) => {
   const theme = useAppTheme();
@@ -90,7 +90,18 @@ const OrderStatusStepIndicator: React.FC<OrderStatusStepIndicatorProps> = ({ his
             position !== currentPosition && { color: theme.colors.outlineVariant }
           ]}
         >
-          {getStatusRender(status).label}
+          {
+            getStatusRender(
+              status as
+                | 'PENDING'
+                | 'ACCEPTED'
+                | 'REJECTED'
+                | 'DELIVERED'
+                | 'CANCELED'
+                | 'IN_TRANSPORT'
+                | 'REPLIED'
+            ).label
+          }
         </Text>
         {time && (
           <Text style={[globalStyles.text, { flex: 1, textAlign: 'right' }]}>
