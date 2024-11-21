@@ -6,11 +6,12 @@ import Mapbox, {
   ShapeSource,
   SymbolLayer,
   Images,
-  LineLayer
+  LineLayer,
+  CircleLayer
 } from '@rnmapbox/maps';
 import { OrderStackParamList } from 'app/types/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Linking, StyleSheet, View } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { getDirection } from '@utils/getDirection';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
@@ -19,20 +20,24 @@ import { useAppDispatch } from '@hooks/redux';
 import { setHideTabBar } from '@slices/app.slice';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
+import LottieView from 'lottie-react-native';
+
 Mapbox.setAccessToken((process.env.EXPO_MAPBOX_ACCESS_TOKEN as string) || '');
 Mapbox.setTelemetryEnabled(false);
 
-const shipper = require('../../../../assets/shipperBackground.png'); // Ensure the correct path and file type
+const shipperLogo = require('../../../../assets/shipperBackground.png');
+const studentLogo = require('../../../../assets/student.png');
 
 export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'TrackOrder'>) => {
   const order = props.route.params.order;
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
-  const shipperCoordinate = [106.80660217405375, 10.877388183554231];
-  const studentCoordinate = [106.80703872956525, 10.878102666077439];
+  const shipperCoordinate = useMemo(() => [106.80660217405375, 10.877388183554231], []);
+  const studentCoordinate = useMemo(() => [106.80703872956525, 10.878102666077439], []);
   const [direction, setDirection] = useState<any>(null);
   const snapPoints = useMemo(() => ['5%', '40%', '90%'], []);
   const dispatch = useAppDispatch();
+
   const fetchDirection = async () => {
     try {
       const direction = await getDirection(studentCoordinate, shipperCoordinate);
@@ -46,7 +51,10 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
     fetchDirection();
   }, []);
 
-  const directionCoordinates = direction?.routes[0]?.geometry?.coordinates;
+  const directionCoordinates = useMemo(
+    () => direction?.routes[0]?.geometry?.coordinates,
+    [direction]
+  );
 
   useEffect(() => {
     dispatch(setHideTabBar(true));
@@ -94,13 +102,23 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
               />
             </ShapeSource>
           )}
-          <PointAnnotation id='marker' coordinate={studentCoordinate}>
-            <View />
-          </PointAnnotation>
+          <ShapeSource id='student' shape={{ type: 'Point', coordinates: studentCoordinate }}>
+            <SymbolLayer id='student-icons' style={{ iconImage: 'student', iconSize: 0.08 }} />
+            <CircleLayer
+              id='student-radius'
+              style={{
+                circleRadius: 50,
+                circleColor: 'rgba(0, 122, 255, 0.3)',
+                circleStrokeWidth: 2,
+                circleStrokeColor: 'rgba(0, 122, 255, 0.5)'
+              }}
+            />
+          </ShapeSource>
+
           <ShapeSource id='shipper' shape={{ type: 'Point', coordinates: shipperCoordinate }}>
             <SymbolLayer id='shipper-icons' style={{ iconImage: 'shipper', iconSize: 0.05 }} />
           </ShapeSource>
-          <Images images={{ shipper: shipper }} />
+          <Images images={{ shipper: shipperLogo, student: studentLogo }} />
         </MapView>
       </View>
       <BottomSheet index={1} snapPoints={snapPoints}>
@@ -121,12 +139,19 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
                 alignItems: 'center',
                 backgroundColor: theme.colors.outlineVariant,
                 marginHorizontal: -16,
-                marginTop: -16
+                marginTop: -16,
+                justifyContent: 'space-between'
               }}
             >
               <Text style={[globalStyles.text, { fontWeight: 'bold', padding: 16 }]}>
                 Nhân viên đang đến
               </Text>
+              <LottieView
+                source={require('../../../../assets/animations/ship_animation.json')}
+                autoPlay
+                loop
+                style={{ width: 50, height: 50, marginRight: 16 }}
+              />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Avatar.Image
@@ -143,6 +168,17 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
                 ]}
               >
                 Trần Nguyễn Minh Tuệ
+              </Text>
+              <Text
+                style={[
+                  globalStyles.text,
+                  {
+                    color: theme.colors.outlineVariant,
+                    marginLeft: 'auto'
+                  }
+                ]}
+              >
+                {direction?.routes[0]?.distance}m
               </Text>
             </View>
             <View

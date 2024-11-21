@@ -1,6 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { getStatusRender } from '@utils/order';
+import { ReportType } from 'app/types/report';
 import moment from 'moment';
 import { TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
@@ -10,10 +11,13 @@ export const ReportItem = ({ report, onPress }: { report: ReportType; onPress?: 
 
   const statusRender = getStatusRender(report.status);
   return (
-    <TouchableOpacity disabled={!onPress} onPress={() => onPress?.()}>
+    <TouchableOpacity
+      disabled={!onPress}
+      onPress={() => onPress?.()}
+      style={globalStyles.SurfaceContainer}
+    >
       <View
         style={[
-          globalStyles.SurfaceContainer,
           {
             flexDirection: 'row',
             width: '100%',

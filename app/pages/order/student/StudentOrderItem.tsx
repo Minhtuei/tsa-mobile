@@ -1,6 +1,7 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { getStatusRender } from '@utils/order';
+import { Order } from 'app/types/order';
 import moment from 'moment';
 import { TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
@@ -11,10 +12,13 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
 
   const statusRender = getStatusRender(order.historyTime[0].status);
   return (
-    <TouchableOpacity disabled={!onPress} onPress={() => onPress?.()}>
+    <TouchableOpacity
+      disabled={!onPress}
+      onPress={() => onPress?.()}
+      style={[globalStyles.SurfaceContainer]}
+    >
       <View
         style={[
-          globalStyles.SurfaceContainer,
           {
             flexDirection: 'row',
             width: '100%',

@@ -1,6 +1,6 @@
 import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
-import { Order } from '@slices/order.slice';
+import { Order } from 'app/types/order';
 
 const orderService = apiService.injectEndpoints({
   overrideExisting: true,
