@@ -1,32 +1,33 @@
 import { Header } from '@components/Header';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   HomeStackParamList,
   MainTabParamList,
   OrderStackParamList,
-  ReportStackParamList,
+  ReportStackParamList
 } from 'app/types/navigation';
 import { ReportList } from './ReportList';
 import { ReportDetail } from './ReportDetail';
+import { CreateReport } from './CreateReport';
 
 const Stack = createNativeStackNavigator<ReportStackParamList>();
-export const Report = (
-  props: NativeStackScreenProps<MainTabParamList, 'Report'>
-) => {
+export const Report = (props: NativeStackScreenProps<MainTabParamList, 'Report'>) => {
   return (
     <Stack.Navigator screenOptions={{ header: Header }}>
       <Stack.Screen
-        name="ReportList"
+        name='ReportList'
         component={ReportList}
         options={{ title: 'Danh sách đơn hàng' }}
       />
       <Stack.Screen
-        name="ReportDetail"
+        name='ReportDetail'
         component={ReportDetail}
         options={{ title: 'Chi tiết đơn hàng' }}
+      />
+      <Stack.Screen
+        name='CreateReport'
+        component={CreateReport}
+        options={{ title: 'Tạo đơn hàng' }}
       />
     </Stack.Navigator>
   );

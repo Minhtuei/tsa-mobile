@@ -1,6 +1,6 @@
 type OrderStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'DELIVERED' | 'CANCELED' | 'IN_TRANSPORT';
 
-type PaymentMethod = 'CREDIT' | 'CASH' | 'MOMO';
+export type PaymentMethod = 'CREDIT' | 'CASH' | 'MOMO';
 
 type Order = {
   adminId: string | null;
@@ -21,6 +21,12 @@ type Order = {
   shippingFee: number | null;
   studentId: string | null;
   weight: number;
+  staffInfo?: {
+    lastName: string | null;
+    firstName: string | null;
+    phoneNumber: string | null;
+    photoUrl: string | null;
+  };
 };
 
 type HistoryTime = {

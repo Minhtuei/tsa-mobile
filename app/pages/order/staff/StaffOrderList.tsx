@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Card, Chip, Divider } from 'react-native-paper';
 import { OrderDetail } from '@slices/order.slice';
@@ -7,15 +7,11 @@ import { OrderStackParamList } from 'app/types/navigation';
 import Feather from '@expo/vector-icons/Feather';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/format';
-import { initialOrderList } from '@utils/mockData';
 import { OrderListHeader } from '../components/OrderListHeader';
+import { useGetOrdersQuery } from '@services/order.service';
+import { useAppSelector } from '@hooks/redux';
 
-type OrderListProps = NativeStackScreenProps<OrderStackParamList, 'OrderList'> & {
-  orders: OrderDetail[];
-  loading: boolean;
-};
-
-const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
+const OrderItem: React.FC<{ order: OrderDetail; onPress: () => void }> = ({ order, onPress }) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'CANCELLED':
@@ -47,7 +43,7 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
   };
 
   return (
-    <Card style={{ marginBottom: 12 }}>
+    <Card style={{ marginBottom: 12 }} onPress={onPress}>
       <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <View style={{ width: '25%' }}>
           <View style={styles.square}>
@@ -104,14 +100,19 @@ const OrderItem: React.FC<{ order: OrderDetail }> = ({ order }) => {
 };
 
 export const StaffOrderList = (props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>) => {
-  const [filteredOrders, setFilteredOrders] = useState(initialOrderList.slice(0, 16));
+  const auth = useAppSelector((state) => state.auth);
+  const { data: orders, isLoading } = useGetOrdersQuery();
+  const staffOrders = useMemo(() => {
+    return orders?.filter((order) => order.shipperId === auth.userInfo?.id);
+  }, [orders]);
+  const [filteredOrders, setFilteredOrders] = useState(staffOrders?.slice(0, 16));
   const [loading, setLoading] = useState(false);
 
   const handleSearch = (searchText: string) => {
     setLoading(true);
     setTimeout(() => {
-      const filtered = initialOrderList
-        .slice(0, 16)
+      const filtered = staffOrders
+        ?.slice(0, 16)
         .filter((order) => order.checkCode.toLowerCase().includes(searchText.toLowerCase()));
       setFilteredOrders(filtered);
       setLoading(false);
@@ -121,20 +122,20 @@ export const StaffOrderList = (props: NativeStackScreenProps<OrderStackParamList
   const handleFilter = (status: boolean | null, date: Date | null, orderStatus: string | null) => {
     setLoading(true);
     setTimeout(() => {
-      let filtered = initialOrderList.slice(0, 16);
+      let filtered = staffOrders?.slice(0, 16);
 
       if (status !== null) {
-        filtered = filtered.filter((order) => order.isPaid === status);
+        filtered = filtered?.filter((order) => order.isPaid === status);
       }
 
       if (date) {
-        filtered = filtered.filter(
+        filtered = filtered?.filter(
           (order) => new Date(order.deliveryDate).toDateString() === date.toDateString()
         );
       }
 
       if (orderStatus) {
-        filtered = filtered.filter((order) => order.latestStatus === orderStatus);
+        filtered = filtered?.filter((order) => order.latestStatus === orderStatus);
       }
 
       setFilteredOrders(filtered);
@@ -146,13 +147,17 @@ export const StaffOrderList = (props: NativeStackScreenProps<OrderStackParamList
     <>
       <OrderListHeader onSearch={handleSearch} onFilter={handleFilter} />
       <View style={styles.container}>
-        <Text style={styles.header}>{filteredOrders.length} đơn hàng</Text>
+        <Text style={styles.header}>{filteredOrders?.length} đơn hàng</Text>
         {loading ? (
           <ActivityIndicator size='large' color='#34A853' />
         ) : (
           <ScrollView>
-            {filteredOrders.map((order) => (
-              <OrderItem key={order.id} order={order} />
+            {filteredOrders?.map((order) => (
+              <OrderItem
+                key={order.id}
+                order={order}
+                onPress={() => props.navigation.navigate('OrderDetail', { order })}
+              />
             ))}
           </ScrollView>
         )}

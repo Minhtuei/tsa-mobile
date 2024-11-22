@@ -3,7 +3,7 @@ import {
   BaseQueryFn,
   FetchArgs,
   fetchBaseQuery,
-  FetchBaseQueryError,
+  FetchBaseQueryError
 } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
 import { RootState } from '@utils/store';
@@ -16,6 +16,7 @@ interface RefreshTokenRes {
     refreshToken: string;
   };
 }
+console.log(process.env.EXPO_PUBLIC_SERVER_HOST);
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
@@ -27,7 +28,7 @@ const baseQuery = fetchBaseQuery({
       headers.set('Authorization', `Bearer ${token}`);
     }
     return headers;
-  },
+  }
 });
 
 export const baseQueryWithReauth: BaseQueryFn<
@@ -45,15 +46,14 @@ export const baseQueryWithReauth: BaseQueryFn<
           url: 'auth/refresh',
           method: 'POST',
           body: {
-            refreshToken: (api.getState() as RootState).auth.refreshToken,
-          },
+            refreshToken: (api.getState() as RootState).auth.refreshToken
+          }
         },
         api,
         extraOptions
       );
       if (result.data) {
-        const { accessToken, refreshToken } = (result.data as RefreshTokenRes)
-          .data;
+        const { accessToken, refreshToken } = (result.data as RefreshTokenRes).data;
         api.dispatch(setToken({ accessToken, refreshToken }));
         release();
         return await baseQuery(args, api, extraOptions);

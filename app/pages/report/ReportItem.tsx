@@ -1,21 +1,20 @@
-import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { getStatusRender } from '@utils/order';
-import { Order } from 'app/types/order';
+import { ReportType } from 'app/types/report';
 import moment from 'moment';
 import { TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
-
-export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: () => void }) => {
+export const ReportItem = ({ report, onPress }: { report: ReportType; onPress?: () => void }) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
 
-  const statusRender = getStatusRender(order.historyTime[0].status);
+  const statusRender = getStatusRender(report.status);
   return (
     <TouchableOpacity
       disabled={!onPress}
       onPress={() => onPress?.()}
-      style={[globalStyles.SurfaceContainer]}
+      style={globalStyles.SurfaceContainer}
     >
       <View
         style={[
@@ -40,11 +39,11 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
             height: 48
           }}
         >
-          <Feather name='package' size={24} color={theme.colors.onPrimary} />
+          <MaterialIcons name='report' size={24} color={theme.colors.onPrimary} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
-            #{order.checkCode}
+          <Text numberOfLines={1} style={[globalStyles.title, { color: theme.colors.onSurface }]}>
+            {report.content}
           </Text>
 
           <View
@@ -56,20 +55,19 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
             }}
           >
             <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-              <Feather name='clock' size={18} color={theme.colors.onSurface} />
+              <MaterialIcons
+                name='schedule'
+                size={18}
+                color={theme.colors.onSurface}
+                style={{ marginTop: 2 }}
+              />
               <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
-                {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY')}
+                {moment.unix(Number(report.reportedAt)).format('DD/MM/YYYY')}
               </Text>
             </View>
             <Badge size={24} style={{ backgroundColor: statusRender.color }}>
               {statusRender.label}
             </Badge>
-          </View>
-          <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-            <Feather name='home' size={18} color={theme.colors.onSurface} />
-            <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
-              {`${order.building} - ${order.room}`}
-            </Text>
           </View>
         </View>
       </View>

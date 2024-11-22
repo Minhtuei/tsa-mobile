@@ -2,7 +2,7 @@ import { DashboardHeader } from '@components/DashboardHeader';
 import { DASHBOARD_HEADER_HEIGHT, HIDE_TAB_HEIGHT } from '@constants/screen';
 import { StaffDashBoard } from './staff/StaffDashBoard';
 import { useGlobalStyles } from '@hooks/theme';
-import { Platform, ScrollView, View, Animated } from 'react-native';
+import { Platform, ScrollView, View, Animated, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
 import BackgroundIcon from '../../../assets/background-icon.svg';
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
@@ -10,6 +10,7 @@ import { useRef, useState } from 'react';
 import { getInterpolatedValues } from '@utils/scrollAnimationValues';
 import { useGetOrdersQuery } from '@services/order.service';
 import { useAppSelector } from '@hooks/redux';
+
 export const Dashboard = () => {
   const globalStyles = useGlobalStyles();
   const [selectedType, setSelectedType] = useState<'today' | 'yesterday' | 'week' | 'month'>(
@@ -65,6 +66,7 @@ export const Dashboard = () => {
             </Animated.View>
           </>
         )}
+
         {auth.userInfo?.role === 'STAFF' && <StaffDashBoard />}
       </ScrollView>
     </View>

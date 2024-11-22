@@ -1,19 +1,22 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { Text, Card, Chip, Divider } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { DeliveryStackParamList } from 'app/types/navigation';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/format';
-import { Delivery } from '@slices/delivery.slice';
+import { Delivery as DeliveryEntity } from '@slices/delivery.slice';
 
 type DeliveryListProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryList'> & {
-  deliveries: Delivery[];
+  deliveries: DeliveryEntity[];
   loading: boolean;
 };
 
-const DeliveryItem: React.FC<{ delivery: Delivery }> = ({ delivery }) => {
+const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> = ({
+  delivery,
+  onPress
+}) => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PENDING':
@@ -45,71 +48,85 @@ const DeliveryItem: React.FC<{ delivery: Delivery }> = ({ delivery }) => {
   };
 
   return (
-    <Card style={{ marginBottom: 12 }}>
-      <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <View style={{ width: '25%' }}>
-          <View style={styles.square}>
-            <MaterialCommunityIcons name='motorbike' size={32} color='green' />
-          </View>
-        </View>
-        <View style={{ flexDirection: 'column', gap: 12, width: '75%' }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <View>
-              <Text
-                style={{
-                  color: 'green',
-                  fontWeight: 'bold',
-                  fontSize: 20
-                }}
-              >
-                #{delivery.id}
-              </Text>
-              <Text style={{ opacity: 0.4 }}>
-                {formatDate(formatUnixTimestamp(delivery.createdAt))}
-              </Text>
+    <TouchableOpacity onPress={onPress}>
+      <Card style={{ marginBottom: 12 }}>
+        <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <View style={{ width: '25%' }}>
+            <View style={styles.square}>
+              <MaterialCommunityIcons name='motorbike' size={32} color='green' />
             </View>
-            <Chip
+          </View>
+          <View style={{ flexDirection: 'column', gap: 12, width: '75%' }}>
+            <View
               style={{
-                backgroundColor: getStatusColor(delivery.status)
-              }}
-              textStyle={{
-                fontWeight: 'bold',
-                color: 'white'
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center'
               }}
             >
-              {getStatusLabel(delivery.status)}
-            </Chip>
-          </View>
-          <Divider />
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-          >
-            <View>
-              <Text style={{ fontWeight: 'bold' }}>{delivery.orders.length} đơn hàng</Text>
+              <View>
+                <Text
+                  style={{
+                    color: 'green',
+                    fontWeight: 'bold',
+                    fontSize: 20
+                  }}
+                >
+                  #{delivery.id.slice(0, 5)}
+                </Text>
+                <Text style={{ opacity: 0.4 }}>
+                  {formatDate(formatUnixTimestamp(delivery.createdAt))}
+                </Text>
+              </View>
+              <Chip
+                style={{
+                  backgroundColor: getStatusColor(delivery.status)
+                }}
+                textStyle={{
+                  fontWeight: 'bold',
+                  color: 'white'
+                }}
+              >
+                {getStatusLabel(delivery.status)}
+              </Chip>
             </View>
-            <EvilIcons name='pencil' size={32} color='blue' />
+            <Divider />
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}
+            >
+              <View>
+                <Text style={{ fontWeight: 'bold' }}>{delivery?.orders?.length || 0} đơn hàng</Text>
+              </View>
+              <EvilIcons name='pencil' size={32} color='blue' />
+            </View>
           </View>
-        </View>
-      </Card.Content>
-    </Card>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 };
 
-export const DeliveryList: React.FC<DeliveryListProps> = ({ deliveries, loading }) => {
+export const DeliveryList: React.FC<DeliveryListProps> = ({ deliveries, loading, navigation }) => {
+  if (loading) {
+    return <ActivityIndicator size='large' color='#34A853' />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{deliveries.length} chuyến đi</Text>
-      {loading ? (
-        <ActivityIndicator size='large' color='#34A853' />
-      ) : (
-        <ScrollView>
-          {deliveries.map((delivery) => (
-            <DeliveryItem key={delivery.id} delivery={delivery} />
-          ))}
-        </ScrollView>
-      )}
+      <Text style={styles.header}>{deliveries?.length} chuyến đi</Text>
+      <ScrollView>
+        {deliveries?.map((delivery) => (
+          <DeliveryItem
+            key={delivery.id}
+            delivery={delivery}
+            onPress={() => navigation.navigate('DeliveryDetail', { deliveryId: delivery.id })}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };

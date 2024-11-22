@@ -3,12 +3,16 @@ import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navig
 import { MainTabParamList, OrderStackParamList } from 'app/types/navigation';
 import React from 'react';
 import { OrderDetail } from './OrderDetail';
+import { StaffOrderDetail } from './staff/StaffOrderDetail';
 import { OrderList } from './OrderList';
 import { CreateOrder } from './CreateOrder';
+import { useAppSelector } from '@hooks/redux';
+import { TrackOrder } from './student/TrackOrder';
 
 const Stack = createNativeStackNavigator<OrderStackParamList>();
 
 export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) => {
+  const auth = useAppSelector((state) => state.auth);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -24,13 +28,18 @@ export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) 
 
       <Stack.Screen
         name='OrderDetail'
-        component={OrderDetail}
+        component={auth.userInfo?.role === 'STUDENT' ? OrderDetail : StaffOrderDetail}
         options={{ title: 'Chi tiết đơn hàng' }}
       />
       <Stack.Screen
         name='CreateOrder'
         component={CreateOrder}
         options={{ title: 'Tạo đơn hàng' }}
+      />
+      <Stack.Screen
+        name='TrackOrder'
+        component={TrackOrder}
+        options={{ title: 'Theo dõi đơn hàng' }}
       />
     </Stack.Navigator>
   );

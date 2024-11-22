@@ -5,33 +5,43 @@ export type STATUS_DATA_TYPE = {
 export const FILTER_DATA: STATUS_DATA_TYPE[] = [
   { label: 'Tất cả', value: 'ALL' },
   { label: 'Trạng thái', value: 'STATUS' },
-  { label: 'Thời gian', value: 'TIME' },
-  { label: 'Phương thức thanh toán', value: 'PAYMENT_METHOD' },
+  { label: 'Thời gian', value: 'TIME' }
 ];
 
-export const STATUS_DATA: STATUS_DATA_TYPE[] = [
+export const ORDER_STATUS_DATA: STATUS_DATA_TYPE[] = [
   {
     label: 'Đang chờ xử lý',
-    value: 'PENDING',
+    value: 'PENDING'
   },
   {
     label: 'Đã xác nhận',
-    value: 'ACCEPTED',
+    value: 'ACCEPTED'
   },
   {
     label: 'Đã từ chối',
-    value: 'REJECTED',
+    value: 'REJECTED'
   },
   {
     label: 'Đã giao hàng',
-    value: 'DELIVERED',
+    value: 'DELIVERED'
   },
   {
     label: 'Đã hủy',
-    value: 'CANCELED',
+    value: 'CANCELED'
   },
   {
     label: 'Đang vận chuyển',
-    value: 'IN_TRANSPORT',
+    value: 'IN_TRANSPORT'
+  }
+];
+
+export const REPORT_STATUS_DATA: STATUS_DATA_TYPE[] = [
+  {
+    label: 'Đang chờ xử lý',
+    value: 'PENDING'
   },
+  {
+    label: 'Đã trả lời',
+    value: 'REPPLIED'
+  }
 ];
