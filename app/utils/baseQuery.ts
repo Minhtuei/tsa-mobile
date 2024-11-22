@@ -19,7 +19,7 @@ interface RefreshTokenRes {
 console.log(process.env.EXPO_PUBLIC_SERVER_HOST);
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
+  baseUrl: 'https://tsa-backend-ttq.vercel.app/api/',
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;

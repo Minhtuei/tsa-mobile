@@ -33,6 +33,12 @@
           "RNMapboxMapsDownloadToken": "sk.eyJ1IjoicXVhbmNhbzIzMTAiLCJhIjoiY20yNXU4aHVxMHYxdzJxcXNudXh0ZmdiYSJ9.3zLWsysWsrpT-bi5c7hn5w",
           "RNMapboxMapsVersion": "11.0.0"
         }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
       ]
     ]
   }

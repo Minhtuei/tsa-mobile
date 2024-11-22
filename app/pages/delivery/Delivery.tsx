@@ -8,6 +8,8 @@ import { StyleSheet } from 'react-native';
 import DeliveryListHeader from './components/DeliveryListHeader';
 import DeliveryDetail from './DeliveryDetail';
 import DeliveryList from './DeliveryList';
+import StaffTrackOrder from './staff/StaffTrackOrder';
+import { Header } from '@components/Header';
 
 const Stack = createNativeStackNavigator<DeliveryStackParamList>();
 
@@ -27,7 +29,12 @@ export const Delivery = (props: NativeStackScreenProps<MainTabParamList, 'Delive
   };
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        header: (props) => <Header {...props} />
+      }}
+      initialRouteName='DeliveryList'
+    >
       <Stack.Screen
         name='DeliveryList'
         options={{
@@ -65,6 +72,13 @@ export const Delivery = (props: NativeStackScreenProps<MainTabParamList, 'Delive
               navigation={navigation as any}
             />
           )
+        }}
+      />
+      <Stack.Screen
+        name='StaffTrackOrder'
+        component={StaffTrackOrder}
+        options={{
+          title: 'Theo dõi đơn hàng'
         }}
       />
     </Stack.Navigator>

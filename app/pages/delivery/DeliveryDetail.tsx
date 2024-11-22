@@ -7,10 +7,11 @@ import { useGetDeliveryQuery } from '@services/delivery.service';
 import { Feather, AntDesign, FontAwesome } from '@expo/vector-icons';
 import { formatUnixTimestamp, formatDate, formatVNDcurrency } from '@utils/format';
 import { useSocketContext } from 'socket';
+import { Order } from 'app/types/order';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
-const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route }) => {
+const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) => {
   const { deliveryId } = route.params;
   const { data: delivery, isLoading } = useGetDeliveryQuery(deliveryId);
   const [location, setLocation] = useState<any>();
@@ -113,7 +114,13 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route }) => {
         </View>
       </ScrollView>
       <View style={styles.circleButton}>
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('StaffTrackOrder', {
+              order: delivery?.orders[0] as unknown as Order
+            });
+          }}
+        >
           <Text style={styles.circleButtonText}>Bắt đầu</Text>
         </TouchableOpacity>
       </View>

@@ -31,6 +31,7 @@ type HomeStackParamList = {
 type DeliveryStackParamList = {
   DeliveryList: { deliveries: DeliveryDetail[] };
   DeliveryDetail: { deliveryId: string };
+  StaffTrackOrder: { order: Order };
 };
 
 type OrderStackParamList = {
