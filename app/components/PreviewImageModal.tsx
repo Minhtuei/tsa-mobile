@@ -1,27 +1,31 @@
-import React from 'react';
-import { Modal, Button, Text } from 'react-native-paper';
-import { ScrollView, Image, View } from 'react-native';
-import { SCREEN } from '@constants/screen';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import React from 'react';
+import { Image, ScrollView, View } from 'react-native';
+import { Button, Modal, Text } from 'react-native-paper';
 
 interface PreViewImageModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
   proofUri: string | null;
   setValue: (field: string, value: any) => void;
+  disabled?: boolean;
 }
 
 export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
   visible,
   setVisible,
   proofUri,
-  setValue
+  setValue,
+  disabled
 }) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
 
   return (
     <Modal
+      style={{
+        paddingHorizontal: 16
+      }}
       contentContainerStyle={{
         backgroundColor: theme.colors.surface,
         borderRadius: 10,
@@ -46,16 +50,18 @@ export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
           />
         )}
         <View style={{ flexDirection: 'row', gap: 32, marginTop: 16 }}>
-          <Button
-            onPress={() => {
-              setValue('proof', '');
-              setVisible(false);
-            }}
-            buttonColor={theme.colors.error}
-            textColor={theme.colors.onError}
-          >
-            Gỡ ảnh
-          </Button>
+          {!disabled ? (
+            <Button
+              onPress={() => {
+                setValue('proof', '');
+                setVisible(false);
+              }}
+              buttonColor={theme.colors.error}
+              textColor={theme.colors.onError}
+            >
+              Gỡ ảnh
+            </Button>
+          ) : null}
           <Button
             onPress={() => {
               setVisible(false);

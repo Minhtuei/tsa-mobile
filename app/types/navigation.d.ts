@@ -1,5 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { Order } from './order';
+import { ReportType } from './report';
 
 type RootStackParamList = {
   SplashScreen: undefined;
@@ -43,8 +44,8 @@ type OrderStackParamList = {
 
 type ReportStackParamList = {
   ReportList: undefined;
-  ReportDetail: undefined;
-  CreateReport: { orderId: string } | undefined;
+  ReportDetail: { report: ReportType };
+  CreateReport: { orderId?: string } | undefined;
 };
 
 type SettingStackParamList = {

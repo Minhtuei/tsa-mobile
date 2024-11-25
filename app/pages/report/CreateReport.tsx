@@ -2,7 +2,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from '@services/order.service';
-import { MainTabParamList, OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
+import { MainTabParamList, ReportStackParamList } from 'app/types/navigation';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';

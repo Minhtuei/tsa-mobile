@@ -105,7 +105,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
           <ReportItem
             report={item}
             onPress={() => {
-              // props.navigation.navigate('OrderDetail', { order: item });
+              props.navigation.navigate('ReportDetail', { report: item });
             }}
           />
         )}

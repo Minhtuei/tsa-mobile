@@ -47,7 +47,7 @@ export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
         >
-          Có, Tạo
+          Có
         </Button>
       </Dialog.Actions>
     </Dialog>

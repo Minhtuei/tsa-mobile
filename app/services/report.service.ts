@@ -27,8 +27,29 @@ const reportService = apiService.injectEndpoints({
           'Content-Type': 'multipart/form-data'
         }
       })
+    }),
+    updateReport: build.mutation<void, { report: CreateReportSchemaType; reportId: string }>({
+      query: ({ report, reportId }) => ({
+        url: `reports/${reportId}`,
+        method: 'PATCH',
+        body: report
+      }),
+      invalidatesTags: ['Reports']
+    }),
+    deleteReport: build.mutation<void, string>({
+      query: (reportId) => ({
+        url: `reports/${reportId}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Reports']
     })
   })
 });
-export const { useGetReportsQuery, useCreateReportMutation, useUpLoadImageMutation } =
-  reportService;
+
+export const {
+  useGetReportsQuery,
+  useCreateReportMutation,
+  useUpLoadImageMutation,
+  useUpdateReportMutation,
+  useDeleteReportMutation
+} = reportService;

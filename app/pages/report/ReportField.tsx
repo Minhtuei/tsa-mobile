@@ -78,7 +78,15 @@ export const OrderIdInput = ({
   );
 };
 
-export const ContentInput = ({ control, errors }: { control: any; errors: any }) => {
+export const ContentInput = ({
+  control,
+  errors,
+  disable
+}: {
+  control: any;
+  errors: any;
+  disable?: boolean;
+}) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   return (
@@ -106,8 +114,9 @@ export const ContentInput = ({ control, errors }: { control: any; errors: any })
               value={value}
               onChangeText={onChange}
               placeholder='Nhập nội dung'
+              editable={!disable}
               style={{
-                backgroundColor: theme.colors.surface,
+                backgroundColor: disable ? theme.colors.surfaceDisabled : theme.colors.surface,
                 borderRadius: 0,
                 borderWidth: 1,
                 borderColor: theme.colors.outline,

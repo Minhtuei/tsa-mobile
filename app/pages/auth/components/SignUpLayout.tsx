@@ -1,15 +1,10 @@
 import { SCREEN } from '@constants/screen';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { getStepperStyles } from '@constants/stepper';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { signInSchema, SignInSchemaType } from '@validations/auth.schema';
-import { AuthStackParamList } from 'app/types/navigation';
-import { useForm } from 'react-hook-form';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -18,13 +13,9 @@ import {
 } from 'react-native';
 import { Button, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import GoogleIcon from '../../../../assets/icons/googleIcon.svg';
-import { EmailInput, PasswordInput } from './AuthForm';
-import { AuthSeparator } from './AuthSeparator';
 import StepIndicator from 'react-native-step-indicator';
-import { MaterialIcons } from '@expo/vector-icons';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { getStepperStyles } from '@constants/stepper';
+import GoogleIcon from '../../../../assets/icons/googleIcon.svg';
+import { AuthSeparator } from './AuthSeparator';
 type SignUpLayoutProps = {
   title: string;
   onRedirect?: () => void;
