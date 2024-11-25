@@ -1,0 +1,120 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'expo-modules-core';
+import { removeUser } from '@slices/auth.slice';
+import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
+import { Divider, Portal, Surface, Switch, Text } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import IconModal from '@components/IconModal';
+import { useEffect, useState } from 'react';
+import { Image, Linking, View } from 'react-native';
+
+import SettingButton from '@components/SettingButton';
+import { useLogoutMutation } from '@services/auth.service';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AccountStackParamList } from 'app/types/navigation';
+// Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
+const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
+export const SettingScreen = (
+  props: NativeStackScreenProps<AccountStackParamList, 'SettingScreen'>
+) => {
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
+  const theme = useAppTheme();
+
+  // Show error then log out
+  const [logOutErr, setlogOutErr] = useState('');
+  // Show error but doesn't log out
+  const [unregisterErr, setUnregisterErr] = useState('');
+  const [notification, setNotification] = useState(false);
+  const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
+  const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
+
+  const signOut = async () => {
+    if (!auth.refreshToken) {
+      return;
+    }
+    logOut({ refreshToken: auth.refreshToken })
+      .unwrap()
+      .then(() => {
+        clearStorage();
+      })
+      .catch((err: any) => {
+        setlogOutErr(err.data.message);
+      });
+  };
+
+  const clearStorage = async () => {
+    if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      await SecureStore.deleteItemAsync('token');
+    } else {
+      await AsyncStorage.removeItem('token');
+    }
+    await AsyncStorage.removeItem('name');
+    await AsyncStorage.removeItem('email');
+    dispatch(removeUser());
+  };
+
+  const globalStyles = useGlobalStyles();
+
+  return (
+    <View style={globalStyles.fullScreen}>
+      {/* <SettingButton
+        text='Hồ sơ'
+        icon='account'
+        onPress={() => {
+          props.navigation.navigate('Profile');
+        }}
+      />
+      // <Divider /> */}
+      <SettingButton
+        text='Chế độ màu'
+        icon='circle-half-full'
+        onPress={() => {
+          props.navigation.navigate('ChangeTheme');
+        }}
+      />
+      <Divider />
+      <SettingButton
+        text='Đổi mật khẩu'
+        icon='lock-reset'
+        onPress={() => {
+          props.navigation.navigate('ChangePassword');
+        }}
+      />
+      <Divider />
+
+      {/* {auth.user.name === APPLE_DEMO_ACCOUNT_NAME && (
+        <>
+          <Divider></Divider>
+          <SettingButton
+            text="Yêu cầu xoá tài khoản"
+            icon="delete"
+            onPress={() => {
+              props.navigation.navigate('DeleteAccount');
+            }}
+          />
+        </>
+      )}
+
+      <Divider /> */}
+
+      <Portal>
+        <IconModal
+          variant='warning'
+          message={unregisterErr}
+          onDismiss={() => setUnregisterErr('')}
+        />
+        <IconModal
+          variant='warning'
+          message={logOutErr}
+          onDismiss={() => {
+            setlogOutErr('');
+            clearStorage();
+          }}
+        />
+      </Portal>
+    </View>
+  );
+};

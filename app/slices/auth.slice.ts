@@ -10,6 +10,10 @@ export interface UserInfo {
   createdAt: string;
   verified: boolean;
   email: string;
+  photoUrl?: string;
+  dormitory: string;
+  building: string;
+  room: string;
 }
 
 export interface AuthState {
@@ -29,7 +33,11 @@ const initialState: AuthState = {
     createdAt: '',
     verified: false,
     email: '',
-  },
+    photoUrl: '',
+    dormitory: '',
+    building: '',
+    room: ''
+  }
 };
 
 const authSlice = createSlice({
@@ -37,6 +45,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<UserInfo | null>) {
+      console.log(action.payload);
       state.userInfo = action.payload;
     },
     setToken: (
@@ -53,8 +62,8 @@ const authSlice = createSlice({
       state.userInfo = null;
       state.accessToken = null;
       state.refreshToken = null;
-    },
-  },
+    }
+  }
 });
 
 export const { setUser, setToken, removeUser } = authSlice.actions;

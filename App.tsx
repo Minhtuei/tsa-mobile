@@ -28,12 +28,13 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-
 import { Provider } from 'react-redux';
 
 import IconModal from '@components/IconModal';
-import { Setting } from '@pages/setting/Setting';
+import { Setting } from '@pages/account/setting/Setting';
 import * as Linking from 'expo-linking';
 import { useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
+import { Account } from '@pages/account/Account';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -265,18 +266,18 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
         )}
         <Tab.Screen
           options={{
-            tabBarIcon: 'cog',
-            title: 'Cài đặt'
+            tabBarIcon: 'account',
+            title: 'Cá nhân'
           }}
-          name='Setting'
-          component={Setting}
+          name='Account'
+          component={Account}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               // Prevent default action
               e.preventDefault();
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'Setting' }]
+                routes: [{ name: 'Account' }]
               });
             }
           })}

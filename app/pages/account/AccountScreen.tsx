@@ -6,18 +6,18 @@ import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { Divider, Portal, Surface, Switch, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SettingStackParamList } from '../../types/navigation';
 import IconModal from '@components/IconModal';
 import { useEffect, useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Image, Linking, View } from 'react-native';
 
 import SettingButton from '@components/SettingButton';
 import { useLogoutMutation } from '@services/auth.service';
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AccountStackParamList } from 'app/types/navigation';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
-export const SettingScreen = (
-  props: NativeStackScreenProps<SettingStackParamList, 'SettingScreen'>
+export const AccountScreen = (
+  props: NativeStackScreenProps<AccountStackParamList, 'AccountScreen'>
 ) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
@@ -60,52 +60,82 @@ export const SettingScreen = (
 
   return (
     <View style={globalStyles.fullScreen}>
-      <SettingButton
-        text='Hồ sơ'
-        icon='account'
-        onPress={() => {
-          props.navigation.navigate('Profile');
-        }}
-      />
-      <Divider />
-      <SettingButton
-        text='Chế độ màu'
-        icon='circle-half-full'
-        onPress={() => {
-          props.navigation.navigate('ChangeTheme');
-        }}
-      />
-      <Divider />
-      <SettingButton
-        text='Đổi mật khẩu'
-        icon='lock-reset'
-        onPress={() => {
-          props.navigation.navigate('ChangePassword');
-        }}
-      />
-      <Divider />
-      {/* <SettingButton
-        text="Trung tâm trợ giúp"
-        icon="help-circle"
-        onPress={() => {
-          Linking.openURL('https://loathanhtoan.com/');
-        }}
-      /> */}
-
-      {/* {auth.user.name === APPLE_DEMO_ACCOUNT_NAME && (
+      <View style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            backgroundColor: theme.colors.primary,
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          {auth.userInfo?.photoUrl ? (
+            <Image
+              source={{ uri: auth.userInfo.photoUrl }}
+              style={{ width: 100, height: 100, borderRadius: 50 }}
+              resizeMethod='resize'
+              resizeMode='cover'
+            />
+          ) : (
+            <FontAwesome name='user' size={50} color='white' />
+          )}
+        </View>
+        {auth.userInfo && (
+          <>
+            <Text style={[globalStyles.text, { marginTop: 16, fontSize: 20 }]}>
+              {auth.userInfo.lastName} {auth.userInfo.firstName}
+            </Text>
+            <Text
+              style={[
+                globalStyles.text,
+                { fontSize: 14, fontStyle: 'italic', color: theme.colors.secondary }
+              ]}
+            >
+              {auth.userInfo.role === 'STUDENT' ? 'Sinh viên' : 'Nhân viên'}
+            </Text>
+          </>
+        )}
+      </View>
+      {auth.userInfo && (
         <>
-          <Divider></Divider>
           <SettingButton
-            text="Yêu cầu xoá tài khoản"
-            icon="delete"
-            onPress={() => {
-              props.navigation.navigate('DeleteAccount');
-            }}
+            text='Số điện thoại'
+            icon='phone'
+            right={<Text>{auth.userInfo.phoneNumber}</Text>}
+          />
+          <SettingButton text='Email' icon='email' right={<Text>{auth.userInfo.email}</Text>} />
+          <SettingButton
+            text='Địa chỉ'
+            icon='map-marker'
+            right={
+              <Text>
+                {auth.userInfo.dormitory}
+                {auth.userInfo.building} - {auth.userInfo.room}
+              </Text>
+            }
           />
         </>
       )}
 
-      <Divider /> */}
+      <Divider />
+      <SettingButton
+        text='Trung tâm trợ giúp'
+        icon='help-circle'
+        onPress={() => {
+          Linking.openURL('https://tsa-frontend-coral.vercel.app/landing');
+        }}
+      />
+
+      <Divider />
+      <SettingButton
+        text='Cài đặt'
+        icon='cog'
+        onPress={() => {
+          props.navigation.navigate('SettingScreen');
+        }}
+      />
       <SettingButton
         text='Đăng xuất'
         icon='logout'

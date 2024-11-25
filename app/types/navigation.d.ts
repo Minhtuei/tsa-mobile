@@ -21,7 +21,7 @@ type MainTabParamList = {
   Home: NavigatorScreenParams<HomeStackParamList> | undefined;
   Order: NavigatorScreenParams<OrderStackParamList> | undefined;
   Report: NavigatorScreenParams<ReportStackParamList> | undefined;
-  Setting: NavigatorScreenParams<SettingStackParamList> | undefined;
+  Account: NavigatorScreenParams<AccountStackParamList> | undefined;
   Delivery: NavigatorScreenParams<DeliveryStackParamList> | undefined;
 };
 
@@ -48,10 +48,11 @@ type ReportStackParamList = {
   CreateReport: { orderId?: string } | undefined;
 };
 
-type SettingStackParamList = {
+type AccountStackParamList = {
   SettingScreen: undefined;
   Profile: undefined;
   ChangeTheme: undefined;
   ChangePassword: undefined;
+  AccountScreen: undefined;
   //   DeleteAccount: undefined; need for deploy on IOS
 };
