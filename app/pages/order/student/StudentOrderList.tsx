@@ -1,4 +1,4 @@
-import { OrderListHeader } from '@components/OrderListHeader';
+import { HeaderWithSearchAndFilter } from '@components/HeaderWithSearchAndFilter';
 import { SCREEN } from '@constants/screen';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -12,6 +12,7 @@ import { FAB, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import BackgroundIcon from '../../../../assets/background-icon.svg';
 import { StudentOrderItem } from './StudentOrderItem';
+import { FILTER_DATA, ORDER_STATUS_DATA } from '@constants/filter';
 
 export const StudentOrderList = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>
@@ -66,10 +67,13 @@ export const StudentOrderList = (
 
   return (
     <View style={{ flex: 1 }}>
-      <OrderListHeader
+      <HeaderWithSearchAndFilter
+        title='Danh sách đơn hàng'
+        searchString={orderId}
+        setSearchString={setOrderId}
+        filterList={FILTER_DATA}
+        statusList={ORDER_STATUS_DATA}
         {...{
-          orderId,
-          setOrderId,
           status,
           setStatus,
           filterType,
@@ -83,7 +87,6 @@ export const StudentOrderList = (
       <FlatList
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         contentContainerStyle={{
-          height: '100%',
           padding: 24,
           gap: 16
         }}

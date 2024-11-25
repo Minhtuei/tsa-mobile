@@ -1,4 +1,6 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
+import { Order } from './order';
+import { ReportType } from './report';
 
 type RootStackParamList = {
   SplashScreen: undefined;
@@ -16,11 +18,11 @@ type AuthStackParamList = {
 };
 
 type MainTabParamList = {
-  Home: undefined;
-  Order: undefined;
-  Report: undefined;
-  Setting: undefined;
-  Delivery: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList> | undefined;
+  Order: NavigatorScreenParams<OrderStackParamList> | undefined;
+  Report: NavigatorScreenParams<ReportStackParamList> | undefined;
+  Setting: NavigatorScreenParams<SettingStackParamList> | undefined;
+  Delivery: NavigatorScreenParams<DeliveryStackParamList> | undefined;
 };
 
 type HomeStackParamList = {
@@ -29,19 +31,21 @@ type HomeStackParamList = {
 
 type DeliveryStackParamList = {
   DeliveryList: { deliveries: DeliveryDetail[] };
-  DeliveryDetail: undefined;
+  DeliveryDetail: { deliveryId: string };
+  StaffTrackOrder: { order: Order };
 };
 
 type OrderStackParamList = {
   OrderList: undefined;
   OrderDetail: { order: Order };
   CreateOrder: undefined;
+  TrackOrder: { order: Order };
 };
 
 type ReportStackParamList = {
   ReportList: undefined;
-  ReportDetail: undefined;
-  CreateReport: undefined;
+  ReportDetail: { report: ReportType };
+  CreateReport: { orderId?: string } | undefined;
 };
 
 type SettingStackParamList = {

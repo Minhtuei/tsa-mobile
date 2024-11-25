@@ -1,22 +1,34 @@
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { TouchableOpacity, View } from 'react-native';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import { OrderStackParamList } from 'app/types/navigation';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { MainTabParamList, OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { getStatusRender, shortenUUID } from '@utils/order';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native';
 import { SCREEN } from '@constants/screen';
+import { CompositeScreenProps } from '@react-navigation/native';
 
-export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>) => {
+export const OrderDetail = (
+  props: CompositeScreenProps<
+    NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>,
+    NativeStackScreenProps<MainTabParamList, 'Report'>
+  >
+) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
-  const order = prop.route.params.order;
+  const order = props.route.params.order;
   const statusRender = getStatusRender(order.latestStatus);
 
   return (
-    <View style={{ flex: 1, position: 'relative' }}>
+    <ScrollView
+      style={{ flex: 1 }}
+      contentContainerStyle={{
+        position: 'relative',
+        height: '100%'
+      }}
+    >
       <LinearGradient
         colors={[theme.colors.background, theme.colors.primary]}
         start={{ x: 0.1, y: 0.1 }}
@@ -27,7 +39,7 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           left: 0,
           right: 0,
           width: SCREEN.width,
-          height: SCREEN.height
+          height: '100%'
         }}
       />
       <View
@@ -36,59 +48,29 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           alignItems: 'center',
           backgroundColor: 'transparent',
           paddingHorizontal: 8,
-          paddingVertical: 16,
+          paddingVertical: 32,
           gap: 32
         }}
       >
         <View
           style={[
             {
-              width: '95%',
-              padding: 16,
-              backgroundColor: theme.colors.surface,
+              padding: 24,
               borderRadius: 8,
+              width: '95%',
               gap: 8,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              position: 'relative'
             },
             globalStyles.SurfaceContainer
           ]}
         >
-          <Avatar.Image
-            size={64}
-            source={{ uri: 'https://i.pravatar.cc/300' }}
-            style={{ marginRight: 2 }}
-          />
-          <View style={{ flex: 1 }}>
-            <Text style={globalStyles.title}>Trần Nguyễn Minh Tuệ</Text>
-            <Text style={[globalStyles.text, { color: theme.colors.outline, fontStyle: 'italic' }]}>
-              Nhân viên giao hàng
-            </Text>
-          </View>
-          <TouchableOpacity onPress={() => {}}>
-            <Avatar.Icon size={48} icon='chat' style={{ backgroundColor: theme.colors.primary }} />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            padding: 24,
-            borderWidth: 3,
-            borderStyle: 'dashed',
-            borderColor: theme.colors.primary,
-            borderRadius: 8,
-            width: '95%',
-            gap: 8,
-            position: 'relative'
-          }}
-        >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={[globalStyles.title, { fontSize: 24 }]}>#{order.checkCode}</Text>
+            <Text style={[globalStyles.title, { fontSize: 24 }]}> {shortenUUID(order.id)}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Mã Đơn hàng:</Text>
+            <Text style={[globalStyles.title, { width: '40%' }]}>Checkcode:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
-              {shortenUUID(order.id)}
+              {order.checkCode}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
@@ -129,7 +111,11 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Phương thức thanh toán:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
-              {order.paymentMethod}
+              {order.paymentMethod === 'CASH'
+                ? 'Tiền mặt'
+                : order.paymentMethod === 'MOMO'
+                  ? 'Momo'
+                  : 'Qua ngân hàng'}
             </Text>
           </View>
           <View
@@ -146,32 +132,37 @@ export const OrderDetail = (prop: NativeStackScreenProps<OrderStackParamList, 'O
               flexDirection: 'row',
               alignItems: 'center',
               width: '100%',
-              justifyContent: 'space-between',
-              paddingVertical: 8,
-              paddingHorizontal: 16
+              justifyContent: 'space-between'
             }}
           >
             <Button
               mode='contained'
               style={[{ backgroundColor: theme.colors.error, minWidth: 60 }]}
               onPress={() => {
-                // prop.navigation.navigate('OrderHistory', { order: order });
+                props.navigation.navigate('Report', {
+                  screen: 'CreateReport',
+                  params: { orderId: order.id }
+                });
               }}
+              icon={'alert-circle'}
             >
               Khiếu nại
             </Button>
-            <Button
-              mode='contained'
-              style={{ minWidth: 60 }}
-              onPress={() => {
-                // prop.navigation.navigate('OrderHistory', { order: order });
-              }}
-            >
-              Theo dõi
-            </Button>
+            {order.latestStatus !== 'DELIVERED' && (
+              <Button
+                mode='contained'
+                style={{ minWidth: 60 }}
+                onPress={() => {
+                  props.navigation.navigate('TrackOrder', { order: order });
+                }}
+                icon={'map'}
+              >
+                Theo dõi
+              </Button>
+            )}
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };

@@ -44,7 +44,7 @@ export const lightTheme = {
       level2: 'rgb(240, 238, 249)',
       level3: 'rgb(235, 233, 247)',
       level4: 'rgb(233, 231, 246)',
-      level5: 'rgb(229, 228, 245)',
+      level5: 'rgb(229, 228, 245)'
     },
     surfaceDisabled: 'rgba(27, 27, 31, 0.12)',
     onSurfaceDisabled: 'rgba(27, 27, 31, 0.38)',
@@ -56,8 +56,8 @@ export const lightTheme = {
     warning: 'rgb(120, 89, 0)',
     onWarning: 'rgb(255, 255, 255)',
     warningContainer: 'rgb(255, 223, 158)',
-    onWarningContainer: 'rgb(38, 26, 0)',
-  },
+    onWarningContainer: 'rgb(38, 26, 0)'
+  }
 };
 
 export const darkTheme = {
@@ -99,7 +99,7 @@ export const darkTheme = {
       level2: 'rgb(40, 40, 49)',
       level3: 'rgb(45, 46, 56)',
       level4: 'rgb(46, 47, 58)',
-      level5: 'rgb(49, 51, 62)',
+      level5: 'rgb(49, 51, 62)'
     },
     surfaceDisabled: 'rgba(228, 225, 230, 0.12)',
     onSurfaceDisabled: 'rgba(228, 225, 230, 0.38)',
@@ -111,86 +111,86 @@ export const darkTheme = {
     warning: 'rgb(250, 189, 0)',
     onWarning: 'rgb(63, 46, 0)',
     warningContainer: 'rgb(91, 67, 0)',
-    onWarningContainer: 'rgb(255, 223, 158)',
-  },
+    onWarningContainer: 'rgb(255, 223, 158)'
+  }
 };
 
 const createStyles = (theme: MD3Theme) =>
   StyleSheet.create({
     keyboardAvoidingView: {
       flexGrow: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.background
     },
     auth: {
-      paddingVertical: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 16,
+      paddingVertical: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 16
     },
 
     error: {
       color: theme.colors.error,
-      marginBottom: 4,
+      marginBottom: 4
     },
     fullScreen: {
       padding: 16,
-      height: '100%',
+      height: '100%'
     },
     background: {
       flex: 1,
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.background
     },
     center: {
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'center'
     },
     vstack: {
       width: '100%',
       alignItems: 'center',
-      gap: 8,
+      gap: 8
     },
     hstack: {
       width: '100%',
       flexDirection: 'row',
       flexWrap: 'wrap',
       justifyContent: 'center',
-      alignItems: 'center',
+      alignItems: 'center'
     },
     inputStack: {
       width: '100%',
-      alignItems: 'flex-start',
+      alignItems: 'flex-start'
     },
     input: {
       width: '100%',
-      marginBottom: 8,
+      marginBottom: 8
     },
     modal: {
       padding: 24,
       margin: 24,
       backgroundColor: theme.colors.background,
       borderRadius: 12,
-      gap: 8,
+      gap: 8
     },
     wideButton: {
       width: '100%',
       padding: 2,
 
-      alignItems: 'stretch',
+      alignItems: 'stretch'
     },
     mediumButton: {
       width: '80%',
-      marginVertical: 8,
+      marginVertical: 8
     },
     smallButton: {
       marginVertical: 4,
-      fontSize: 12,
+      fontSize: 12
     },
     text: {
       color: theme.colors.onSurface,
       fontFamily: 'Roboto',
-      fontSize: 16,
+      fontSize: 16
     },
     title: {
       fontSize: 18,
       fontWeight: 'bold',
-      fontFamily: 'Roboto',
+      fontFamily: 'Roboto'
     },
     SurfaceContainer: {
       alignSelf: 'center',
@@ -199,12 +199,12 @@ const createStyles = (theme: MD3Theme) =>
       shadowColor: '#000',
       shadowOffset: {
         width: 0,
-        height: 2,
+        height: 2
       },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
-      elevation: 2,
-    },
+      elevation: 14
+    }
   });
 
 export default createStyles;

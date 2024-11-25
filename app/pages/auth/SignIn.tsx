@@ -152,10 +152,12 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
           }
         ]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 40}
       >
         <ScrollView
           keyboardShouldPersistTaps='handled'
-          style={[styles.scrollView, { backgroundColor: theme.colors.background }]}
+          style={{ flex: 1 }}
+          contentContainerStyle={[styles.scrollView, { backgroundColor: theme.colors.background }]}
         >
           <View style={styles.formContainer}>
             <Text style={[globalStyles.title, styles.title]}>Chào mừng bạn đến với TSA</Text>
@@ -204,13 +206,14 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
               </TouchableOpacity>
             </View>
             <Seperator />
-            <Button mode='outlined' onPress={() => {}} style={styles.googleButton}>
-              <View style={styles.googleButtonContent}>
-                <GoogleIcon width={24} height={24} />
-                <Text style={[styles.buttonContent, { color: theme.colors.onSurface }]}>
-                  Đăng nhập với Google
-                </Text>
-              </View>
+            <Button
+              mode='outlined'
+              onPress={() => {}}
+              style={styles.googleButton}
+              labelStyle={styles.googleButtonContent}
+            >
+              <GoogleIcon width={24} height={24} />
+              Đăng nhập với Google
             </Button>
           </View>
         </ScrollView>
@@ -238,7 +241,6 @@ const styles = StyleSheet.create({
   },
 
   scrollView: {
-    flex: 1,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 32
@@ -253,9 +255,7 @@ const styles = StyleSheet.create({
     padding: 5
   },
   googleButtonContent: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 10
+    transform: [{ translateX: 10 }, { translateY: -6 }]
   },
   forgotPasswordText: {
     alignSelf: 'flex-end'
