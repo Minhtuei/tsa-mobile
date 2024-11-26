@@ -9,6 +9,7 @@ interface PreViewImageModalProps {
   proofUri: string | null;
   setValue: (field: string, value: any) => void;
   disabled?: boolean;
+  title: string;
 }
 
 export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
@@ -16,7 +17,8 @@ export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
   setVisible,
   proofUri,
   setValue,
-  disabled
+  disabled,
+  title
 }) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
@@ -37,7 +39,7 @@ export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
       onDismiss={() => setVisible(false)}
     >
       <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
-        <Text style={[globalStyles.title, { marginBottom: 16 }]}>Ảnh minh chứng</Text>
+        <Text style={[globalStyles.title, { marginBottom: 16 }]}>{title}</Text>
         {proofUri && (
           <Image
             source={{ uri: proofUri }}

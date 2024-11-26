@@ -14,6 +14,7 @@ export interface UserInfo {
   dormitory: string;
   building: string;
   room: string;
+  status: 'AVAILABLE' | 'BUSY' | 'OFFLINE';
 }
 
 export interface AuthState {
@@ -36,7 +37,8 @@ const initialState: AuthState = {
     photoUrl: '',
     dormitory: '',
     building: '',
-    room: ''
+    room: '',
+    status: 'AVAILABLE'
   }
 };
 

@@ -17,7 +17,11 @@ export const Account = () => {
     >
       <Stack.Screen name='AccountScreen' component={AccountScreen} options={{ title: '' }} />
       <Stack.Screen name='SettingScreen' component={SettingScreen} options={{ title: 'Cài đặt' }} />
-      <Stack.Screen name='Profile' component={Profile} options={{ title: 'Thông tin cá nhân' }} />
+      <Stack.Screen
+        name='Profile'
+        component={Profile}
+        options={{ title: 'Thay đổi thông tin cá nhân' }}
+      />
       <Stack.Screen name='ChangeTheme' component={ChangeTheme} options={{ title: 'Chế độ màu' }} />
       <Stack.Screen
         name='ChangePassword'

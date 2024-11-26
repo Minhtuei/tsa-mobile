@@ -30,7 +30,7 @@ import { Provider } from 'react-redux';
 import IconModal from '@components/IconModal';
 import { Setting } from '@pages/account/setting/Setting';
 import * as Linking from 'expo-linking';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
@@ -151,16 +151,18 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
   const app = useAppSelector((state) => state.app);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
-  if (auth.refreshToken === null) {
-    dispatch(stopTimer());
-    dispatch(apiService.util.resetApiState());
-    props.navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'AuthStack' }]
-      })
-    );
-  }
+  useEffect(() => {
+    if (auth.refreshToken === null) {
+      dispatch(stopTimer());
+      dispatch(apiService.util.resetApiState());
+      props.navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AuthStack' }]
+        })
+      );
+    }
+  }, [auth.refreshToken, dispatch, props.navigation]);
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { Order } from './order';
 import { ReportType } from './report';
+import { UserInfo } from '@slices/auth.slice';
 
 type RootStackParamList = {
   SplashScreen: undefined;
@@ -50,7 +51,7 @@ type ReportStackParamList = {
 
 type AccountStackParamList = {
   SettingScreen: undefined;
-  Profile: undefined;
+  Profile: { userInfo: UserInfo | undefined };
   ChangeTheme: undefined;
   ChangePassword: undefined;
   AccountScreen: undefined;

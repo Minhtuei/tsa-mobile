@@ -6,6 +6,7 @@ type ConfirmationDialogProps = {
   onSubmit: () => void;
   title: string;
   content: string;
+  notShowCancel?: boolean;
 };
 
 export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
@@ -28,16 +29,18 @@ export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
         <Text style={{ color: theme.colors.onSurface, fontSize: 16 }}>{props.content}</Text>
       </Dialog.Content>
       <Dialog.Actions>
-        <Button
-          onPress={() => {
-            props.setVisible(false);
-          }}
-          buttonColor={theme.colors.error}
-          textColor={theme.colors.onError}
-          style={{ minWidth: 60, marginRight: 12 }}
-        >
-          Hủy
-        </Button>
+        {!props.notShowCancel && (
+          <Button
+            onPress={() => {
+              props.setVisible(false);
+            }}
+            buttonColor={theme.colors.error}
+            textColor={theme.colors.onError}
+            style={{ minWidth: 60, marginRight: 12 }}
+          >
+            Hủy
+          </Button>
+        )}
         <Button
           onPress={() => {
             props.onSubmit();
@@ -47,7 +50,7 @@ export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
           buttonColor={theme.colors.primary}
           textColor={theme.colors.onPrimary}
         >
-          Có
+          {props.notShowCancel ? 'OK' : 'Xác nhận'}
         </Button>
       </Dialog.Actions>
     </Dialog>

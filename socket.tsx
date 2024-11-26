@@ -23,7 +23,6 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const auth = useAppSelector((state) => state.auth);
   useEffect(() => {
-    console.log(auth.accessToken);
     const newSocket = io(process.env.EXPO_SOCKET_SERVER_URL, {
       transportOptions: {
         polling: {

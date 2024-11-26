@@ -32,8 +32,26 @@ export const createAccountSchema = Yup.object({
     .oneOf([Yup.ref('password')], 'Mật khẩu không khớp'),
   token: Yup.string().required('Mã xác thực không được để trống')
 });
-
+export const updateAccountSchema = Yup.object({
+  firstName: Yup.string().optional().nonNullable(),
+  lastName: Yup.string().optional().nonNullable(),
+  phoneNumber: Yup.string().optional().nonNullable(),
+  dormitory: Yup.string().optional().nonNullable(),
+  room: Yup.string().optional().nonNullable(),
+  building: Yup.string().optional().nonNullable(),
+  password: Yup.string()
+    .optional()
+    .matches(
+      passwordPattern,
+      'Mật khẩu phải chứa ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt'
+    ),
+  confirmPassword: Yup.string()
+    .optional()
+    .oneOf([Yup.ref('password')], 'Mật khẩu không khớp'),
+  photoUrl: Yup.string().optional().nonNullable()
+});
 export type SignInSchemaType = Yup.InferType<typeof signInSchema>;
 export type SignUpSchemaType = Yup.InferType<typeof signUpSchema>;
 export type VerifyEmailSchemaType = Yup.InferType<typeof verifyEmailSchema>;
 export type CreateAccountSchemaType = Yup.InferType<typeof createAccountSchema>;
+export type UpdateAccountSchemaType = Yup.InferType<typeof updateAccountSchema>;

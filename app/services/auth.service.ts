@@ -1,7 +1,8 @@
 import {
   CreateAccountSchemaType,
   SignInSchemaType,
-  SignUpSchemaType
+  SignUpSchemaType,
+  UpdateAccountSchemaType
 } from '@validations/auth.schema';
 import { apiService } from './api.service';
 import { AuthState, UserInfo } from '@slices/auth.slice';
