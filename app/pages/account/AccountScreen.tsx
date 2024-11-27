@@ -3,10 +3,10 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { removeUser, setUser } from '@slices/auth.slice';
+import { removeUser, setUser, UserInfo } from '@slices/auth.slice';
 import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Image, Linking, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Divider, Portal, Text } from 'react-native-paper';
 
@@ -17,6 +17,7 @@ import { DASHBOARD_HEADER_HEIGHT } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useLogoutMutation } from '@services/auth.service';
 import { useGetUserInfoQuery } from '@services/user.service';
+import { googleSignOut } from '@utils/googleSignIn';
 import { AccountStackParamList } from 'app/types/navigation';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
@@ -34,7 +35,6 @@ export const AccountScreen = (
   const [notification, setNotification] = useState(false);
   const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
   const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
-
   //get user info
   const {
     data: userInfo,
@@ -44,10 +44,23 @@ export const AccountScreen = (
     isFetching: userInfoIsFetching
   } = useGetUserInfoQuery();
   const [visible, setVisible] = useState(false);
+
   useEffect(() => {
     if (userInfo) {
       dispatch(setUser(userInfo));
     }
+  }, [userInfo]);
+  const isVerified = useMemo(() => {
+    if (userInfo) {
+      return Object.keys(userInfo || {})
+        .filter((key) => key !== 'photoUrl')
+        .every(
+          (key) =>
+            userInfo[key as keyof UserInfo] !== undefined &&
+            userInfo[key as keyof UserInfo] !== null
+        );
+    }
+    return false;
   }, [userInfo]);
   const signOut = async () => {
     if (!auth.refreshToken) {
@@ -62,7 +75,6 @@ export const AccountScreen = (
         setlogOutErr(err.data.message);
       });
   };
-
   const clearStorage = async () => {
     if (Platform.OS === 'ios' || Platform.OS === 'android') {
       await SecureStore.deleteItemAsync('token');
@@ -71,11 +83,14 @@ export const AccountScreen = (
     }
     await AsyncStorage.removeItem('name');
     await AsyncStorage.removeItem('email');
+    const { error } = await googleSignOut();
+    if (error) {
+      setlogOutErr(error);
+    }
     dispatch(removeUser());
   };
 
   const globalStyles = useGlobalStyles();
-
   return (
     <ScrollView
       refreshControl={
@@ -123,7 +138,7 @@ export const AccountScreen = (
             >
               {userInfo?.photoUrl ? (
                 <Image
-                  source={{ uri: userInfo.photoUrl }}
+                  source={{ uri: userInfo?.photoUrl }}
                   style={{
                     width: 100,
                     height: 100,
@@ -137,7 +152,7 @@ export const AccountScreen = (
               ) : (
                 <FontAwesome name='user' size={50} color='white' />
               )}
-              {userInfo?.verified && (
+              {isVerified ? (
                 <FontAwesome
                   name='check'
                   size={24}
@@ -147,6 +162,21 @@ export const AccountScreen = (
                     bottom: 0,
                     right: 0,
                     backgroundColor: theme.colors.primary,
+                    borderRadius: 16,
+                    padding: 4,
+                    elevation: 5
+                  }}
+                />
+              ) : (
+                <FontAwesome
+                  name='exclamation'
+                  size={24}
+                  color={theme.colors.error}
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    right: 0,
+                    backgroundColor: theme.colors.background,
                     borderRadius: 16,
                     padding: 4,
                     elevation: 5
@@ -167,28 +197,40 @@ export const AccountScreen = (
                 >
                   {userInfo.role === 'STUDENT' ? 'Sinh viên' : 'Nhân viên'}
                 </Text>
+                {!isVerified && (
+                  <Text
+                    style={[
+                      globalStyles.text,
+                      { fontSize: 14, fontStyle: 'italic', color: theme.colors.error }
+                    ]}
+                  >
+                    Chưa cập nhật thông tin
+                  </Text>
+                )}
               </View>
             )}
           </View>
-          {userInfo && (
-            <>
-              <SettingButton
-                text='Số điện thoại'
-                icon='phone'
-                right={<Text>{userInfo.phoneNumber}</Text>}
-              />
-              <SettingButton text='Email' icon='email' right={<Text>{userInfo.email}</Text>} />
-              <SettingButton
-                text='Địa chỉ'
-                icon='map-marker'
-                right={
-                  <Text>
-                    {userInfo.dormitory}
-                    {userInfo.building} - {userInfo.room}
-                  </Text>
-                }
-              />
-            </>
+          {userInfo?.phoneNumber && (
+            <SettingButton
+              text='Số điện thoại'
+              icon='phone'
+              right={<Text>{userInfo.phoneNumber}</Text>}
+            />
+          )}
+          {userInfo?.email && (
+            <SettingButton text='Email' icon='email' right={<Text>{userInfo.email}</Text>} />
+          )}
+          {userInfo?.dormitory && (
+            <SettingButton
+              text='Địa chỉ'
+              icon='map-marker'
+              right={
+                <Text>
+                  {userInfo.dormitory}
+                  {userInfo.building} - {userInfo.room}
+                </Text>
+              }
+            />
           )}
 
           <Divider />

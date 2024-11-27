@@ -35,6 +35,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
 import { Account } from '@pages/account/Account';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -54,6 +55,9 @@ registerTranslation('vi', {
   minute: 'Phút'
 });
 
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
+});
 const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createMaterialBottomTabNavigator<MainTabParamList>();

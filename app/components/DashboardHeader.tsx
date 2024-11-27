@@ -1,7 +1,7 @@
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
 import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Animated, ImageBackground, Platform, View } from 'react-native';
+import { Animated, Image, ImageBackground, Platform, View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import InfoCard from '../pages/home/InfoCard';
 const BackgroundImg = require('../../assets/header-background.png');
@@ -84,7 +84,14 @@ export const DashboardHeader = ({
                   justifyContent: 'center'
                 }}
               >
-                <FontAwesome name='user' size={24} color={theme.colors.onPrimary} />
+                {auth.userInfo?.photoUrl ? (
+                  <Image
+                    source={{ uri: auth.userInfo?.photoUrl }}
+                    style={{ width: 48, height: 48, borderRadius: 24 }}
+                  />
+                ) : (
+                  <FontAwesome name='user' size={24} color='white' />
+                )}
               </View>
               <View style={{ gap: 2, flex: 1 }}>
                 <Text

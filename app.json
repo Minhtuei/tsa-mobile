@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "tsa-mobile",
-    "slug": "tsa-mobile",
+    "name": "tsa",
+    "slug": "tsa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.tsa"
+      "googleServicesFile": "./config/google-services.json",
+      "package": "com.ttq.tsa"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,7 +40,9 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
-      ]
+      ],
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
     ]
   }
 }

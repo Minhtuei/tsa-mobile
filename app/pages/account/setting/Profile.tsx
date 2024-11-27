@@ -25,6 +25,7 @@ import { useUpdateUserInfoMutation } from '@services/user.service';
 import { updateAccountSchema, UpdateAccountSchemaType } from '@validations/auth.schema';
 import Toast from 'react-native-root-toast';
 import { PhotoInput } from './ProfileField';
+import { LoadingScreen } from '@components/LoadingScreen';
 export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Profile'>) => {
   const { userInfo } = props.route.params;
   const theme = useAppTheme();
@@ -151,23 +152,7 @@ export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Pr
         </View>
 
         <Portal>
-          {(isUpdateProfileLoading || isUploadImageLoading) && (
-            <View
-              style={{
-                position: 'absolute',
-                justifyContent: 'center',
-                alignItems: 'center',
-                zIndex: 1000,
-                top: 0,
-                left: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.5)', // Adjust the color and opacity as needed
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              <ActivityIndicator size='large' color={theme.colors.primary} />
-            </View>
-          )}
+          {(isUpdateProfileLoading || isUploadImageLoading) && <LoadingScreen />}
           <ChooseImageModal
             title='Chọn ảnh minh chứng'
             visible={proofModalVisible}

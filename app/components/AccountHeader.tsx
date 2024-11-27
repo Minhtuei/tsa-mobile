@@ -20,7 +20,7 @@ export const AccountHeader = ({
         height: DASHBOARD_HEADER_HEIGHT / 1.2,
         position: 'absolute'
       }}
-      blurRadius={2}
+      blurRadius={1}
       resizeMethod='resize'
       resizeMode='cover'
       source={

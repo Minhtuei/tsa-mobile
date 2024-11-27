@@ -22,9 +22,7 @@ function isErrorWithMessage(error: unknown): error is { message: string } {
 /**
  * Type predicate to narrow an unknown error to an object with a 'data' property that has a string 'message' property
  */
-function isErrorWithDataMessage(
-  error: unknown
-): error is { data: { message: string } } {
+function isErrorWithDataMessage(error: unknown): error is { data: { message: string } } {
   return (
     typeof error === 'object' &&
     error != null &&
@@ -41,7 +39,7 @@ function isErrorWithDataMessage(
 export function getErrorMessage(err: unknown): string {
   const SERVER_ERROR_MESSAGE = 'Server không phản hồi';
   const UNKNOWN_ERROR_MESSAGE = 'Đã xảy ra lỗi không xác định';
-
+  const FETCH_ERROR_MESSAGE = 'Vui lòng kiểm tra lại kết nối mạng';
   if (isFetchBaseQueryError(err) && isErrorWithDataMessage(err)) {
     if (err.status === 500 || err.data.message === 'Aborted') {
       return SERVER_ERROR_MESSAGE;
@@ -53,6 +51,8 @@ export function getErrorMessage(err: unknown): string {
     }
     return err.message;
   }
-  console.error(err);
+  if ((err as any).status === 'FETCH_ERROR') {
+    return FETCH_ERROR_MESSAGE;
+  }
   return UNKNOWN_ERROR_MESSAGE;
 }

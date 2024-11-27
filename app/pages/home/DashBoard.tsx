@@ -51,7 +51,7 @@ export const Dashboard = () => {
                 position: 'absolute',
                 ...Platform.select({
                   android: {
-                    elevation: 3
+                    elevation: 14
                   },
                   ios: {
                     shadowColor: '#000',
