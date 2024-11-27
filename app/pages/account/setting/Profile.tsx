@@ -26,6 +26,8 @@ import { updateAccountSchema, UpdateAccountSchemaType } from '@validations/auth.
 import Toast from 'react-native-root-toast';
 import { PhotoInput } from './ProfileField';
 import { LoadingScreen } from '@components/LoadingScreen';
+import { setUser } from '@slices/auth.slice';
+import { saveUserInfo } from '@utils/userInfo';
 export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Profile'>) => {
   const { userInfo } = props.route.params;
   const theme = useAppTheme();
@@ -39,6 +41,8 @@ export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Pr
   const [updateProfile, { isLoading: isUpdateProfileLoading }] = useUpdateUserInfoMutation();
   const [fileName, setFileName] = useState<string | null | undefined>(null);
   const [fileType, setFileType] = useState<string | null | undefined>(null);
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state) => state.auth);
   const {
     handleSubmit,
     watch,
@@ -88,6 +92,20 @@ export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Pr
           photoUrl: proofUri
         };
         await updateProfile(validateData).unwrap();
+        if (auth.userInfo) {
+          const castUserInfo = {
+            ...auth.userInfo,
+            ...validateData,
+            id: auth.userInfo.id,
+            role: auth.userInfo.role,
+            createdAt: auth.userInfo.createdAt,
+            status: auth.userInfo.status,
+            verified: auth.userInfo.verified,
+            email: auth.userInfo.email
+          };
+          dispatch(setUser(castUserInfo));
+          await saveUserInfo(castUserInfo);
+        }
         setSuccessMsg('Cập nhật thông tin thành công');
       } catch (error) {
         setErrorMsg('Cập nhật thông tin thất bại');

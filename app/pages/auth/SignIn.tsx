@@ -27,6 +27,7 @@ import GoogleIcon from '../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './components/AuthForm';
 import { googleSignIn } from '@utils/googleSignIn';
 import { LoadingScreen } from '@components/LoadingScreen';
+import { saveToken, saveUserInfo } from '@utils/userInfo';
 
 const Seperator = () => {
   const theme = useAppTheme();
@@ -78,73 +79,43 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
     };
     getEmail();
   }, []);
-  const onSubmit = (data: SignInSchemaType) => {
-    login(data)
-      .unwrap()
-      .then(async (res) => {
-        if (res.userInfo) {
-          await AsyncStorage.setItem('user', JSON.stringify(res.userInfo));
-          dispatch(setUser(res.userInfo));
-        }
-        if (res.accessToken && res.refreshToken) {
-          if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.setItemAsync('accessToken', res.accessToken);
-            await SecureStore.setItemAsync('refreshToken', res.refreshToken);
-          } else {
-            await AsyncStorage.setItem('accessToken', res.accessToken);
-            await AsyncStorage.setItem('refreshToken', res.refreshToken);
-          }
-          dispatch(
-            setToken({
-              accessToken: res.accessToken,
-              refreshToken: res.refreshToken
-            })
-          );
-        }
-        props.navigation.navigate('MainTab', {
-          screen: 'Home'
-        });
-      })
-      .catch((err) => {
-        setErrorMsg('Đăng nhập thất bại');
+  const handleSignIn = async (
+    signInMethod: 'email' | 'google',
+    data?: SignInSchemaType,
+    idToken?: string
+  ) => {
+    try {
+      // Determine which sign-in method to use
+      const apiCall =
+        signInMethod === 'email'
+          ? () => login(data as SignInSchemaType).unwrap()
+          : () => googleSignInBe({ idToken: idToken as string }).unwrap();
+      // Execute the API call
+      const res = await apiCall();
+      // Save user info if available
+      if (res.userInfo) {
+        await saveUserInfo(res.userInfo);
+        dispatch(setUser(res.userInfo));
+      }
+      // Save tokens if available
+      if (res.accessToken && res.refreshToken) {
+        await saveToken(res.accessToken, res.refreshToken);
+        dispatch(
+          setToken({
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken
+          })
+        );
+      }
+      // Navigate to the main app
+      props.navigation.navigate('MainTab', {
+        screen: 'Home'
       });
-  };
-  const handleGoogleSignIn = async () => {
-    const { error, idToken } = await googleSignIn();
-    if (error) {
-      setErrorMsg(error);
-    } else if (idToken) {
-      googleSignInBe({ idToken })
-        .unwrap()
-        .then(async (res) => {
-          if (res.userInfo) {
-            await AsyncStorage.setItem('user', JSON.stringify(res.userInfo));
-            dispatch(setUser(res.userInfo));
-          }
-          if (res.accessToken && res.refreshToken) {
-            if (Platform.OS === 'ios' || Platform.OS === 'android') {
-              await SecureStore.setItemAsync('accessToken', res.accessToken);
-              await SecureStore.setItemAsync('refreshToken', res.refreshToken);
-            } else {
-              await AsyncStorage.setItem('accessToken', res.accessToken);
-              await AsyncStorage.setItem('refreshToken', res.refreshToken);
-            }
-            dispatch(
-              setToken({
-                accessToken: res.accessToken,
-                refreshToken: res.refreshToken
-              })
-            );
-          }
-          props.navigation.navigate('MainTab', {
-            screen: 'Home'
-          });
-        })
-        .catch((err) => {
-          setErrorMsg('Đăng nhập Google thất bại');
-        });
+    } catch (err) {
+      setErrorMsg('Đăng nhập thất bại');
     }
   };
+
   return (
     <SafeAreaView
       style={[
@@ -202,7 +173,7 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
               </Text>
             </TouchableOpacity>
             <Button
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit((data) => handleSignIn('email', data))}
               mode='contained'
               style={[globalStyles.wideButton, styles.loginButton]}
               labelStyle={styles.buttonContent}
@@ -230,7 +201,14 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
             <Seperator />
             <Button
               mode='outlined'
-              onPress={handleGoogleSignIn}
+              onPress={async () => {
+                const { idToken, error } = await googleSignIn();
+                if (idToken) {
+                  handleSignIn('google', undefined, idToken);
+                } else {
+                  setErrorMsg(error);
+                }
+              }}
               style={styles.googleButton}
               labelStyle={styles.googleButtonContent}
               disabled={isGoogleLoading || isLoading}

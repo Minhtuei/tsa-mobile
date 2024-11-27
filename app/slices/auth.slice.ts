@@ -3,17 +3,17 @@ import { Role } from 'app/types/role';
 
 export interface UserInfo {
   id: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
   role: string;
   createdAt: string;
   verified: boolean;
   email: string;
   photoUrl?: string;
-  dormitory: string;
-  building: string;
-  room: string;
+  dormitory?: string;
+  building?: string;
+  room?: string;
   status: 'AVAILABLE' | 'BUSY' | 'OFFLINE';
 }
 

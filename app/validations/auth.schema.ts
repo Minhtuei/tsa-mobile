@@ -33,12 +33,12 @@ export const createAccountSchema = Yup.object({
   token: Yup.string().required('Mã xác thực không được để trống')
 });
 export const updateAccountSchema = Yup.object({
-  firstName: Yup.string().optional().nonNullable(),
-  lastName: Yup.string().optional().nonNullable(),
-  phoneNumber: Yup.string().optional().nonNullable(),
-  dormitory: Yup.string().optional().nonNullable(),
-  room: Yup.string().optional().nonNullable(),
-  building: Yup.string().optional().nonNullable(),
+  firstName: Yup.string().optional().nonNullable('Tên không được để trống'),
+  lastName: Yup.string().optional().nonNullable('Họ không được để trống'),
+  phoneNumber: Yup.string().optional().nonNullable('Số điện thoại không được để trống'),
+  dormitory: Yup.string().optional().nonNullable('Kí túc xá không được để trống'),
+  room: Yup.string().optional().nonNullable('Phòng không được để trống'),
+  building: Yup.string().optional().nonNullable('Tòa nhà không được để trống'),
   password: Yup.string()
     .optional()
     .matches(

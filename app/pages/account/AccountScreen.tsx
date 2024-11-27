@@ -3,11 +3,11 @@ import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { removeUser, setUser, UserInfo } from '@slices/auth.slice';
+import { removeUser, UserInfo } from '@slices/auth.slice';
 import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
-import { useEffect, useMemo, useState } from 'react';
-import { Image, Linking, RefreshControl, ScrollView, TouchableOpacity, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { Image, Linking, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Divider, Portal, Text } from 'react-native-paper';
 
 import { AccountHeader } from '@components/AccountHeader';
@@ -16,7 +16,6 @@ import SettingButton from '@components/SettingButton';
 import { DASHBOARD_HEADER_HEIGHT } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useLogoutMutation } from '@services/auth.service';
-import { useGetUserInfoQuery } from '@services/user.service';
 import { googleSignOut } from '@utils/googleSignIn';
 import { AccountStackParamList } from 'app/types/navigation';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
@@ -26,6 +25,7 @@ export const AccountScreen = (
 ) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
+  const userInfo = auth.userInfo;
   const theme = useAppTheme();
 
   // Show error then log out
@@ -35,21 +35,9 @@ export const AccountScreen = (
   const [notification, setNotification] = useState(false);
   const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
   const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
-  //get user info
-  const {
-    data: userInfo,
-    error: userInfoError,
-    isError: userInfoIsError,
-    refetch: refetchUserInfo,
-    isFetching: userInfoIsFetching
-  } = useGetUserInfoQuery();
+
   const [visible, setVisible] = useState(false);
 
-  useEffect(() => {
-    if (userInfo) {
-      dispatch(setUser(userInfo));
-    }
-  }, [userInfo]);
   const isVerified = useMemo(() => {
     if (userInfo) {
       return Object.keys(userInfo || {})
@@ -93,9 +81,6 @@ export const AccountScreen = (
   const globalStyles = useGlobalStyles();
   return (
     <ScrollView
-      refreshControl={
-        <RefreshControl refreshing={userInfoIsFetching} onRefresh={refetchUserInfo} />
-      }
       style={{ backgroundColor: theme.colors.background, flex: 1 }}
       keyboardShouldPersistTaps='handled'
       contentContainerStyle={{
@@ -106,7 +91,7 @@ export const AccountScreen = (
         <AccountHeader
           backgroundUrl={userInfo?.photoUrl}
           onRightPress={() => {
-            props.navigation.navigate('Profile', { userInfo: userInfo });
+            if (userInfo) props.navigation.navigate('Profile', { userInfo: userInfo });
           }}
         />
         <View

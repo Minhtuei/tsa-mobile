@@ -22,7 +22,7 @@ export const googleSignIn = async (): Promise<GoogleSignInResult> => {
       const firebaseIdToken = await userCredential.user.getIdToken(true);
       return { idToken: firebaseIdToken, error: null };
     } else {
-      return { idToken: null, error: 'Lỗi không xác định trong quá trình đăng nhập' };
+      return { idToken: null, error: null };
     }
   } catch (err) {
     let errorMessage = 'Lỗi không xác định trong quá trình đăng nhập';
