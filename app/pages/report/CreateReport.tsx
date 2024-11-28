@@ -168,6 +168,7 @@ export const CreateReport = (
             setVisible={setViewImageModalVisible}
             proofUri={watch('proof')}
             setValue={(field, value) => setValue('proof', value)}
+            title='Ảnh minh chứng'
           />
           <ConfirmationDialog
             visible={visible}

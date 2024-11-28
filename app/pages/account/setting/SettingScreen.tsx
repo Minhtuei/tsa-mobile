@@ -6,18 +6,18 @@ import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { Divider, Portal, Surface, Switch, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SettingStackParamList } from '../../types/navigation';
 import IconModal from '@components/IconModal';
 import { useEffect, useState } from 'react';
-import { Linking, View } from 'react-native';
+import { Image, Linking, View } from 'react-native';
 
 import SettingButton from '@components/SettingButton';
 import { useLogoutMutation } from '@services/auth.service';
-
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AccountStackParamList } from 'app/types/navigation';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
 export const SettingScreen = (
-  props: NativeStackScreenProps<SettingStackParamList, 'SettingScreen'>
+  props: NativeStackScreenProps<AccountStackParamList, 'SettingScreen'>
 ) => {
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
@@ -60,14 +60,14 @@ export const SettingScreen = (
 
   return (
     <View style={globalStyles.fullScreen}>
-      <SettingButton
+      {/* <SettingButton
         text='Hồ sơ'
         icon='account'
         onPress={() => {
           props.navigation.navigate('Profile');
         }}
       />
-      <Divider />
+      // <Divider /> */}
       <SettingButton
         text='Chế độ màu'
         icon='circle-half-full'
@@ -84,13 +84,6 @@ export const SettingScreen = (
         }}
       />
       <Divider />
-      {/* <SettingButton
-        text="Trung tâm trợ giúp"
-        icon="help-circle"
-        onPress={() => {
-          Linking.openURL('https://loathanhtoan.com/');
-        }}
-      /> */}
 
       {/* {auth.user.name === APPLE_DEMO_ACCOUNT_NAME && (
         <>
@@ -106,13 +99,7 @@ export const SettingScreen = (
       )}
 
       <Divider /> */}
-      <SettingButton
-        text='Đăng xuất'
-        icon='logout'
-        disabled={logOutLoading}
-        loading={logOutLoading}
-        onPress={signOut}
-      />
+
       <Portal>
         <IconModal
           variant='warning'

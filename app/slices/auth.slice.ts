@@ -3,13 +3,18 @@ import { Role } from 'app/types/role';
 
 export interface UserInfo {
   id: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
   role: string;
   createdAt: string;
   verified: boolean;
   email: string;
+  photoUrl?: string;
+  dormitory?: string;
+  building?: string;
+  room?: string;
+  status: 'AVAILABLE' | 'BUSY' | 'OFFLINE';
 }
 
 export interface AuthState {
@@ -29,7 +34,12 @@ const initialState: AuthState = {
     createdAt: '',
     verified: false,
     email: '',
-  },
+    photoUrl: '',
+    dormitory: '',
+    building: '',
+    room: '',
+    status: 'AVAILABLE'
+  }
 };
 
 const authSlice = createSlice({
@@ -53,8 +63,8 @@ const authSlice = createSlice({
       state.userInfo = null;
       state.accessToken = null;
       state.refreshToken = null;
-    },
-  },
+    }
+  }
 });
 
 export const { setUser, setToken, removeUser } = authSlice.actions;

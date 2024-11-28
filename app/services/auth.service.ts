@@ -1,10 +1,10 @@
+import { AuthState } from '@slices/auth.slice';
 import {
   CreateAccountSchemaType,
   SignInSchemaType,
   SignUpSchemaType
 } from '@validations/auth.schema';
 import { apiService } from './api.service';
-import { AuthState, UserInfo } from '@slices/auth.slice';
 const authService = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
@@ -46,6 +46,13 @@ const authService = apiService.injectEndpoints({
         method: 'POST',
         body
       })
+    }),
+    googleSignIn: build.mutation<AuthState, { idToken: string }>({
+      query: (body) => ({
+        url: `auth/signin/google`,
+        method: 'POST',
+        body
+      })
     })
   })
 });
@@ -55,5 +62,6 @@ export const {
   useVerifyEmailQuery,
   useCompleteRegistrationMutation,
   useRefreshTokenMutation,
-  useLogoutMutation
+  useLogoutMutation,
+  useGoogleSignInMutation
 } = authService;

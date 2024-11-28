@@ -308,6 +308,7 @@ export const ReportDetail = (
             proofUri={watch('proof')}
             setValue={(field, value) => setValue('proof', value)}
             disabled={!isEdit}
+            title='Ảnh minh chứng'
           />
           <ConfirmationDialog
             visible={visible}

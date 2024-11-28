@@ -1,38 +1,37 @@
+import { ConfirmationDialog } from '@components/ConfirmDialog';
 import { SCREEN } from '@constants/screen';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useGoogleSignInMutation, useSignInMutation } from '@services/auth.service';
+import { setToken, setUser, UserInfo } from '@slices/auth.slice';
 import { signInSchema, SignInSchemaType } from '@validations/auth.schema';
-import { AuthStackParamList, HomeStackParamList, RootStackParamList } from 'app/types/navigation';
+import { RootStackParamList } from 'app/types/navigation';
+import * as SecureStore from 'expo-secure-store';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, Portal, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GoogleIcon from '../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './components/AuthForm';
-import { useSignInMutation } from '@services/auth.service';
-import Toast from 'react-native-root-toast';
-import { getErrorMessage } from '@utils/helper';
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { setToken, setUser, UserInfo } from '@slices/auth.slice';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from 'react';
-import * as SecureStore from 'expo-secure-store';
+import { googleSignIn } from '@utils/googleSignIn';
+import { LoadingScreen } from '@components/LoadingScreen';
+import { saveToken, saveUserInfo } from '@utils/userInfo';
 
 const Seperator = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
-
   return (
     <View style={styles.seperatorContainer}>
       <View style={[styles.seperatorLine, { backgroundColor: theme.colors.outlineVariant }]} />
@@ -48,8 +47,9 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
-
+  const [errMsg, setErrorMsg] = useState<string | null>(null);
   const [login, { isLoading }] = useSignInMutation();
+  const [googleSignInBe, { isLoading: isGoogleLoading }] = useGoogleSignInMutation();
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const {
@@ -74,53 +74,46 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
           setValue('email', user.email, { shouldValidate: true });
         }
       } catch (error) {
-        Toast.show(getErrorMessage(error), {
-          position: Toast.positions.BOTTOM,
-          backgroundColor: theme.colors.error,
-          shadow: true,
-          animation: true,
-          hideOnPress: true
-        });
+        setErrorMsg('Không thể lấy thông tin tài khoản');
       }
     };
     getEmail();
   }, []);
-  const onSubmit = (data: SignInSchemaType) => {
-    login(data)
-      .unwrap()
-      .then(async (res) => {
-        if (res.userInfo) {
-          await AsyncStorage.setItem('user', JSON.stringify(res.userInfo));
-          dispatch(setUser(res.userInfo));
-        }
-        if (res.accessToken && res.refreshToken) {
-          if (Platform.OS === 'ios' || Platform.OS === 'android') {
-            await SecureStore.setItemAsync('accessToken', res.accessToken);
-            await SecureStore.setItemAsync('refreshToken', res.refreshToken);
-          } else {
-            await AsyncStorage.setItem('accessToken', res.accessToken);
-            await AsyncStorage.setItem('refreshToken', res.refreshToken);
-          }
-          dispatch(
-            setToken({
-              accessToken: res.accessToken,
-              refreshToken: res.refreshToken
-            })
-          );
-        }
-        props.navigation.navigate('MainTab', {
-          screen: 'Home'
-        });
-      })
-      .catch((err) => {
-        Toast.show(getErrorMessage(err), {
-          position: Toast.positions.BOTTOM,
-          backgroundColor: theme.colors.error,
-          shadow: true,
-          animation: true,
-          hideOnPress: true
-        });
+  const handleSignIn = async (
+    signInMethod: 'email' | 'google',
+    data?: SignInSchemaType,
+    idToken?: string
+  ) => {
+    try {
+      // Determine which sign-in method to use
+      const apiCall =
+        signInMethod === 'email'
+          ? () => login(data as SignInSchemaType).unwrap()
+          : () => googleSignInBe({ idToken: idToken as string }).unwrap();
+      // Execute the API call
+      const res = await apiCall();
+      // Save user info if available
+      if (res.userInfo) {
+        await saveUserInfo(res.userInfo);
+        dispatch(setUser(res.userInfo));
+      }
+      // Save tokens if available
+      if (res.accessToken && res.refreshToken) {
+        await saveToken(res.accessToken, res.refreshToken);
+        dispatch(
+          setToken({
+            accessToken: res.accessToken,
+            refreshToken: res.refreshToken
+          })
+        );
+      }
+      // Navigate to the main app
+      props.navigation.navigate('MainTab', {
+        screen: 'Home'
       });
+    } catch (err) {
+      setErrorMsg('Đăng nhập thất bại');
+    }
   };
 
   return (
@@ -180,12 +173,12 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
               </Text>
             </TouchableOpacity>
             <Button
-              onPress={handleSubmit(onSubmit)}
+              onPress={handleSubmit((data) => handleSignIn('email', data))}
               mode='contained'
               style={[globalStyles.wideButton, styles.loginButton]}
               labelStyle={styles.buttonContent}
               loading={isLoading}
-              disabled={isLoading}
+              disabled={isLoading || isGoogleLoading}
             >
               Đăng nhập
             </Button>
@@ -208,14 +201,38 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
             <Seperator />
             <Button
               mode='outlined'
-              onPress={() => {}}
+              onPress={async () => {
+                const { idToken, error } = await googleSignIn();
+                if (idToken) {
+                  handleSignIn('google', undefined, idToken);
+                } else {
+                  setErrorMsg(error);
+                }
+              }}
               style={styles.googleButton}
               labelStyle={styles.googleButtonContent}
+              disabled={isGoogleLoading || isLoading}
+              loading={isGoogleLoading}
             >
               <GoogleIcon width={24} height={24} />
               Đăng nhập với Google
             </Button>
           </View>
+          <Portal>
+            {(isGoogleLoading || isLoading) && <LoadingScreen />}
+            <ConfirmationDialog
+              visible={!!errMsg}
+              setVisible={() => setErrorMsg(null)}
+              notShowCancel={true}
+              title='Thông báo'
+              content={errMsg || ''}
+              onSubmit={() => {
+                if (errMsg) {
+                  setErrorMsg(null);
+                }
+              }}
+            />
+          </Portal>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>

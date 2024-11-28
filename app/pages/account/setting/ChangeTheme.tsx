@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useGlobalStyles } from '@hooks/theme';
 import { Divider, Surface } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { SettingStackParamList } from '../../types/navigation';
+import { SettingStackParamList } from '../../../types/navigation';
 import { Appearance, useColorScheme } from 'react-native';
 import { useState } from 'react';
 import SettingButton from '@components/SettingButton';
@@ -14,9 +14,7 @@ export const ChangeTheme = (
   const styles = useGlobalStyles();
   const colorScheme = useColorScheme();
   const savedColorScheme = useAppSelector((state) => state.app.colorScheme);
-  const [isSystemColor, setIsSystemColor] = useState(
-    savedColorScheme === 'system'
-  );
+  const [isSystemColor, setIsSystemColor] = useState(savedColorScheme === 'system');
 
   const handleChange = (color: 'dark' | 'light' | null) => {
     Appearance.setColorScheme(color);
@@ -34,22 +32,22 @@ export const ChangeTheme = (
       <SettingButton
         disabled={colorScheme === 'light' && !isSystemColor}
         onPress={() => handleChange('light')}
-        icon="weather-sunny"
-        text="Sáng"
+        icon='weather-sunny'
+        text='Sáng'
       />
       <Divider />
       <SettingButton
         disabled={colorScheme === 'dark' && !isSystemColor}
         onPress={() => handleChange('dark')}
-        icon="weather-night"
-        text="Tối"
+        icon='weather-night'
+        text='Tối'
       />
       <Divider />
       <SettingButton
         disabled={isSystemColor}
         onPress={() => handleChange(null)}
-        icon="cellphone"
-        text="Hệ thống"
+        icon='cellphone'
+        text='Hệ thống'
       />
     </Surface>
   );

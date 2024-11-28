@@ -28,12 +28,14 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-
 import { Provider } from 'react-redux';
 
 import IconModal from '@components/IconModal';
-import { Setting } from '@pages/setting/Setting';
+import { Setting } from '@pages/account/setting/Setting';
 import * as Linking from 'expo-linking';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
+import { Account } from '@pages/account/Account';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -53,6 +55,9 @@ registerTranslation('vi', {
   minute: 'Phút'
 });
 
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
+});
 const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createMaterialBottomTabNavigator<MainTabParamList>();
@@ -150,16 +155,18 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
   const app = useAppSelector((state) => state.app);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
-  if (auth.refreshToken === null) {
-    dispatch(stopTimer());
-    dispatch(apiService.util.resetApiState());
-    props.navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: 'AuthStack' }]
-      })
-    );
-  }
+  useEffect(() => {
+    if (auth.refreshToken === null) {
+      dispatch(stopTimer());
+      dispatch(apiService.util.resetApiState());
+      props.navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'AuthStack' }]
+        })
+      );
+    }
+  }, [auth.refreshToken, dispatch, props.navigation]);
 
   return (
     <>
@@ -265,18 +272,18 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
         )}
         <Tab.Screen
           options={{
-            tabBarIcon: 'cog',
-            title: 'Cài đặt'
+            tabBarIcon: 'account',
+            title: 'Cá nhân'
           }}
-          name='Setting'
-          component={Setting}
+          name='Account'
+          component={Account}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               // Prevent default action
               e.preventDefault();
               navigation.reset({
                 index: 0,
-                routes: [{ name: 'Setting' }]
+                routes: [{ name: 'Account' }]
               });
             }
           })}
