@@ -4,20 +4,19 @@
     "slug": "tsa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/TSA_logo",
     "userInterfaceStyle": "light",
     "scheme": "tsa",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/TSA_splash.png",
+      "backgroundColor": "#5CC990"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/TSA_adaptive_logo.png",
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./config/google-services.json",

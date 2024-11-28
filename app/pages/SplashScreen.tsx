@@ -12,12 +12,10 @@ import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { Appearance, Image } from 'react-native';
+import { Appearance, Image, ImageBackground } from 'react-native';
 import { Surface } from 'react-native-paper';
 
-export const SplashScreen = (
-  props: NativeStackScreenProps<RootStackParamList, 'SplashScreen'>
-) => {
+export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, 'SplashScreen'>) => {
   const THEME = Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
 
   const dispatch = useAppDispatch();
@@ -38,7 +36,7 @@ export const SplashScreen = (
     dispatch(
       setToken({
         accessToken,
-        refreshToken,
+        refreshToken
       })
     );
 
@@ -55,13 +53,9 @@ export const SplashScreen = (
         index: 0,
         routes: [
           {
-            name: !onboarding
-              ? 'Onboarding'
-              : accessToken
-                ? 'MainTab'
-                : 'AuthStack',
-          },
-        ],
+            name: !onboarding ? 'Onboarding' : accessToken ? 'MainTab' : 'AuthStack'
+          }
+        ]
       })
     );
   };
@@ -71,28 +65,11 @@ export const SplashScreen = (
 
   return (
     <>
-      <StatusBar
-        style={THEME.dark ? 'light' : 'dark'}
-        backgroundColor={THEME.colors.background}
+      <StatusBar style={THEME.dark ? 'light' : 'dark'} backgroundColor={THEME.colors.background} />
+      <ImageBackground
+        source={require('../../assets/TSA_splash.png')}
+        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
       />
-      <Surface
-        style={{
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgb(39,204,150)',
-        }}
-      >
-        <Image
-          source={require('../../assets/logo.png')}
-          resizeMethod="scale"
-          resizeMode="contain"
-          style={{
-            width: SCREEN.width - 96,
-          }}
-        />
-      </Surface>
     </>
   );
 };
