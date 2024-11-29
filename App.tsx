@@ -9,12 +9,7 @@ import { Onboarding } from '@pages/Onboarding';
 import { Order } from '@pages/order/Order';
 import { Report } from '@pages/report/Report';
 import { SplashScreen } from '@pages/SplashScreen';
-import {
-  CommonActions,
-  LinkingOptions,
-  NavigationContainer,
-  useNavigationState
-} from '@react-navigation/native';
+import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { apiService } from '@services/api.service';
 import { stopTimer } from '@slices/timer.slice';
@@ -28,14 +23,14 @@ import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-
 import { Provider } from 'react-redux';
 
 import IconModal from '@components/IconModal';
-import { Setting } from '@pages/account/setting/Setting';
+import { Account } from '@pages/account/Account';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as Linking from 'expo-linking';
+import * as SplashScreenExpo from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
-import { Account } from '@pages/account/Account';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -97,7 +92,11 @@ function AppContent() {
   const systemTheme = Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme;
   const insets = useSafeAreaInsets();
-
+  useEffect(() => {
+    setTimeout(async () => {
+      await SplashScreenExpo.hideAsync();
+    }, 5000);
+  }, []);
   return (
     <SafeAreaView
       style={[

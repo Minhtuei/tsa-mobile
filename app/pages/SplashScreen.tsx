@@ -1,4 +1,3 @@
-import { SCREEN } from '@constants/screen';
 import { darkTheme, lightTheme } from '@constants/style';
 import { useAppDispatch } from '@hooks/redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,14 +6,14 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { setColorScheme } from '@slices/app.slice';
 import { setToken, setUser } from '@slices/auth.slice';
 import { RootStackParamList } from 'app/types/navigation';
-import { Role } from 'app/types/role';
 import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
+import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { Appearance, Image, ImageBackground } from 'react-native';
+import { Appearance } from 'react-native';
 import { Surface } from 'react-native-paper';
-
+SplashScreenExpo.preventAutoHideAsync();
 export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, 'SplashScreen'>) => {
   const THEME = Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
 
@@ -45,7 +44,6 @@ export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, '
       Appearance.setColorScheme(colorScheme);
     }
     dispatch(setColorScheme(colorScheme ?? 'system'));
-    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const onboarding = await AsyncStorage.getItem('onboarding');
     props.navigation.dispatch(
@@ -66,10 +64,17 @@ export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, '
   return (
     <>
       <StatusBar style={THEME.dark ? 'light' : 'dark'} backgroundColor={THEME.colors.background} />
-      <ImageBackground
-        source={require('../../assets/TSA_splash.png')}
-        style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-      />
+      <Surface
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '100%',
+          height: '100%',
+          backgroundColor: THEME.colors.background
+        }}
+      >
+        <></>
+      </Surface>
     </>
   );
 };

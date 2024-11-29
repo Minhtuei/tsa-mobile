@@ -1,4 +1,5 @@
 import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { LoadingScreen } from '@components/LoadingScreen';
 import { SCREEN } from '@constants/screen';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '@hooks/redux';
@@ -7,10 +8,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGoogleSignInMutation, useSignInMutation } from '@services/auth.service';
 import { setToken, setUser, UserInfo } from '@slices/auth.slice';
+import { googleSignIn } from '@utils/googleSignIn';
+import { saveToken, saveUserInfo } from '@utils/userInfo';
 import { signInSchema, SignInSchemaType } from '@validations/auth.schema';
 import { RootStackParamList } from 'app/types/navigation';
-import * as SecureStore from 'expo-secure-store';
-import { useEffect, useState } from 'react';
+import * as SplashScreenExpo from 'expo-splash-screen';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   KeyboardAvoidingView,
@@ -25,10 +28,6 @@ import { Button, Portal, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GoogleIcon from '../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './components/AuthForm';
-import { googleSignIn } from '@utils/googleSignIn';
-import { LoadingScreen } from '@components/LoadingScreen';
-import { saveToken, saveUserInfo } from '@utils/userInfo';
-
 const Seperator = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
@@ -52,6 +51,8 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
   const [googleSignInBe, { isLoading: isGoogleLoading }] = useGoogleSignInMutation();
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
+  const [isAppReady, setAppReady] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -75,10 +76,20 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
         }
       } catch (error) {
         setErrorMsg('Không thể lấy thông tin tài khoản');
+      } finally {
+        setAppReady(true);
       }
     };
     getEmail();
   }, []);
+  const onLayoutRootView = useCallback(async () => {
+    if (isAppReady) {
+      await SplashScreenExpo.hideAsync();
+    }
+  }, [isAppReady]);
+  if (!isAppReady) {
+    return null;
+  }
   const handleSignIn = async (
     signInMethod: 'email' | 'google',
     data?: SignInSchemaType,
@@ -126,6 +137,7 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
           minHeight: SCREEN.height + insets.top + insets.bottom
         }
       ]}
+      onLayout={onLayoutRootView}
     >
       <Text
         style={[

@@ -8,8 +8,9 @@
     "userInterfaceStyle": "light",
     "scheme": "tsa",
     "splash": {
-      "image": "./assets/TSA_splash.png",
-      "backgroundColor": "#5CC990"
+      "image": "./assets/splash.png",
+      "backgroundColor": "#5CC990",
+      "resizeMode": "cover"
     },
     "ios": {
       "supportsTablet": true

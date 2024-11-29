@@ -5,43 +5,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from 'app/types/navigation';
+import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Image, SafeAreaView, StyleSheet, View } from 'react-native';
-import { Button, IconButton, Surface, Text } from 'react-native-paper';
+import { Button, IconButton, Text } from 'react-native-paper';
 import type { ICarouselInstance } from 'react-native-reanimated-carousel';
 import Carousel from 'react-native-reanimated-carousel';
-export const Onboarding = (
-  props: NativeStackScreenProps<RootStackParamList, 'Onboarding'>
-) => {
+export const Onboarding = (props: NativeStackScreenProps<RootStackParamList, 'Onboarding'>) => {
   const caroselRef = useRef<ICarouselInstance>(null);
   const theme = useAppTheme();
   const [index, setIndex] = useState(0);
+  const onLayoutRootView = useCallback(async () => {
+    await SplashScreenExpo.hideAsync();
+  }, []);
   const onFinish = async () => {
     await AsyncStorage.setItem('onboarding', 'true');
-    props.navigation.dispatch(
-      CommonActions.reset({ index: 0, routes: [{ name: 'AuthStack' }] })
-    );
+    props.navigation.dispatch(CommonActions.reset({ index: 0, routes: [{ name: 'AuthStack' }] }));
   };
   return (
     <>
-      <StatusBar
-        style={theme.dark ? 'light' : 'dark'}
-        backgroundColor={theme.colors.background}
-      />
+      <StatusBar style={theme.dark ? 'light' : 'dark'} backgroundColor={theme.colors.background} />
       <SafeAreaView
         style={{
           flex: 1,
           paddingTop: 16,
-          backgroundColor: theme.colors.background,
+          backgroundColor: theme.colors.background
         }}
+        onLayout={onLayoutRootView}
       >
         <Button
           style={{ alignSelf: 'flex-end' }}
           labelStyle={{
             color: '#34A853',
             fontFamily: 'Roboto',
-            fontSize: 16,
+            fontSize: 16
           }}
           onPress={onFinish}
         >
@@ -67,7 +65,7 @@ export const Onboarding = (
         />
         <View style={styles.pagination}>
           <IconButton
-            icon="chevron-left"
+            icon='chevron-left'
             onPress={() => caroselRef.current?.prev()}
             disabled={index === 0}
             iconColor={theme.colors.primary}
@@ -78,14 +76,13 @@ export const Onboarding = (
               style={[
                 styles.dot,
                 {
-                  backgroundColor:
-                    i === index ? theme.colors.primary : theme.colors.surface,
-                },
+                  backgroundColor: i === index ? theme.colors.primary : theme.colors.surface
+                }
               ]}
             />
           ))}
           <IconButton
-            icon="chevron-right"
+            icon='chevron-right'
             onPress={() => caroselRef.current?.next()}
             disabled={index === ONBOARDING_DATA.length - 1}
             iconColor={theme.colors.primary}
@@ -98,7 +95,7 @@ export const Onboarding = (
 const CarouselItem = ({
   item,
   last,
-  onFinish,
+  onFinish
 }: {
   item: OnboardingDataType;
   last?: boolean;
@@ -112,37 +109,26 @@ const CarouselItem = ({
           globalStyles.title,
           {
             fontSize: 32,
-            textTransform: 'uppercase',
-          },
+            textTransform: 'uppercase'
+          }
         ]}
       >
         {item.title}
       </Text>
-      <Image
-        source={item.image}
-        style={styles.image}
-        resizeMode="contain"
-        resizeMethod="scale"
-      />
+      <Image source={item.image} style={styles.image} resizeMode='contain' resizeMethod='scale' />
       <View
         style={{
           flex: 0.2,
           justifyContent: 'space-between',
           alignItems: 'center',
-          width: '100%',
+          width: '100%'
         }}
       >
-        <Text
-          style={[globalStyles.text, { textAlign: 'center', fontSize: 18 }]}
-        >
+        <Text style={[globalStyles.text, { textAlign: 'center', fontSize: 18 }]}>
           {item.description}
         </Text>
         {last && (
-          <Button
-            mode="contained"
-            onPress={onFinish}
-            style={[globalStyles.wideButton]}
-          >
+          <Button mode='contained' onPress={onFinish} style={[globalStyles.wideButton]}>
             Bắt đầu
           </Button>
         )}
@@ -157,22 +143,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    paddingTop: 32,
+    paddingTop: 32
   },
   image: {
     width: '100%',
-    flex: 0.8,
+    flex: 0.8
   },
   pagination: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: SCREEN.width * 0.02,
-    height: SCREEN.height * 0.1,
+    height: SCREEN.height * 0.1
   },
   dot: {
     height: 8,
     width: 8,
-    borderRadius: 50,
-  },
+    borderRadius: 50
+  }
 });
