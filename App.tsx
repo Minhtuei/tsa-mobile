@@ -31,6 +31,15 @@ import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
+import { NotificationProvider, useNotification } from 'app/context/NotificationContext';
+import * as Notifications from 'expo-notifications';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true
+  })
+});
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -76,9 +85,11 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <SocketProvider>
-          <GestureHandlerRootView>
-            <AppContent />
-          </GestureHandlerRootView>
+          <NotificationProvider>
+            <GestureHandlerRootView>
+              <AppContent />
+            </GestureHandlerRootView>
+          </NotificationProvider>
         </SocketProvider>
       </Provider>
     </SafeAreaProvider>
@@ -89,6 +100,7 @@ function AppContent() {
   const systemTheme = Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme;
   const insets = useSafeAreaInsets();
+  const { notification, expoPushToken, error } = useNotification();
   useEffect(() => {
     setTimeout(async () => {
       await SplashScreenExpo.hideAsync();
