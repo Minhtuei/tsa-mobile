@@ -14,22 +14,6 @@ type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'Deliv
 const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) => {
   const { deliveryId } = route.params;
   const { data: delivery, isLoading } = useGetDeliveryQuery(deliveryId);
-  const [location, setLocation] = useState<any>();
-  const { socket } = useSocketContext();
-  useEffect(() => {
-    if (!socket) return;
-
-    const intervalId = setInterval(() => {
-      socket.emit('locationUpdate', {
-        staffId: 'cm1isbgcl00008mcgm7dzftgc',
-        orderId: 'cm3pf1jvt0001zb1n16nch6p1',
-        latitude: 106.806709613827,
-        longitude: 10.877568988757174
-      });
-    }, 5000); // Send location update every 5 seconds
-
-    return () => clearInterval(intervalId); // Cleanup interval on component unmount
-  }, [socket]);
 
   const deliveryInfo = useMemo(
     () => [

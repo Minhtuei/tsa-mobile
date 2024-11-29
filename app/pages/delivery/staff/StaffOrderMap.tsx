@@ -111,7 +111,7 @@ const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => 
 
   return (
     <View style={styles.container}>
-      {/* <MapView
+      <MapView
         style={styles.map}
         zoomEnabled={true}
         styleURL='mapbox://styles/quancao2310/cm2zqn7lb000a01o25jafeyvq'
@@ -166,11 +166,17 @@ const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => 
             </ShapeSource>
 
             {order.latestStatus === 'IN_TRANSPORT' ? (
-              <ShapeSource id='shipper' shape={{ type: 'Point', coordinates: shipperCoordinate || [0, 0] }}>
+              <ShapeSource
+                id='shipper'
+                shape={{ type: 'Point', coordinates: shipperCoordinate || [0, 0] }}
+              >
                 <SymbolLayer id='shipper-icons' style={{ iconImage: 'shipper', iconSize: 0.05 }} />
               </ShapeSource>
             ) : (
-              <ShapeSource id='warehouse' shape={{ type: 'Point', coordinates: shipperCoordinate || [0, 0] }}>
+              <ShapeSource
+                id='warehouse'
+                shape={{ type: 'Point', coordinates: shipperCoordinate || [0, 0] }}
+              >
                 <SymbolLayer
                   id='warehouse-icons'
                   style={{ iconImage: 'warehouse', iconSize: 0.2 }}
@@ -182,11 +188,11 @@ const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => 
             />
           </>
         )}
-      </MapView> */}
-      <View>
+      </MapView>
+      {/* <View>
         <Text>{JSON.stringify(shipperCoordinate)}</Text>
         <Text>{JSON.stringify(studentCoordinate)}</Text>
-      </View>
+      </View> */}
     </View>
   );
 };

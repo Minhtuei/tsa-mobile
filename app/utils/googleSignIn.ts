@@ -5,7 +5,9 @@ import {
   statusCodes
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
+});
 interface GoogleSignInResult {
   idToken: string | null;
   error: string | null;
@@ -17,6 +19,9 @@ export const googleSignIn = async (): Promise<GoogleSignInResult> => {
     const response = await GoogleSignin.signIn();
     if (isSuccessResponse(response)) {
       const idToken = response.data.idToken;
+      if (!idToken) {
+        return { idToken: null, error: 'Không thể lấy idToken' };
+      }
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
       const userCredential = await auth().signInWithCredential(googleCredential);
       const firebaseIdToken = await userCredential.user.getIdToken(true);

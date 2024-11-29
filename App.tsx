@@ -50,9 +50,6 @@ registerTranslation('vi', {
   minute: 'Phút'
 });
 
-GoogleSignin.configure({
-  webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
-});
 const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createMaterialBottomTabNavigator<MainTabParamList>();
