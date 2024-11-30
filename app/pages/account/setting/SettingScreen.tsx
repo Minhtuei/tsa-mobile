@@ -14,6 +14,13 @@ import SettingButton from '@components/SettingButton';
 import { useLogoutMutation } from '@services/auth.service';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { AccountStackParamList } from 'app/types/navigation';
+import {
+  useCheckPushNotiMutation,
+  useRegisterPushNotiMutation,
+  useUnRegisterPushNotiMutation
+} from '@services/notification.service';
+import { useNotification } from 'app/context/NotificationContext';
+import { getErrorMessage } from '@utils/helper';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
 export const SettingScreen = (
@@ -24,50 +31,99 @@ export const SettingScreen = (
   const theme = useAppTheme();
 
   // Show error then log out
-  const [logOutErr, setlogOutErr] = useState('');
+  const [notiErr, setNotiErr] = useState('');
   // Show error but doesn't log out
   const [unregisterErr, setUnregisterErr] = useState('');
   const [notification, setNotification] = useState(false);
-  const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
-  const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
-
-  const signOut = async () => {
-    if (!auth.refreshToken) {
-      return;
-    }
-    logOut({ refreshToken: auth.refreshToken })
-      .unwrap()
-      .then(() => {
-        clearStorage();
-      })
-      .catch((err: any) => {
-        setlogOutErr(err.data.message);
-      });
-  };
-
-  const clearStorage = async () => {
-    if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      await SecureStore.deleteItemAsync('token');
-    } else {
-      await AsyncStorage.removeItem('token');
-    }
-    await AsyncStorage.removeItem('name');
-    await AsyncStorage.removeItem('email');
-    dispatch(removeUser());
-  };
-
+  const [checkPushNoti, { isLoading: checkPushNotiLoading }] = useCheckPushNotiMutation();
+  const [registerPushNoti, { isLoading: registerPushNotiLoading }] = useRegisterPushNotiMutation();
+  const [unregisterPushNoti, { isLoading: unregisterPushNotiLoading }] =
+    useUnRegisterPushNotiMutation();
+  const { deviceToken } = useNotification();
   const globalStyles = useGlobalStyles();
+  useEffect(() => {
+    if (auth.userInfo && deviceToken) {
+      checkPushNoti({
+        userId: auth.userInfo.id,
+        token: deviceToken
+      })
+        .unwrap()
+        .then((data) => {
+          if (data.pusNotiType === 'ENABLED') {
+            setNotification(true);
+          } else {
+            setNotification(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setNotiErr(getErrorMessage(err));
+        });
+    }
+  }, [auth.userInfo, deviceToken]);
+  const handleUnregister = () => {
+    if (auth.userInfo && deviceToken) {
+      unregisterPushNoti({
+        userId: auth.userInfo.id,
+        token: deviceToken,
+        type: 'DISABLED'
+      })
+        .unwrap()
+        .then(() => {
+          setNotification(false);
+        })
+        .catch((err) => {
+          setUnregisterErr(getErrorMessage(err));
+        });
+    }
+  };
+
+  const handleRegister = () => {
+    if (auth.userInfo && deviceToken) {
+      registerPushNoti({
+        userId: auth.userInfo.id,
+        token: deviceToken,
+        platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
+      })
+        .unwrap()
+        .then(() => {
+          setNotification(true);
+        })
+        .catch((err) => {
+          setNotiErr(getErrorMessage(err));
+        });
+    }
+  };
 
   return (
     <View style={globalStyles.fullScreen}>
-      {/* <SettingButton
-        text='Hồ sơ'
-        icon='account'
-        onPress={() => {
-          props.navigation.navigate('Profile');
-        }}
-      />
-      // <Divider /> */}
+      {Platform.OS !== 'ios' && (
+        <>
+          <SettingButton
+            text='Thông báo đẩy'
+            icon='bell'
+            right={
+              <Switch
+                value={notification}
+                onValueChange={() => {
+                  if (notification) {
+                    handleUnregister();
+                  } else {
+                    handleRegister();
+                  }
+                }}
+                color={theme.colors.primary}
+                disabled={
+                  checkPushNotiLoading || registerPushNotiLoading || unregisterPushNotiLoading
+                }
+              />
+            }
+            loading={checkPushNotiLoading || registerPushNotiLoading || unregisterPushNotiLoading}
+            disabled={checkPushNotiLoading || registerPushNotiLoading || unregisterPushNotiLoading}
+          />
+          <Divider />
+        </>
+      )}
       <SettingButton
         text='Chế độ màu'
         icon='circle-half-full'
@@ -105,14 +161,6 @@ export const SettingScreen = (
           variant='warning'
           message={unregisterErr}
           onDismiss={() => setUnregisterErr('')}
-        />
-        <IconModal
-          variant='warning'
-          message={logOutErr}
-          onDismiss={() => {
-            setlogOutErr('');
-            clearStorage();
-          }}
         />
       </Portal>
     </View>

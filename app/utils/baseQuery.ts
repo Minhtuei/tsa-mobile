@@ -16,10 +16,9 @@ interface RefreshTokenRes {
     refreshToken: string;
   };
 }
-console.log(process.env.EXPO_PUBLIC_SERVER_HOST);
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://tsa-backend-ttq.vercel.app/api/',
+  baseUrl: (process.env as any).EXPO_PUBLIC_SERVER_HOST,
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;

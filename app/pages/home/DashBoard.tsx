@@ -5,9 +5,11 @@ import { useAppSelector } from '@hooks/redux';
 import { useGlobalStyles } from '@hooks/theme';
 import { getInterpolatedValues } from '@utils/scrollAnimationValues';
 import * as SplashScreenExpo from 'expo-splash-screen';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Platform, ScrollView, View } from 'react-native';
 import { StaffDashBoard } from './staff/StaffDashBoard';
+import { useRegisterPushNotiMutation } from '@services/notification.service';
+import { useNotification } from 'app/context/NotificationContext';
 export const Dashboard = () => {
   const globalStyles = useGlobalStyles();
   const [selectedType, setSelectedType] = useState<'today' | 'yesterday' | 'week' | 'month'>(
@@ -18,7 +20,28 @@ export const Dashboard = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const { millipedeOpacity, stickyTop, stickyOpacity, InfoCardAnimation } =
     getInterpolatedValues(scrollY);
-  // const { data, isLoading, isError, refetch, error } = useGetOrdersQuery();
+  const [registerPushNoti] = useRegisterPushNotiMutation();
+  const { deviceToken } = useNotification();
+  useEffect(() => {
+    if (deviceToken && auth.userInfo) {
+      console.log({
+        token: deviceToken,
+        userId: auth.userInfo.id,
+        platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
+      });
+      registerPushNoti({
+        token: deviceToken,
+        userId: auth.userInfo.id,
+        platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
+      })
+        .then((res) => {
+          console.log('Register push noti success', res);
+        })
+        .catch((err) => {
+          console.log('Register push noti failed', err);
+        });
+    }
+  }, [deviceToken]);
   const onLayoutRootView = useCallback(async () => {
     await SplashScreenExpo.hideAsync();
   }, []);

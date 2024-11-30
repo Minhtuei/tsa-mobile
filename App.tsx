@@ -100,7 +100,6 @@ function AppContent() {
   const systemTheme = Appearance.getColorScheme() === 'dark' ? darkTheme : lightTheme;
   const theme = useColorScheme() === 'dark' ? darkTheme : lightTheme;
   const insets = useSafeAreaInsets();
-  const { notification, expoPushToken, error } = useNotification();
   useEffect(() => {
     setTimeout(async () => {
       await SplashScreenExpo.hideAsync();

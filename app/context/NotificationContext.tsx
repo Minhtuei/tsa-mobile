@@ -4,7 +4,7 @@ import { Subscription } from 'expo-modules-core';
 import { registerForPushNotificationsAsync } from 'app/utils/pushNotification';
 
 interface NotificationContextType {
-  expoPushToken: string | undefined;
+  deviceToken: string | undefined;
   notification: Notifications.Notification | null;
   error: Error | null;
 }
@@ -24,7 +24,7 @@ interface NotificationProviderProps {
 }
 
 export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
-  const [expoPushToken, setExpoPushToken] = useState<string | undefined>(undefined);
+  const [deviceToken, setDeviceToken] = useState<string | undefined>(undefined);
   const [notification, setNotification] = useState<Notifications.Notification | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -33,7 +33,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
-      (token) => setExpoPushToken(token),
+      (token) => setDeviceToken(token),
       (error) => setError(error)
     );
 
@@ -60,9 +60,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       }
     };
   }, []);
-
   return (
-    <NotificationContext.Provider value={{ expoPushToken, notification, error }}>
+    <NotificationContext.Provider value={{ deviceToken, notification, error }}>
       {children}
     </NotificationContext.Provider>
   );
