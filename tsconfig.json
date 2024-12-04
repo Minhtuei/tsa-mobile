@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
+    "typeRoots": ["./types"],
     "paths": {
       "@interfaces/*": ["app/interfaces/*"],
       "@components/*": ["app/components/*"],

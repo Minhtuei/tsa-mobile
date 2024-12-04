@@ -6,7 +6,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 GoogleSignin.configure({
-  webClientId: (process.env as any as any).EXPO_GOOGLE_WEB_CLIENT_ID || ''
+  webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
 });
 interface GoogleSignInResult {
   idToken: string | null;

@@ -18,7 +18,7 @@ interface RefreshTokenRes {
 }
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
-  baseUrl: (process.env as any).EXPO_PUBLIC_SERVER_HOST,
+  baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;
