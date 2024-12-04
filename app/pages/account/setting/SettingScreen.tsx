@@ -21,6 +21,7 @@ import {
 } from '@services/notification.service';
 import { useNotification } from 'app/context/NotificationContext';
 import { getErrorMessage } from '@utils/helper';
+import { ConfirmationDialog } from '@components/ConfirmDialog';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
 export const SettingScreen = (
@@ -39,7 +40,7 @@ export const SettingScreen = (
   const [registerPushNoti, { isLoading: registerPushNotiLoading }] = useRegisterPushNotiMutation();
   const [unregisterPushNoti, { isLoading: unregisterPushNotiLoading }] =
     useUnRegisterPushNotiMutation();
-  const { deviceToken } = useNotification();
+  const { deviceToken, error } = useNotification();
   const globalStyles = useGlobalStyles();
   useEffect(() => {
     if (auth.userInfo && deviceToken) {
@@ -79,6 +80,11 @@ export const SettingScreen = (
   };
 
   const handleRegister = () => {
+    if (error) {
+      console.log(error);
+      setNotiErr(getErrorMessage(error));
+      return;
+    }
     if (auth.userInfo && deviceToken) {
       registerPushNoti({
         userId: auth.userInfo.id,
@@ -157,10 +163,15 @@ export const SettingScreen = (
       <Divider /> */}
 
       <Portal>
-        <IconModal
-          variant='warning'
-          message={unregisterErr}
-          onDismiss={() => setUnregisterErr('')}
+        <ConfirmationDialog
+          visible={notiErr !== ''}
+          setVisible={() => setNotiErr('')}
+          title='Lỗi'
+          content={notiErr}
+          onSubmit={() => {
+            Linking.openSettings();
+            setNotiErr('');
+          }}
         />
       </Portal>
     </View>

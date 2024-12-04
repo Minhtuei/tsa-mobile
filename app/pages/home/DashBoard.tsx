@@ -10,7 +10,9 @@ import { Animated, Platform, ScrollView, View } from 'react-native';
 import { StaffDashBoard } from './staff/StaffDashBoard';
 import { useRegisterPushNotiMutation } from '@services/notification.service';
 import { useNotification } from 'app/context/NotificationContext';
-export const Dashboard = () => {
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { HomeStackParamList } from 'app/types/navigation';
+export const Dashboard = (props: NativeStackScreenProps<HomeStackParamList, 'Dashboard'>) => {
   const globalStyles = useGlobalStyles();
   const [selectedType, setSelectedType] = useState<'today' | 'yesterday' | 'week' | 'month'>(
     'today'
@@ -20,28 +22,28 @@ export const Dashboard = () => {
   const scrollViewRef = useRef<ScrollView>(null);
   const { millipedeOpacity, stickyTop, stickyOpacity, InfoCardAnimation } =
     getInterpolatedValues(scrollY);
-  const [registerPushNoti] = useRegisterPushNotiMutation();
-  const { deviceToken } = useNotification();
-  useEffect(() => {
-    if (deviceToken && auth.userInfo) {
-      console.log({
-        token: deviceToken,
-        userId: auth.userInfo.id,
-        platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
-      });
-      registerPushNoti({
-        token: deviceToken,
-        userId: auth.userInfo.id,
-        platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
-      })
-        .then((res) => {
-          console.log('Register push noti success', res);
-        })
-        .catch((err) => {
-          console.log('Register push noti failed', err);
-        });
-    }
-  }, [deviceToken]);
+  // const [registerPushNoti] = useRegisterPushNotiMutation();
+  // const { deviceToken } = useNotification();
+  // useEffect(() => {
+  //   if (deviceToken && auth.userInfo) {
+  //     console.log({
+  //       token: deviceToken,
+  //       userId: auth.userInfo.id,
+  //       platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
+  //     });
+  //     registerPushNoti({
+  //       token: deviceToken,
+  //       userId: auth.userInfo.id,
+  //       platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID'
+  //     })
+  //       .then((res) => {
+  //         console.log('Register push noti success', res);
+  //       })
+  //       .catch((err) => {
+  //         console.log('Register push noti failed', err);
+  //       });
+  //   }
+  // }, [deviceToken]);
   const onLayoutRootView = useCallback(async () => {
     await SplashScreenExpo.hideAsync();
   }, []);
@@ -57,7 +59,13 @@ export const Dashboard = () => {
         })}
         scrollEventThrottle={16}
       >
-        <DashboardHeader animation={InfoCardAnimation} opacity={millipedeOpacity} />
+        <DashboardHeader
+          animation={InfoCardAnimation}
+          opacity={millipedeOpacity}
+          onPress={() => {
+            props.navigation.navigate('Notification');
+          }}
+        />
         {auth.userInfo?.role === 'STUDENT' && (
           <>
             <Animated.View

@@ -28,6 +28,7 @@ type MainTabParamList = {
 
 type HomeStackParamList = {
   Dashboard: undefined;
+  Notification: undefined;
 };
 
 type DeliveryStackParamList = {

@@ -1,7 +1,7 @@
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
 import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Animated, Image, ImageBackground, Platform, View } from 'react-native';
+import { Animated, Image, ImageBackground, Platform, TouchableOpacity, View } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 import InfoCard from '../pages/home/InfoCard';
 const BackgroundImg = require('../../assets/header-background.png');
@@ -12,10 +12,12 @@ import Constants from 'expo-constants';
 import { useState } from 'react';
 export const DashboardHeader = ({
   opacity,
-  animation
+  animation,
+  onPress
 }: {
   opacity: Animated.AnimatedInterpolation<string | number>;
   animation: any;
+  onPress: () => void;
 }) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
@@ -115,7 +117,9 @@ export const DashboardHeader = ({
                   ]}
                 >{`${auth.userInfo?.lastName} ${auth.userInfo?.firstName}`}</Text>
               </View>
-              <FontAwesome name='bell' size={24} color={theme.colors.primary} />
+              <TouchableOpacity onPress={onPress}>
+                <FontAwesome name='bell' size={24} color={theme.colors.primary} />
+              </TouchableOpacity>
             </View>
             {auth.userInfo?.role === 'STUDENT' && (
               <>

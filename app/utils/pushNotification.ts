@@ -24,7 +24,7 @@ export async function registerForPushNotificationsAsync() {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      handleRegistrationError('Permission not granted to get push token for push notification!');
+      handleRegistrationError('Vui lòng cấp quyền thông báo để nhận thông báo từ ứng dụng');
       return;
     }
     try {
@@ -35,6 +35,6 @@ export async function registerForPushNotificationsAsync() {
       handleRegistrationError(`${e}`);
     }
   } else {
-    handleRegistrationError('Must use physical device for push notifications');
+    handleRegistrationError('Ứng dụng này không hỗ trợ thông báo trên máy ảo');
   }
 }

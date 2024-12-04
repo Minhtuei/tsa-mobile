@@ -51,7 +51,7 @@ export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, '
         index: 0,
         routes: [
           {
-            name: !onboarding ? 'Onboarding' : accessToken ? 'MainTab' : 'AuthStack'
+            name: !onboarding ? 'Onboarding' : accessToken && user ? 'MainTab' : 'AuthStack'
           }
         ]
       })

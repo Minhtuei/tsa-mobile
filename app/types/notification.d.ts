@@ -11,3 +11,17 @@ type UnRegiserPushNotification = {
   type: PushNotiType;
 };
 type CheckPushNotification = Omit<RegiserPushNotification, 'platform'>;
+
+type NormalNotificationType = 'ORDER' | 'REPORT' | 'DELIVERY' | 'SYSTEM';
+type NormalNotification = {
+  id: string;
+  title: string;
+  type: NormalNotificationType;
+  content: string;
+  createdAt: string;
+  orderId: string | null;
+  reportId: string | null;
+  deliveryId: string | null;
+  userId: string;
+  isRead: boolean;
+};

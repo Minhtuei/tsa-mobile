@@ -60,6 +60,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       }
     };
   }, []);
+
   return (
     <NotificationContext.Provider value={{ deviceToken, notification, error }}>
       {children}
