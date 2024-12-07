@@ -6,6 +6,7 @@ import { ChangeTheme } from './setting/ChangeTheme';
 import { Profile } from './setting/Profile';
 import { SettingScreen } from './setting/SettingScreen';
 import { AccountScreen } from './AccountScreen';
+import { Report } from './report/Report';
 const Stack = createNativeStackNavigator<AccountStackParamList>();
 export const Account = () => {
   return (
@@ -16,6 +17,7 @@ export const Account = () => {
       initialRouteName='AccountScreen'
     >
       <Stack.Screen name='AccountScreen' component={AccountScreen} options={{ title: '' }} />
+      <Stack.Screen name='Report' component={Report} options={{ title: 'Khiếu nại' }} />
       <Stack.Screen name='SettingScreen' component={SettingScreen} options={{ title: 'Cài đặt' }} />
       <Stack.Screen
         name='Profile'

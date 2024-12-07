@@ -2,9 +2,9 @@ import { NotificationFilterType, NOTIFICATIONS } from '@constants/notification';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { AppTheme, useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { NotificationFilter } from '@pages/home/NotificationFilter';
+import { NotificationFilter } from '@pages/notification/NotificationFilter';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList } from 'app/types/navigation';
+import { HomeStackParamList, NotificationStackParamList } from 'app/types/navigation';
 import { memo, useState } from 'react';
 import {
   FlatList,
@@ -16,7 +16,9 @@ import {
 } from 'react-native';
 import { Divider, Text } from 'react-native-paper';
 
-export const Notification = (props: NativeStackScreenProps<HomeStackParamList, 'Notification'>) => {
+export const NotificationList = (
+  props: NativeStackScreenProps<NotificationStackParamList, 'NotificationList'>
+) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const [notificationType, setNotificationType] = useState<NotificationFilterType>(

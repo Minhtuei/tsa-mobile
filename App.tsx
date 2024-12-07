@@ -7,7 +7,7 @@ import { Delivery } from '@pages/delivery/Delivery';
 import { Home } from '@pages/home/Home';
 import { Onboarding } from '@pages/Onboarding';
 import { Order } from '@pages/order/Order';
-import { Report } from '@pages/report/Report';
+import { Report } from '@pages/account/report/Report';
 import { SplashScreen } from '@pages/SplashScreen';
 import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -33,6 +33,9 @@ import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
 import { NotificationProvider, useNotification } from 'app/context/NotificationContext';
 import * as Notifications from 'expo-notifications';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { CustomTabbar } from '@components/CustomTabbar';
+import { Notification } from '@pages/notification/Notification';
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -61,7 +64,7 @@ registerTranslation('vi', {
 
 const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createMaterialBottomTabNavigator<MainTabParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [prefix],
@@ -189,6 +192,97 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
 
       <StatusBar style={theme.dark ? 'light' : 'dark'} backgroundColor={theme.colors.background} />
       <Tab.Navigator
+        tabBar={(props) => <CustomTabbar {...props} />}
+        screenOptions={{
+          headerShown: false
+        }}
+      >
+        <Tab.Screen
+          options={{
+            title: 'Trang chủ'
+          }}
+          name='Home'
+          component={Home}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Home' }]
+              });
+            }
+          })}
+        />
+
+        {auth.userInfo?.role === 'STAFF' ? (
+          <Tab.Screen
+            options={{
+              title: 'Chuyến đi'
+            }}
+            name='Delivery'
+            component={Delivery}
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                e.preventDefault();
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Delivery' }]
+                });
+              }
+            })}
+          />
+        ) : (
+          <Tab.Screen
+            options={{
+              title: 'Đơn hàng'
+            }}
+            name='Order'
+            component={Order}
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                e.preventDefault();
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Order' }]
+                });
+              }
+            })}
+          />
+        )}
+        <Tab.Screen
+          options={{
+            title: 'Thông báo'
+          }}
+          name='Notification'
+          component={Notification}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Notification' }]
+              });
+            }
+          })}
+        />
+        <Tab.Screen
+          options={{
+            title: 'Cá nhân'
+          }}
+          name='Account'
+          component={Account}
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Account' }]
+              });
+            }
+          })}
+        />
+      </Tab.Navigator>
+      {/* <Tab.Navigator
         id='MainTab'
         initialRouteName='Home'
         barStyle={{
@@ -295,7 +389,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             }
           })}
         />
-      </Tab.Navigator>
+      </Tab.Navigator> */}
     </>
   );
 };

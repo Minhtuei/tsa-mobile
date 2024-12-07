@@ -4,7 +4,7 @@
     "slug": "tsa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/TSA_logo",
+    "icon": "./assets/TSA_logo.png",
     "userInterfaceStyle": "light",
     "scheme": "tsa",
     "splash": {

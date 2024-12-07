@@ -88,7 +88,8 @@ export const StudentOrderList = (
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
         contentContainerStyle={{
           padding: 24,
-          gap: 16
+          gap: 16,
+          paddingBottom: 120
         }}
         showsVerticalScrollIndicator={false}
         data={filteredOrders}
@@ -136,7 +137,7 @@ export const StudentOrderList = (
         }}
         style={{
           position: 'absolute',
-          bottom: 40,
+          bottom: 120,
           right: 16,
           backgroundColor: theme.colors.primaryContainer,
           borderRadius: 50

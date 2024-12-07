@@ -217,8 +217,20 @@ export const AccountScreen = (
               }
             />
           )}
-
           <Divider />
+          {auth.userInfo?.role === 'STUDENT' && (
+            <>
+              <SettingButton
+                text='Khiếu nại'
+                icon='alert-circle'
+                onPress={() => {
+                  props.navigation.navigate('Report');
+                }}
+              />
+
+              <Divider />
+            </>
+          )}
           <SettingButton
             text='Trung tâm trợ giúp'
             icon='help-circle'

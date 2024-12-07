@@ -21,14 +21,17 @@ type AuthStackParamList = {
 type MainTabParamList = {
   Home: NavigatorScreenParams<HomeStackParamList> | undefined;
   Order: NavigatorScreenParams<OrderStackParamList> | undefined;
-  Report: NavigatorScreenParams<ReportStackParamList> | undefined;
+  Notification: NavigatorScreenParams<NotificationStackParamList> | undefined;
   Account: NavigatorScreenParams<AccountStackParamList> | undefined;
   Delivery: NavigatorScreenParams<DeliveryStackParamList> | undefined;
 };
 
 type HomeStackParamList = {
   Dashboard: undefined;
-  Notification: undefined;
+};
+type NotificationStackParamList = {
+  NotificationList: undefined;
+  NotificationDetail: { notificationId: string };
 };
 
 type DeliveryStackParamList = {
@@ -56,5 +59,5 @@ type AccountStackParamList = {
   ChangeTheme: undefined;
   ChangePassword: undefined;
   AccountScreen: undefined;
-  //   DeleteAccount: undefined; need for deploy on IOS
+  Report: NavigatorScreenParams<ReportStackParamList> | undefined;
 };

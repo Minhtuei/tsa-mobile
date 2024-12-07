@@ -48,65 +48,63 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
   };
 
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Card style={{ marginBottom: 12 }}>
-        <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-          <View style={{ width: '25%' }}>
-            <View style={styles.square}>
-              <MaterialCommunityIcons name='motorbike' size={32} color='green' />
-            </View>
+    <Card style={{ marginBottom: 12 }} onPress={onPress}>
+      <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <View style={{ width: '25%' }}>
+          <View style={styles.square}>
+            <MaterialCommunityIcons name='motorbike' size={32} color='green' />
           </View>
-          <View style={{ flexDirection: 'column', gap: 12, width: '75%' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}
-            >
-              <View>
-                <Text
-                  style={{
-                    color: 'green',
-                    fontWeight: 'bold',
-                    fontSize: 20
-                  }}
-                >
-                  #{delivery.id.slice(0, 5)}
-                </Text>
-                <Text style={{ opacity: 0.4 }}>
-                  {formatDate(formatUnixTimestamp(delivery.createdAt))}
-                </Text>
-              </View>
-              <Chip
+        </View>
+        <View style={{ flexDirection: 'column', gap: 12, width: '75%' }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <View>
+              <Text
                 style={{
-                  backgroundColor: getStatusColor(delivery.status)
-                }}
-                textStyle={{
+                  color: 'green',
                   fontWeight: 'bold',
-                  color: 'white'
+                  fontSize: 20
                 }}
               >
-                {getStatusLabel(delivery.status)}
-              </Chip>
+                #{delivery.id.slice(0, 5)}
+              </Text>
+              <Text style={{ opacity: 0.4 }}>
+                {formatDate(formatUnixTimestamp(delivery.createdAt))}
+              </Text>
             </View>
-            <Divider />
-            <View
+            <Chip
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center'
+                backgroundColor: getStatusColor(delivery.status)
+              }}
+              textStyle={{
+                fontWeight: 'bold',
+                color: 'white'
               }}
             >
-              <View>
-                <Text style={{ fontWeight: 'bold' }}>{delivery?.orders?.length || 0} đơn hàng</Text>
-              </View>
-              <EvilIcons name='pencil' size={32} color='blue' />
-            </View>
+              {getStatusLabel(delivery.status)}
+            </Chip>
           </View>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
+          <Divider />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            <View>
+              <Text style={{ fontWeight: 'bold' }}>{delivery?.orders?.length || 0} đơn hàng</Text>
+            </View>
+            <EvilIcons name='pencil' size={32} color='blue' />
+          </View>
+        </View>
+      </Card.Content>
+    </Card>
   );
 };
 
