@@ -17,6 +17,7 @@ interface RefreshTokenRes {
   };
 }
 const mutex = new Mutex();
+console.log('process.env.EXPO_PUBLIC_SERVER_HOST', process.env.EXPO_PUBLIC_SERVER_HOST);
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
   timeout: 20000,
@@ -53,6 +54,7 @@ export const baseQueryWithReauth: BaseQueryFn<
         extraOptions
       );
       if (result.data) {
+        console.log(result.data);
         const { accessToken, refreshToken } = (result.data as RefreshTokenRes).data;
         api.dispatch(setToken({ accessToken, refreshToken }));
         release();

@@ -12,8 +12,10 @@ import Animated, {
   withSpring,
   withTiming
 } from 'react-native-reanimated';
+import { useAppSelector } from '@hooks/redux';
 export function CustomTabbar({ state, descriptors, navigation }: BottomTabBarProps) {
   const theme = useAppTheme();
+  const app = useAppSelector((state) => state.app);
   const [dimensions, setDimensions] = useState({ width: 20, height: 100 });
   const buttonWidth = dimensions.width / state.routes.length;
   const onLayoutUpdate = (event: LayoutChangeEvent) => {
@@ -29,6 +31,9 @@ export function CustomTabbar({ state, descriptors, navigation }: BottomTabBarPro
       transform: [{ translateX: tabPositionX.value }]
     };
   });
+  if (app.isHideTabBar) {
+    return null;
+  }
   return (
     <View
       onLayout={onLayoutUpdate}
@@ -141,6 +146,7 @@ const TabbarButton = memo(function TabbarButton({
       top
     };
   });
+
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} style={styles.tabbarButton}>
       <Animated.View style={animatedIconStyle}>

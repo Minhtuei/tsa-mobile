@@ -11,7 +11,11 @@ export const Header = (props: NativeStackHeaderProps) => {
   const backgroundColor = theme.colors.primary;
   const color = theme.colors.onPrimary;
   useEffect(() => {
-    if (['Dashboard', 'OrderList', 'ReportList', 'AccountScreen'].includes(props.route.name)) {
+    if (
+      ['Dashboard', 'OrderList', 'ReportList', 'AccountScreen', 'DeliveryList'].includes(
+        props.route.name
+      )
+    ) {
       setCanGoBack(false);
     } else {
       setCanGoBack(true);

@@ -194,7 +194,8 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
       <Tab.Navigator
         tabBar={(props) => <CustomTabbar {...props} />}
         screenOptions={{
-          headerShown: false
+          headerShown: false,
+          tabBarAllowFontScaling: false
         }}
       >
         <Tab.Screen
