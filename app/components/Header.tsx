@@ -11,8 +11,9 @@ export const Header = (props: NativeStackHeaderProps) => {
   const backgroundColor = theme.colors.primary;
   const color = theme.colors.onPrimary;
   useEffect(() => {
+    console.log('props.route.name', props.route.name);
     if (
-      ['Dashboard', 'OrderList', 'ReportList', 'AccountScreen', 'DeliveryList'].includes(
+      ['Dashboard', 'OrderList', 'ReportList', 'Report', 'AccountScreen', 'DeliveryList'].includes(
         props.route.name
       )
     ) {

@@ -7,8 +7,12 @@ const orderService = apiService.injectEndpoints({
   endpoints: (build) => ({
     getOrders: build.query<Order[], void>({
       query: () => 'orders',
-      providesTags: ['Orders']
+      providesTags: ['Orders'],
+      transformResponse: (response: any) => {
+        return response.results;
+      }
     }),
+
     createOrders: build.mutation<
       void,
       Omit<CreateOrderSchemaType, 'time' | 'weight'> & { weight: number }

@@ -28,8 +28,7 @@ export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, '
       accessToken = await AsyncStorage.getItem('accessToken');
       refreshToken = await AsyncStorage.getItem('refreshToken');
     }
-    const user = await AsyncStorage.getItem('user');
-    console.log('user', user);
+    const user = await AsyncStorage.getItem('userInfo');
     if (user) {
       dispatch(setUser(JSON.parse(user)));
     }

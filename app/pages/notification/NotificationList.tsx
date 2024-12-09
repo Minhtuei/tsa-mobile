@@ -5,7 +5,8 @@ import { AppTheme, useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NotificationFilter } from '@pages/notification/NotificationFilter';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList, NotificationStackParamList } from 'app/types/navigation';
-import { memo, useState } from 'react';
+import moment from 'moment';
+import { memo, useMemo, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
@@ -24,7 +25,12 @@ export const NotificationList = (
   const [notificationType, setNotificationType] = useState<NotificationFilterType>(
     NotificationFilterType.ALL
   );
-
+  const filteredNotifications = useMemo(() => {
+    if (notificationType === NotificationFilterType.ALL) {
+      return NOTIFICATIONS;
+    }
+    return NOTIFICATIONS.filter((notification) => notification.type === notificationType);
+  }, [notificationType]);
   const styles = createStyles(theme);
 
   return (
@@ -41,7 +47,7 @@ export const NotificationList = (
         }
         nestedScrollEnabled={true}
         stickyHeaderIndices={[0]}
-        data={NOTIFICATIONS}
+        data={filteredNotifications}
         renderItem={({ index, item }) => {
           return <NotificationItem index={index} item={item} />;
         }}
@@ -116,7 +122,9 @@ const NotificationItem = memo(function NotificationItem({
               {!isRead && <View style={styles.unreadIndicator} />}
             </View>
             <View style={styles.notificationRow}>
-              <Text style={[globalStyles.text, styles.timeText]}>{item.createdAt}</Text>
+              <Text style={[globalStyles.text, styles.timeText]}>
+                {moment(item.createdAt).fromNow()}
+              </Text>
             </View>
           </View>
         </View>

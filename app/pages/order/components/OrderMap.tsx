@@ -86,13 +86,15 @@ const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance }) => {
           setMapLoaded(true);
         }}
       >
-        <Camera
-          zoomLevel={18}
-          centerCoordinate={studentCoordinate}
-          animationMode={'flyTo'}
-          animationDuration={3000}
-          pitch={60}
-        />
+        {mapLoaded && (
+          <Camera
+            zoomLevel={18}
+            centerCoordinate={studentCoordinate}
+            animationMode={'flyTo'}
+            animationDuration={3000}
+            pitch={60}
+          />
+        )}
         {mapLoaded && routeCoordinates && (
           <ShapeSource
             id='routeSource'

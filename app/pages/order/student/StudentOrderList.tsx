@@ -64,7 +64,6 @@ export const StudentOrderList = (
 
     return result;
   }, [orders, orderId, status, filterType, startDate, endDate]);
-
   return (
     <View style={{ flex: 1 }}>
       <HeaderWithSearchAndFilter

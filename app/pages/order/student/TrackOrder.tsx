@@ -1,16 +1,14 @@
-import { SCREEN } from '@constants/screen';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { useAppDispatch } from '@hooks/redux';
+import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { setHideTabBar } from '@slices/app.slice';
 import { OrderStackParamList } from 'app/types/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Linking, StyleSheet, View } from 'react-native';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
-import { useAppDispatch } from '@hooks/redux';
-import { setHideTabBar } from '@slices/app.slice';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
-import LottieView from 'lottie-react-native';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import OrderMap from '../components/OrderMap'; // Import the new component
+import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
 
 export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'TrackOrder'>) => {
   const order = props.route.params.order;

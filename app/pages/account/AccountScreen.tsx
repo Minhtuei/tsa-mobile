@@ -18,6 +18,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useLogoutMutation } from '@services/auth.service';
 import { googleSignOut } from '@utils/googleSignIn';
 import { AccountStackParamList } from 'app/types/navigation';
+import { getErrorMessage } from '@utils/helper';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
 export const AccountScreen = (
@@ -60,7 +61,8 @@ export const AccountScreen = (
         clearStorage();
       })
       .catch((err: any) => {
-        setlogOutErr(err.data.message);
+        console.log(err);
+        setlogOutErr(getErrorMessage(err));
       });
   };
   const clearStorage = async () => {

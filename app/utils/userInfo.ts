@@ -3,6 +3,7 @@ import { UserInfo } from '@slices/auth.slice';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 export const saveUserInfo = async (userInfo: UserInfo | null) => {
+  console.log('userInfo', userInfo);
   await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
 };
 

@@ -2,6 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { Order } from './order';
 import { ReportType } from './report';
 import { UserInfo } from '@slices/auth.slice';
+import { CreateOrderSchemaType } from '@validations/order.schema';
 
 type RootStackParamList = {
   SplashScreen: undefined;
@@ -43,8 +44,9 @@ type DeliveryStackParamList = {
 type OrderStackParamList = {
   OrderList: undefined;
   OrderDetail: { order: Order };
-  CreateOrder: undefined;
+  CreateOrder: { order?: CreateOrderSchemaType };
   TrackOrder: { order: Order };
+  OrderPayment: { order: CreateOrderSchemaType };
 };
 
 type ReportStackParamList = {

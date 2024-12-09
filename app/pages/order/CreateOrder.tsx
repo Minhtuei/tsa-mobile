@@ -57,6 +57,10 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
         .toString(),
       weight: parseFloat(data.weight.replace(',', '.'))
     };
+    if (data.paymentMethod !== 'CASH') {
+      props.navigation.navigate('OrderPayment', { order: data });
+      return;
+    }
     createOrder(validateData)
       .unwrap()
       .then(() => {
@@ -99,7 +103,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       <ScrollView
         keyboardShouldPersistTaps={'handled'}
         style={{ flex: 1, backgroundColor: theme.colors.background }}
-        contentContainerStyle={{ paddingBottom: 40 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View style={{ flex: 1, padding: 16 }}>
           <View style={{ gap: 24 }}>
@@ -174,7 +178,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                       value={value}
                       style={{ backgroundColor: theme.colors.surface, height: 40 }}
                       mode='outlined'
-                      keyboardType='decimal-pad'
+                      keyboardType='numeric'
                       placeholder='Nhập cân nặng'
                     />
                   )}

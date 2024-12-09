@@ -13,7 +13,7 @@ import { CompositeScreenProps } from '@react-navigation/native';
 export const OrderDetail = (
   props: CompositeScreenProps<
     NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>,
-    NativeStackScreenProps<MainTabParamList, 'Report'>
+    NativeStackScreenProps<MainTabParamList, 'Account'>
   >
 ) => {
   const theme = useAppTheme();
@@ -139,9 +139,12 @@ export const OrderDetail = (
               mode='contained'
               style={[{ backgroundColor: theme.colors.error, minWidth: 60 }]}
               onPress={() => {
-                props.navigation.navigate('Report', {
-                  screen: 'CreateReport',
-                  params: { orderId: order.id }
+                props.navigation.navigate('Account', {
+                  screen: 'Report',
+                  params: {
+                    screen: 'CreateReport',
+                    params: { orderId: order.id }
+                  }
                 });
               }}
               icon={'alert-circle'}

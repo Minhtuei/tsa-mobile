@@ -7,7 +7,6 @@ import { Delivery } from '@pages/delivery/Delivery';
 import { Home } from '@pages/home/Home';
 import { Onboarding } from '@pages/Onboarding';
 import { Order } from '@pages/order/Order';
-import { Report } from '@pages/account/report/Report';
 import { SplashScreen } from '@pages/SplashScreen';
 import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -18,24 +17,25 @@ import { MainTabParamList, RootStackParamList } from 'app/types/navigation';
 import { StatusBar } from 'expo-status-bar';
 import { Appearance, Platform, useColorScheme } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
-import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navigation';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
+import { CustomTabbar } from '@components/CustomTabbar';
 import IconModal from '@components/IconModal';
 import { Account } from '@pages/account/Account';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Notification } from '@pages/notification/Notification';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NotificationProvider } from 'app/context/NotificationContext';
 import * as Linking from 'expo-linking';
+import * as Notifications from 'expo-notifications';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
 import SocketProvider from 'socket';
-import { NotificationProvider, useNotification } from 'app/context/NotificationContext';
-import * as Notifications from 'expo-notifications';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { CustomTabbar } from '@components/CustomTabbar';
-import { Notification } from '@pages/notification/Notification';
+import moment from 'moment';
+import 'moment/locale/vi';
+moment.locale('vi');
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,

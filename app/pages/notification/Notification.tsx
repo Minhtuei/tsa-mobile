@@ -7,7 +7,13 @@ const Stack = createNativeStackNavigator<NotificationStackParamList>();
 export const Notification = (props: NativeStackScreenProps<MainTabParamList, 'Notification'>) => {
   return (
     <Stack.Navigator screenOptions={{ header: Header }}>
-      <Stack.Screen name='NotificationList' component={NotificationList} />
+      <Stack.Screen
+        name='NotificationList'
+        component={NotificationList}
+        options={{
+          title: 'Thông báo'
+        }}
+      />
     </Stack.Navigator>
   );
 };

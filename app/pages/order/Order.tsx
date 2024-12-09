@@ -8,6 +8,7 @@ import { OrderList } from './OrderList';
 import { CreateOrder } from './CreateOrder';
 import { useAppSelector } from '@hooks/redux';
 import { TrackOrder } from './student/TrackOrder';
+import { OrderPayment } from './OrderPayment';
 
 const Stack = createNativeStackNavigator<OrderStackParamList>();
 
@@ -40,6 +41,11 @@ export const Order = (props: NativeStackScreenProps<MainTabParamList, 'Order'>) 
         name='TrackOrder'
         component={TrackOrder}
         options={{ title: 'Theo dõi đơn hàng' }}
+      />
+      <Stack.Screen
+        name='OrderPayment'
+        component={OrderPayment}
+        options={{ title: 'Thanh toán đơn hàng' }}
       />
     </Stack.Navigator>
   );
