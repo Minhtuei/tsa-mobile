@@ -32,7 +32,7 @@ import * as SplashScreenExpo from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
-import SocketProvider from 'socket';
+import SocketProvider from 'app/context/SocketContext';
 import moment from 'moment';
 import 'moment/locale/vi';
 moment.locale('vi');

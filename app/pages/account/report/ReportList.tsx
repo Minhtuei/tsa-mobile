@@ -131,7 +131,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
         }}
         style={{
           position: 'absolute',
-          bottom: 40,
+          bottom: 120,
           right: 16,
           backgroundColor: theme.colors.primaryContainer,
           borderRadius: 50

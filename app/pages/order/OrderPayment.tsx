@@ -1,50 +1,44 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCreateOrdersMutation } from '@services/order.service';
 import { useCreatePayOSPaymentMutation } from '@services/payment.service';
-import { createOrderSchema, CreateOrderSchemaType } from '@validations/order.schema';
+import { getVietQrCodeLink } from '@utils/qrcode';
 import { OrderStackParamList } from 'app/types/navigation';
-import moment from 'moment';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { useCallback, useState } from 'react';
+import { Image, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { Button, IconButton, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
-
+import * as Clipboard from 'expo-clipboard';
 export const OrderPayment = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderPayment'>
 ) => {
   const theme = useAppTheme();
   const [createOrder, { isLoading }] = useCreateOrdersMutation();
   const [getLinkPayment, { isLoading: isGettingLink }] = useCreatePayOSPaymentMutation();
-  const { handleSubmit } = useForm<CreateOrderSchemaType>({
-    resolver: yupResolver(createOrderSchema),
-    defaultValues: props.route.params.order
-  });
-  const onSubmit = (data: CreateOrderSchemaType) => {
-    const { time, ...rest } = data;
-    const validateData = {
-      ...rest,
-      deliveryDate: moment(data.deliveryDate + ' ' + time)
-        .format('YYYY-MM-DDTHH:mm')
-        .toString(),
-      weight: parseFloat(data.weight.replace(',', '.'))
-    };
-    createOrder(validateData)
+  const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
+  const [amount, setAmount] = useState<number>(0);
+  const [accountNumber, setAccountNumber] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+
+  const getPayment = useCallback(() => {
+    getLinkPayment({
+      amount: 5000,
+      description: 'Thanh toán đơn hàng',
+      returnUrl: 'localhost:3000',
+      cancelUrl: 'localhost:3000'
+    })
       .unwrap()
-      .then(() => {
-        Toast.show('Tạo đơn hàng thành công', {
-          duration: Toast.durations.LONG,
-          position: Toast.positions.CENTER,
-          shadow: true,
-          animation: true,
-          hideOnPress: true,
-          delay: 0,
-          backgroundColor: theme.colors.success,
-          textColor: theme.colors.onSuccess
+      .then((res) => {
+        setAmount(res.paymentLink.amount);
+        setAccountNumber(res.paymentLink.accountNumber);
+        setDescription(res.paymentLink.description);
+        const qrCodeLink = getVietQrCodeLink({
+          amount: res.paymentLink.amount,
+          bankBin: res.paymentLink.bin,
+          description: res.paymentLink.description,
+          accountNumber: res.paymentLink.accountNumber
         });
-        props.navigation.navigate('OrderList');
+        setQrCodeUrl(qrCodeLink);
       })
       .catch(() => {
         Toast.show('Tạo đơn hàng thất bại', {
@@ -58,23 +52,20 @@ export const OrderPayment = (
           textColor: theme.colors.onError
         });
       });
-  };
-  useEffect(() => {
-    getLinkPayment({
-      amount: 5000,
-      description: 'Thanh toán đơn hàng',
-      returnUrl: 'localhost:3000',
-      cancelUrl: 'localhost:3000'
-    })
-      .unwrap()
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  }, [getLinkPayment]);
+  const copyToClipboard = useCallback(async (text: string) => {
+    await Clipboard.setStringAsync(text);
+    Toast.show('Đã sao chép', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.CENTER,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+      backgroundColor: theme.colors.primary,
+      textColor: theme.colors.onPrimary
+    });
   }, []);
-
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -87,9 +78,69 @@ export const OrderPayment = (
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         <View style={{ flex: 1, padding: 16 }}>
-          <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
-            Vui lòng thanh toán đơn hàng trước
-          </Text>
+          <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+            <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Lấy link thanh toán:</Text>
+            <Button
+              mode='contained'
+              loading={isGettingLink}
+              onPress={getPayment}
+              style={{ width: 150 }}
+            >
+              Lấy link
+            </Button>
+          </View>
+          {qrCodeUrl && (
+            <View style={{ padding: 16, justifyContent: 'center', alignItems: 'center' }}>
+              <Image
+                source={{
+                  uri: qrCodeUrl
+                }}
+                style={{
+                  width: 300,
+                  height: 300,
+                  alignSelf: 'center',
+                  marginTop: 16
+                }}
+              />
+              <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>
+                    Số tài khoản:
+                  </Text>
+                  <Text style={{ fontSize: 16 }}>{accountNumber}</Text>
+                  <IconButton
+                    style={{
+                      marginLeft: 'auto'
+                    }}
+                    icon='content-copy'
+                    onPress={() => copyToClipboard(accountNumber)}
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>Số tiền:</Text>
+                  <Text style={{ fontSize: 16 }}>{amount}</Text>
+                  <IconButton
+                    style={{
+                      marginLeft: 'auto'
+                    }}
+                    icon='content-copy'
+                    onPress={() => copyToClipboard(amount.toString())}
+                  />
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                  <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>Mô tả:</Text>
+                  <Text style={{ fontSize: 16 }}>{description}</Text>
+                  <IconButton
+                    style={{
+                      marginLeft: 'auto'
+                    }}
+                    icon='content-copy'
+                    onPress={() => copyToClipboard(description)}
+                  />
+                </View>
+              </View>
+            </View>
+          )}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

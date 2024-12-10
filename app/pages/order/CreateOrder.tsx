@@ -57,10 +57,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
         .toString(),
       weight: parseFloat(data.weight.replace(',', '.'))
     };
-    if (data.paymentMethod !== 'CASH') {
-      props.navigation.navigate('OrderPayment', { order: data });
-      return;
-    }
+
     createOrder(validateData)
       .unwrap()
       .then(() => {

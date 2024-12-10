@@ -46,7 +46,7 @@ type OrderStackParamList = {
   OrderDetail: { order: Order };
   CreateOrder: { order?: CreateOrderSchemaType };
   TrackOrder: { order: Order };
-  OrderPayment: { order: CreateOrderSchemaType };
+  OrderPayment: { orderId: string };
 };
 
 type ReportStackParamList = {

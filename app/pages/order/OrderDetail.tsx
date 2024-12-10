@@ -118,6 +118,14 @@ export const OrderDetail = (
                   : 'Qua ngân hàng'}
             </Text>
           </View>
+          {!order.isPaid && order.paymentMethod !== 'CASH' && (
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+              <Text style={{ color: theme.colors.error }}>
+                Đơn hàng này không trả bằng tiền mặt và chưa thanh toán trước. Vui lòng thanh toán
+                để admin xác nhận đơn hàng.
+              </Text>
+            </View>
+          )}
           <View
             style={{
               width: '100%',
@@ -132,7 +140,9 @@ export const OrderDetail = (
               flexDirection: 'row',
               alignItems: 'center',
               width: '100%',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              gap: 12,
+              flexWrap: 'wrap'
             }}
           >
             <Button
@@ -151,6 +161,18 @@ export const OrderDetail = (
             >
               Khiếu nại
             </Button>
+            {!order.isPaid && order.paymentMethod !== 'CASH' && (
+              <Button
+                mode='contained'
+                style={{ minWidth: 60 }}
+                onPress={() => {
+                  props.navigation.navigate('OrderPayment', { orderId: order.id });
+                }}
+                icon={'credit-card'}
+              >
+                Thanh toán
+              </Button>
+            )}
             {order.latestStatus !== 'DELIVERED' && (
               <Button
                 mode='contained'

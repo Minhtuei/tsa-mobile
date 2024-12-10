@@ -7,7 +7,7 @@ import React, {
   useState
 } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { useAppSelector } from './app/hooks/redux';
+import { useAppSelector } from '@hooks/redux';
 
 interface ContextValue {
   socket: Socket | null;

@@ -14,7 +14,7 @@ import { getDirection } from '@utils/getDirection';
 import { coordinateList } from '@constants/coordinate';
 import { SCREEN } from '@constants/screen';
 import { Order } from 'app/types/order';
-import { useSocketContext } from 'socket';
+import { useSocketContext } from 'app/context/SocketContext';
 
 Mapbox.setAccessToken((process.env.EXPO_MAPBOX_ACCESS_TOKEN as string) || '');
 Mapbox.setTelemetryEnabled(false);

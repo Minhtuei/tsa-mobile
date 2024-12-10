@@ -6,7 +6,7 @@ import { DeliveryStackParamList } from 'app/types/navigation';
 import { useGetDeliveryQuery } from '@services/delivery.service';
 import { Feather, AntDesign, FontAwesome } from '@expo/vector-icons';
 import { formatUnixTimestamp, formatDate, formatVNDcurrency } from '@utils/format';
-import { useSocketContext } from 'socket';
+import { useSocketContext } from 'app/context/SocketContext';
 import { Order } from 'app/types/order';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   },
   circleButton: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 120,
     right: 16,
     width: 80,
     height: 80,
