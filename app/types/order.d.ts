@@ -27,6 +27,7 @@ type Order = {
     phoneNumber: string | null;
     photoUrl: string | null;
   };
+  student?: any;
 };
 
 type HistoryTime = {

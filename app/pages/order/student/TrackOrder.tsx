@@ -4,12 +4,12 @@ import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { setHideTabBar } from '@slices/app.slice';
 import { OrderStackParamList } from 'app/types/navigation';
 import { useEffect, useMemo, useState } from 'react';
-import { Linking, StyleSheet, View } from 'react-native';
+import { Image, Linking, StyleSheet, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import OrderMap from '../components/OrderMap'; // Import the new component
 import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
-
+import { FontAwesome } from '@expo/vector-icons';
 export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'TrackOrder'>) => {
   const order = props.route.params.order;
   const globalStyles = useGlobalStyles();
@@ -30,7 +30,7 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
       <OrderMap order={order} setDistance={setDistance} />
       <BottomSheet index={1} snapPoints={snapPoints}>
         <BottomSheetView style={{ padding: 12, gap: 8 }}>
-          {order.latestStatus === 'IN_TRANSPORT' && (
+          {order.latestStatus === 'ACCEPTED' && (
             <View
               style={[
                 {
@@ -42,17 +42,34 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
               ]}
             >
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                {order.staffInfo?.photoUrl ? (
-                  <Avatar.Image size={48} source={{ uri: order.staffInfo?.photoUrl }} />
-                ) : (
-                  <Avatar.Text size={48} label={order.staffInfo?.lastName ?? 'NV'} />
-                )}
-
+                <View
+                  style={{
+                    backgroundColor: theme.colors.primary,
+                    width: 48,
+                    height: 48,
+                    borderRadius: 24,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {order.staffInfo?.photoUrl ? (
+                    <Image
+                      source={{ uri: order.staffInfo?.photoUrl }}
+                      style={{ width: 48, height: 48, borderRadius: 24 }}
+                    />
+                  ) : (
+                    <FontAwesome name='user' size={24} color='white' />
+                  )}
+                </View>
                 <Text
                   style={[
                     globalStyles.text,
+
                     {
-                      fontWeight: 'semibold'
+                      fontWeight: 'bold',
+                      flex: 1,
+                      marginLeft: 8,
+                      fontSize: 20
                     }
                   ]}
                 >
@@ -99,7 +116,10 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
               </View>
             </View>
           )}
-          <OrderStatusStepIndicator historyTime={order.historyTime} />
+          <OrderStatusStepIndicator
+            currentStatus={order.latestStatus}
+            historyTime={order.historyTime}
+          />
         </BottomSheetView>
       </BottomSheet>
     </View>

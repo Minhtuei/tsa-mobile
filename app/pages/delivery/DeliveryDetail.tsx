@@ -1,20 +1,18 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
-import { Divider, Text, Card } from 'react-native-paper';
+import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { DeliveryStackParamList } from 'app/types/navigation';
 import { useGetDeliveryQuery } from '@services/delivery.service';
-import { Feather, AntDesign, FontAwesome } from '@expo/vector-icons';
-import { formatUnixTimestamp, formatDate, formatVNDcurrency } from '@utils/format';
-import { useSocketContext } from 'app/context/SocketContext';
+import { formatDate, formatUnixTimestamp, formatVNDcurrency } from '@utils/format';
+import { DeliveryStackParamList } from 'app/types/navigation';
 import { Order } from 'app/types/order';
+import React, { useMemo } from 'react';
+import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Card, Divider, Text } from 'react-native-paper';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
 const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) => {
   const { deliveryId } = route.params;
   const { data: delivery, isLoading } = useGetDeliveryQuery(deliveryId);
-
   const deliveryInfo = useMemo(
     () => [
       {

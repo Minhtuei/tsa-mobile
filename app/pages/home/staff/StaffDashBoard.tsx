@@ -9,6 +9,7 @@ import { useGetOrdersQuery } from '@services/order.service';
 import { useGetDeliveriesQuery } from '@services/delivery.service';
 import { formatUnixTimestamp } from '@utils/format';
 import { useAppSelector } from '@hooks/redux';
+import { Barchart } from '../components/Barchart';
 
 const StaffCurrentOrder: React.FC<{ order: OrderDetail }> = ({ order }) => {
   return (
@@ -118,18 +119,7 @@ export const StaffDashBoard = () => {
           <Feather name='box' size={24} color='black' />
           <Text style={styles.sectionHeader}>Thống kê đơn hàng</Text>
         </View>
-        <View style={styles.rowWithGapLarge}>
-          <StaffOrderCard
-            numberOfOrders={thisMonthOrder?.length as number}
-            color='#1ED7AA'
-            title='Tháng này'
-          />
-          <StaffOrderCard
-            numberOfOrders={thisWeekOrder?.length as number}
-            color='#00BBD4'
-            title='Tuần này'
-          />
-        </View>
+        <Barchart />
       </View>
       {/* delivery statistic */}
       <View>
@@ -137,28 +127,13 @@ export const StaffDashBoard = () => {
           <FontAwesome name='bicycle' size={24} color='black' />
           <Text style={styles.sectionHeader}>Thống kê chuyến đi</Text>
         </View>
-        <View style={styles.columnWithGap}>
-          <StaffDeliveryCard
-            numberOfDeliveries={thisMonthDelivery?.length as number}
-            title='Tháng này'
-            color='#34A853'
-          />
-          <StaffDeliveryCard
-            numberOfDeliveries={thisWeekDelivery?.length as number}
-            title='Tuần này'
-            color='#FFA900'
-          />
-        </View>
+        <Barchart />
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16
-  },
   dashboardContainer: {
     paddingHorizontal: 24,
     flexDirection: 'column',

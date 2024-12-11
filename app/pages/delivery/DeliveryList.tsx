@@ -47,7 +47,10 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
   };
   const latestStatus = delivery.DeliveryStatusHistory[0].status;
   return (
-    <Card style={{ marginBottom: 12, backgroundColor: theme.colors.surface }} onPress={onPress}>
+    <Card
+      style={{ marginBottom: 12, backgroundColor: theme.colors.surface, marginHorizontal: 16 }}
+      onPress={onPress}
+    >
       <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
         <View style={styles.square}>
           <MaterialCommunityIcons name='motorbike' size={32} color='green' />
@@ -150,7 +153,7 @@ export const DeliveryList = (
 
       <ScrollView
         refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ paddingBottom: 120 }}
       >
         {filteredDeliveries?.map((delivery) => (
           <DeliveryItem

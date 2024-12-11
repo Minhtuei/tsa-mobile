@@ -1,41 +1,29 @@
 import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
 import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Animated, Image, ImageBackground, Platform, TouchableOpacity, View } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
-import InfoCard from '../pages/home/InfoCard';
-const BackgroundImg = require('../../assets/header-background.png');
-import HeaderLogo from '../../assets/tsa-header.svg';
 import { useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import Constants from 'expo-constants';
 import { useState } from 'react';
-export const DashboardHeader = ({
-  opacity,
-  animation,
-  onPress
-}: {
-  opacity: Animated.AnimatedInterpolation<string | number>;
-  animation: any;
-  onPress: () => void;
-}) => {
+import { Image, ImageBackground, Platform, TouchableOpacity, View } from 'react-native';
+import { Text } from 'react-native-paper';
+import HeaderLogo from '../../assets/tsa-header.svg';
+import InfoCard from '../pages/home/InfoCard';
+const BackgroundImg = require('../../assets/header-background.png');
+export const DashboardHeader = ({ onPress }: { onPress: () => void }) => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   const auth = useAppSelector((state) => state.auth);
-  const [selectedType, setSelectedType] = useState<'today' | 'yesterday' | 'week' | 'month'>(
-    'today'
-  );
-  const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+  const [selectedType, setSelectedType] = useState<'week' | 'month' | 'year'>('week');
   return (
-    <View style={auth.userInfo?.role === 'STUDENT' && { height: SCREEN.height / 2 }}>
-      <AnimatedImageBackground
+    <View style={auth.userInfo?.role === 'STAFF' && { height: SCREEN.height / 2.5 }}>
+      <ImageBackground
         source={BackgroundImg}
         style={[
           {
             width: SCREEN.width,
             height: DASHBOARD_HEADER_HEIGHT
-          },
-          animation
+          }
         ]}
       >
         <View
@@ -52,7 +40,7 @@ export const DashboardHeader = ({
           ]}
         >
           <HeaderLogo width={SCREEN.width / 2} height={SCREEN.width / 2} />
-          <Animated.View
+          <View
             style={[
               globalStyles.SurfaceContainer,
               {
@@ -61,8 +49,7 @@ export const DashboardHeader = ({
                 marginTop: 24,
                 position: 'absolute',
                 top: Platform.OS === 'android' ? '50%' : '75%',
-                zIndex: 1,
-                opacity
+                zIndex: 1
               }
             ]}
           >
@@ -121,7 +108,7 @@ export const DashboardHeader = ({
                 <FontAwesome name='bell' size={24} color={theme.colors.primary} />
               </TouchableOpacity>
             </View>
-            {auth.userInfo?.role === 'STUDENT' && (
+            {auth.userInfo?.role === 'STAFF' && (
               <>
                 <QueryTypeBtnTab selectedType={selectedType} setSelectedType={setSelectedType} />
                 <View
@@ -145,9 +132,9 @@ export const DashboardHeader = ({
                 </View>
               </>
             )}
-          </Animated.View>
+          </View>
         </View>
-      </AnimatedImageBackground>
+      </ImageBackground>
     </View>
   );
 };

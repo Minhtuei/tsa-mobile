@@ -3,7 +3,7 @@ import { ScrollView, ViewStyle, TextStyle, View } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useAppTheme } from '@hooks/theme';
 
-type QueryType = 'today' | 'yesterday' | 'week' | 'month';
+export type QueryType = 'week' | 'month' | 'year';
 
 interface QueryTypeBtnTabProps {
   selectedType: QueryType;
@@ -27,12 +27,19 @@ const QueryTypeBtnTab: React.FC<QueryTypeBtnTabProps> = ({ selectedType, setSele
   return (
     <ScrollView
       horizontal={true}
-      style={{ flexDirection: 'row', width: '100%', maxHeight: 50 }}
+      style={{
+        flexDirection: 'row',
+        width: '100%',
+        maxHeight: 50
+      }}
       showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        marginHorizontal: 'auto'
+      }}
       bounces={false}
       scrollEventThrottle={16}
     >
-      {['today', 'yesterday', 'week', 'month'].map((type) => (
+      {['week', 'month', 'year'].map((type) => (
         <View key={type} style={[getButtonStyle(type as QueryType)]}>
           <Button
             labelStyle={getLabelStyle(type as QueryType)}
@@ -42,13 +49,7 @@ const QueryTypeBtnTab: React.FC<QueryTypeBtnTabProps> = ({ selectedType, setSele
             }}
             style={{ borderRadius: 0, borderWidth: 0 }}
           >
-            {type === 'today'
-              ? 'Hôm nay'
-              : type === 'yesterday'
-                ? 'Hôm qua'
-                : type === 'week'
-                  ? 'Tuần này'
-                  : 'Tháng này'}
+            {type === 'week' ? 'Tuần này' : type === 'month' ? 'Tháng này' : 'Năm này'}
           </Button>
         </View>
       ))}
