@@ -1,6 +1,7 @@
 import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
 import { Order } from 'app/types/order';
+import { getShippingFee } from '@utils/shippingFee';
 
 const orderService = apiService.injectEndpoints({
   overrideExisting: true,
@@ -11,6 +12,15 @@ const orderService = apiService.injectEndpoints({
       transformResponse: (response: any) => {
         return response.results;
       }
+    }),
+    getShippingFee: build.query<
+      { shippingFee: number },
+      Pick<Order, 'dormitory' | 'building' | 'weight' | 'room'>
+    >({
+      query: (params) => ({
+        url: 'orders/shipping-fee',
+        params: params
+      })
     }),
 
     createOrders: build.mutation<
@@ -26,4 +36,4 @@ const orderService = apiService.injectEndpoints({
     })
   })
 });
-export const { useGetOrdersQuery, useCreateOrdersMutation } = orderService;
+export const { useGetOrdersQuery, useCreateOrdersMutation, useGetShippingFeeQuery } = orderService;

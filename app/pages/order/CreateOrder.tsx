@@ -13,7 +13,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useCreateOrdersMutation } from '@services/order.service';
+import { useCreateOrdersMutation, useGetShippingFeeQuery } from '@services/order.service';
 import { createOrderSchema, CreateOrderSchemaType } from '@validations/order.schema';
 import { OrderStackParamList } from 'app/types/navigation';
 import moment from 'moment';
@@ -33,6 +33,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [visible, setVisible] = useState(false);
   const [createOrder, { isLoading }] = useCreateOrdersMutation();
+
   const {
     handleSubmit,
     watch,
@@ -54,7 +55,24 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       brand: ''
     }
   });
-  const domitory = watch('dormitory') as keyof typeof BUILDING_DATA;
+  const dormitory = watch('dormitory') as keyof typeof BUILDING_DATA;
+  const building = watch('building') as string;
+  const room = watch('room') as string;
+  const weight = watch('weight') as string;
+  const skip = !dormitory || !building || !room || !weight;
+  const { data: shippingFee, isLoading: isShippingFeeLoading } = useGetShippingFeeQuery(
+    {
+      building,
+      dormitory,
+      room,
+      weight: parseFloat(weight.replace(',', '.'))
+    },
+    {
+      refetchOnMountOrArgChange: true,
+      skip
+    }
+  );
+  console.log(shippingFee);
   const onSubmit = (data: CreateOrderSchemaType) => {
     const { time, ...rest } = data;
     const validateData = {
@@ -78,7 +96,14 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
           backgroundColor: theme.colors.success,
           textColor: theme.colors.onSuccess
         });
-        props.navigation.navigate('OrderList');
+        if (validateData.paymentMethod === 'CASH') {
+          props.navigation.navigate('OrderList');
+          return;
+        } else {
+          props.navigation.navigate('OrderPayment', {
+            amount: shippingFee?.shippingFee || 0
+          });
+        }
       })
       .catch(() => {
         Toast.show('Tạo đơn hàng thất bại', {
@@ -352,7 +377,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                   control={control}
                   render={({ field: { onChange, value } }) => (
                     <DropDownList
-                      data={domitory ? BUILDING_DATA[domitory] : BUILDING_DATA['B']}
+                      data={dormitory ? BUILDING_DATA[dormitory] : BUILDING_DATA['B']}
                       value={value}
                       setValue={onChange}
                       placeholder='Chọn tòa nhà'
@@ -428,6 +453,27 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                   <Text style={{ color: 'red' }}>{errors.paymentMethod.message}</Text>
                 )}
               </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 16
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Phí vận chuyển
+                </Text>
+                <Text style={{ color: theme.colors.onSurface, fontSize: 16 }}>
+                  {isShippingFeeLoading
+                    ? 'Đang tính...'
+                    : shippingFee?.shippingFee.toLocaleString('vi', {
+                        style: 'currency',
+                        currency: 'VND'
+                      }) || 'N/A'}
+                </Text>
+              </View>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <Button
@@ -486,7 +532,13 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
             </Dialog.Title>
             <Dialog.Content>
               <Text style={{ color: theme.colors.onSurface, fontSize: 16 }}>
-                Bạn xác nhận tạo đơn hàng này?
+                Bạn xác nhận tạo đơn hàng này với thông tin đã nhập và phí vận chuyển là{' '}
+                {isShippingFeeLoading
+                  ? 'Đang tính...'
+                  : shippingFee?.shippingFee.toLocaleString('vi', {
+                      style: 'currency',
+                      currency: 'VND'
+                    }) || 'N/A'}
               </Text>
             </Dialog.Content>
             <Dialog.Actions>

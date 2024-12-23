@@ -105,7 +105,10 @@ export const OrderDetail = (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%' }]}>Giá tiền:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
-              {order.shippingFee ?? 'N/A'}
+              {order.shippingFee?.toLocaleString('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+              }) ?? 'N/A'}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
@@ -166,7 +169,7 @@ export const OrderDetail = (
                 mode='contained'
                 style={{ minWidth: 60 }}
                 onPress={() => {
-                  props.navigation.navigate('OrderPayment', { orderId: order.id });
+                  props.navigation.navigate('OrderPayment', { amount: order.shippingFee! });
                 }}
                 icon={'credit-card'}
               >

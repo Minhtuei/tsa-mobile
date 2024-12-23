@@ -1,4 +1,3 @@
-import { brand } from 'expo-device';
 import * as yup from 'yup';
 export const createOrderSchema = yup.object({
   checkCode: yup.string().required('Mã kiểm tra không được để trống'),

@@ -24,7 +24,7 @@ export const OrderPayment = (
 
   const getPayment = useCallback(() => {
     getLinkPayment({
-      amount: 5000,
+      amount: props.route.params.amount,
       description: 'Thanh toán đơn hàng',
       returnUrl: 'localhost:3000',
       cancelUrl: 'localhost:3000'
@@ -117,7 +117,12 @@ export const OrderPayment = (
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>Số tiền:</Text>
-                  <Text style={{ fontSize: 16 }}>{amount}</Text>
+                  <Text style={{ fontSize: 16 }}>
+                    {amount.toLocaleString('vi-VN', {
+                      style: 'currency',
+                      currency: 'VND'
+                    })}
+                  </Text>
                   <IconButton
                     style={{
                       marginLeft: 'auto'
