@@ -9,6 +9,8 @@ import { Image, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-n
 import { Button, IconButton, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import * as Clipboard from 'expo-clipboard';
+import QRCode from 'react-native-qrcode-svg';
+
 export const OrderPayment = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderPayment'>
 ) => {
@@ -32,13 +34,14 @@ export const OrderPayment = (
         setAmount(res.paymentLink.amount);
         setAccountNumber(res.paymentLink.accountNumber);
         setDescription(res.paymentLink.description);
-        const qrCodeLink = getVietQrCodeLink({
-          amount: res.paymentLink.amount,
-          bankBin: res.paymentLink.bin,
-          description: res.paymentLink.description,
-          accountNumber: res.paymentLink.accountNumber
-        });
-        setQrCodeUrl(qrCodeLink);
+        // const qrCodeLink = getVietQrCodeLink({
+        //   amount: res.paymentLink.amount,
+        //   bankBin: res.paymentLink.bin,
+        //   description: res.paymentLink.description,
+        //   accountNumber: res.paymentLink.accountNumber
+        // });
+        console.log(res.paymentLink);
+        setQrCodeUrl(res.paymentLink.qrCode);
       })
       .catch(() => {
         Toast.show('Tạo đơn hàng thất bại', {
@@ -90,24 +93,20 @@ export const OrderPayment = (
             </Button>
           </View>
           {qrCodeUrl && (
-            <View style={{ padding: 16, justifyContent: 'center', alignItems: 'center' }}>
-              <Image
-                source={{
-                  uri: qrCodeUrl
-                }}
-                style={{
-                  width: 300,
-                  height: 300,
-                  alignSelf: 'center',
-                  marginTop: 16
-                }}
-              />
+            <View
+              style={{
+                marginTop: 16,
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+              <QRCode value={qrCodeUrl} size={200} quietZone={16} />
               <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>
                     Số tài khoản:
                   </Text>
-                  <Text style={{ fontSize: 16 }}>{accountNumber}</Text>
+                  <Text style={{ fontSize: 16, width: '45%' }}>{accountNumber}</Text>
                   <IconButton
                     style={{
                       marginLeft: 'auto'
@@ -129,7 +128,7 @@ export const OrderPayment = (
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>Mô tả:</Text>
-                  <Text style={{ fontSize: 16 }}>{description}</Text>
+                  <Text style={{ fontSize: 16, width: '45%' }}>{description}</Text>
                   <IconButton
                     style={{
                       marginLeft: 'auto'

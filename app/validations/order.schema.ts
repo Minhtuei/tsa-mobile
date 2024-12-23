@@ -1,3 +1,4 @@
+import { brand } from 'expo-device';
 import * as yup from 'yup';
 export const createOrderSchema = yup.object({
   checkCode: yup.string().required('Mã kiểm tra không được để trống'),
@@ -8,6 +9,7 @@ export const createOrderSchema = yup.object({
   room: yup.string().required('Phòng không được để trống'),
   building: yup.string().required('Tòa nhà không được để trống'),
   dormitory: yup.string().required('Ký túc xá không được để trống'),
-  paymentMethod: yup.string().required('Phương thức thanh toán không được để trống')
+  paymentMethod: yup.string().required('Phương thức thanh toán không được để trống'),
+  brand: yup.string().required('Sàn thương mại không được để trống')
 });
 export type CreateOrderSchemaType = yup.InferType<typeof createOrderSchema>;

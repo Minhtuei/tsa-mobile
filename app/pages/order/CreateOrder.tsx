@@ -2,7 +2,13 @@ import DatePicker from '@components/order/DatePicker';
 import { DropDownList } from '@components/order/DropDownList';
 import { DropDownListWithImg } from '@components/order/DropDownListWithImg';
 import { SearchInput } from '@components/order/SearchInput';
-import { BUILDING_DATA, DOMITORY_DATA, PAYMENT_METHOD_DATA, ROOM_DATA } from '@constants/domitory';
+import {
+  BUILDING_DATA,
+  DOMITORY_DATA,
+  ECOMMERCE_DATA,
+  PAYMENT_METHOD_DATA,
+  ROOM_DATA
+} from '@constants/domitory';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
@@ -44,7 +50,8 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       building: '',
       room: '',
       paymentMethod: '',
-      time: ''
+      time: '',
+      brand: ''
     }
   });
   const domitory = watch('dormitory') as keyof typeof BUILDING_DATA;
@@ -112,6 +119,35 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                 }}
               >
                 <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Sàn thương mại
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <DropDownListWithImg
+                      data={ECOMMERCE_DATA}
+                      value={value}
+                      setValue={onChange}
+                      placeholder='Chọn sàn thương mại'
+                      containerStyle={{
+                        backgroundColor: theme.colors.surface,
+                        borderRadius: 0,
+                        borderWidth: 1,
+                        borderColor: theme.colors.outline
+                      }}
+                    />
+                  )}
+                  name={'brand'}
+                />
+                {errors.brand && <Text style={{ color: 'red' }}>{errors.brand.message}</Text>}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
                   Mã kiểm tra
                 </Text>
                 <Controller
@@ -132,6 +168,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                   <Text style={{ color: 'red' }}>{errors.checkCode.message}</Text>
                 )}
               </View>
+
               <View
                 style={{
                   width: '100%',
@@ -237,7 +274,11 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                   control={control}
                   render={({ field: { onChange } }) => (
                     <SearchInput
-                      value={startDate ? moment(startDate).format('DD/MM/YYYY') : ''}
+                      value={
+                        startDate
+                          ? moment(startDate).format('DD/MM/YYYY')
+                          : moment().format('DD/MM/YYYY')
+                      }
                       onChange={onChange}
                       placeholder='Ngày giao hàng'
                       pressable={true}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, ViewStyle } from 'react-native';
+import { ImageSourcePropType, StyleSheet, ViewStyle } from 'react-native';
 import { SelectCountry } from 'react-native-element-dropdown';
 
 export const DropDownListWithImg = ({
@@ -12,9 +12,7 @@ export const DropDownListWithImg = ({
   data: {
     label: string;
     value: string;
-    image: {
-      uri: string;
-    };
+    image: ImageSourcePropType;
   }[];
   value: string | null;
   setValue: (value: string | null) => void;
@@ -42,7 +40,7 @@ export const DropDownListWithImg = ({
       value={value}
       onFocus={() => setIsFocus(true)}
       onBlur={() => setIsFocus(false)}
-      imageStyle={{ width: 20, height: 20, marginRight: 10 }}
+      imageStyle={{ width: 24, height: 24, marginRight: 10 }}
       onChange={(item) => {
         setValue(item.value);
         setIsFocus(false);

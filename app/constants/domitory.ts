@@ -1,3 +1,5 @@
+import { ImageSourcePropType } from 'react-native';
+
 export const DOMITORIES = ['A', 'B'];
 export const BUILDINGS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 export const ROOMS = [
@@ -276,27 +278,61 @@ export const ROOM_DATA = [
     value: '302'
   }
 ];
-
+const cashIcon = require('../../assets/icons/Cash.png') as ImageSourcePropType;
+const creditIcon = require('../../assets/icons/Credit.png') as ImageSourcePropType;
+const momoIcon = require('../../assets/icons/Momo.png') as ImageSourcePropType;
 export const PAYMENT_METHOD_DATA = [
   {
     label: 'Tiền mặt',
     value: 'CASH',
-    image: {
-      uri: 'https://cdn-icons-png.flaticon.com/512/9198/9198191.png'
-    }
+    image: cashIcon
   },
   {
     label: 'Chuyển khoản',
     value: 'CREDIT',
-    image: {
-      uri: 'https://w7.pngwing.com/pngs/223/204/png-transparent-bank-logo-bank-saving-bank-pic-building-structure-bank-thumbnail.png'
-    }
+    image: creditIcon
   },
   {
     label: 'Momo',
     value: 'MOMO',
-    image: {
-      uri: 'https://tsa-frontend-coral.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Foption-momo.459ddedb.jpg&w=48&q=75'
-    }
+    image: momoIcon
+  }
+];
+const shopeeIcon = require('../../assets/icons/Shopee.jpg') as ImageSourcePropType;
+const lazadaIcon = require('../../assets/icons/Lazada.png') as ImageSourcePropType;
+const tikiIcon = require('../../assets/icons/Tiki.png') as ImageSourcePropType;
+const tikTokIcon = require('../../assets/icons/Tiktok.png') as ImageSourcePropType;
+const sendoIcon = require('../../assets/icons/Sendo.png') as ImageSourcePropType;
+const bachhoaxanhIcon = require('../../assets/icons/Bachhoaxanh.png') as ImageSourcePropType;
+export const ECOMMERCE_DATA = [
+  {
+    label: 'Shopee',
+    value: 'Shopee',
+    image: shopeeIcon
+  },
+  {
+    label: 'Lazada',
+    value: 'Lazada',
+    image: lazadaIcon
+  },
+  {
+    label: 'Tiki',
+    value: 'Tiki',
+    image: tikiIcon
+  },
+  {
+    label: 'TikTok',
+    value: 'TikTok',
+    image: tikTokIcon
+  },
+  {
+    label: 'Sendo',
+    value: 'Sendo',
+    image: sendoIcon
+  },
+  {
+    label: 'Bách hoá xanh',
+    value: 'Bách hoá xanh',
+    image: bachhoaxanhIcon
   }
 ];
