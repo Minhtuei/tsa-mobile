@@ -188,7 +188,7 @@ const createStyles = (theme: MD3Theme) =>
       fontSize: 16
     },
     title: {
-      fontSize: 18,
+      fontSize: 16,
       fontWeight: 'bold',
       fontFamily: 'Roboto'
     },

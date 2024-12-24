@@ -11,6 +11,7 @@ import {
 } from '@constants/domitory';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCreateOrdersMutation, useGetShippingFeeQuery } from '@services/order.service';
@@ -33,7 +34,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [visible, setVisible] = useState(false);
   const [createOrder, { isLoading }] = useCreateOrdersMutation();
-
+  const auth = useAppSelector((state) => state.auth);
   const {
     handleSubmit,
     watch,
@@ -47,12 +48,13 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       product: '',
       weight: '',
       deliveryDate: '',
-      dormitory: '',
-      building: '',
-      room: '',
+      dormitory: auth.userInfo?.dormitory || '',
+      building: auth.userInfo?.building || '',
+      room: auth.userInfo?.room || '',
       paymentMethod: '',
       time: '',
-      brand: ''
+      brand: '',
+      phone: auth.userInfo?.phoneNumber || ''
     }
   });
   const dormitory = watch('dormitory') as keyof typeof BUILDING_DATA;
@@ -72,7 +74,6 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
       skip
     }
   );
-  console.log(shippingFee);
   const onSubmit = (data: CreateOrderSchemaType) => {
     const { time, ...rest } = data;
     const validateData = {
@@ -332,6 +333,31 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                 {errors.deliveryDate && (
                   <Text style={{ color: 'red' }}>{errors.deliveryDate.message}</Text>
                 )}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Số điện thoại
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                      style={{ backgroundColor: theme.colors.surface, height: 40 }}
+                      mode='outlined'
+                      placeholder='Nhập số điện thoại'
+                    />
+                  )}
+                  name={'phone'}
+                />
+                {errors.phone && <Text style={{ color: 'red' }}>{errors.phone.message}</Text>}
               </View>
               <View
                 style={{

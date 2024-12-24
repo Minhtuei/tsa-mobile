@@ -28,6 +28,7 @@ import { Button, Portal, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import GoogleIcon from '../../../assets/icons/googleIcon.svg';
 import { EmailInput, PasswordInput } from './components/AuthForm';
+import { getErrorMessage } from '@utils/helper';
 const Seperator = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
@@ -123,7 +124,7 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
         screen: 'Home'
       });
     } catch (err) {
-      setErrorMsg('Đăng nhập thất bại');
+      setErrorMsg(getErrorMessage(err));
     }
   };
 
@@ -160,7 +161,7 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 40}
       >
         <ScrollView
-          keyboardShouldPersistTaps='handled'
+          keyboardShouldPersistTaps='never'
           style={{ flex: 1 }}
           contentContainerStyle={[styles.scrollView, { backgroundColor: theme.colors.background }]}
         >

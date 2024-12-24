@@ -28,6 +28,7 @@ type Order = {
     photoUrl: string | null;
   };
   student?: any;
+  brand?: string;
 };
 
 type HistoryTime = {

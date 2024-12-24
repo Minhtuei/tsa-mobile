@@ -213,7 +213,6 @@ export const AccountScreen = (
               icon='map-marker'
               right={
                 <Text>
-                  {userInfo.dormitory}
                   {userInfo.building} - {userInfo.room}
                 </Text>
               }

@@ -67,53 +67,61 @@ export const OrderDetail = (
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
             <Text style={[globalStyles.title, { fontSize: 24 }]}> {shortenUUID(order.id)}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Checkcode:</Text>
-            <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
+          {order.brand && (
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+              <Text style={[globalStyles.title, { width: '45%' }]}>Sàn thương mại:</Text>
+              <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
+                {order.brand}
+              </Text>
+            </View>
+          )}
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Checkcode:</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
               {order.checkCode}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Sản phẩm</Text>
-            <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Sản phẩm</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
               {order.product}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Địa chỉ</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Địa chỉ</Text>
             <Text
-              style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}
+              style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}
             >{`${order.building} - ${order.room}`}</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Trạng thái:</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Trạng thái:</Text>
             <Text
               style={[
                 globalStyles.text,
-                { width: '60%', color: statusRender.color, textAlign: 'right' }
+                { width: '55%', color: statusRender.color, textAlign: 'right' }
               ]}
             >
               {statusRender.label}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Thời gian:</Text>
-            <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Thời gian:</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
               {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY') ?? 'N/A'}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Giá tiền:</Text>
-            <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Giá tiền:</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
               {order.shippingFee?.toLocaleString('vi-VN', {
                 style: 'currency',
                 currency: 'VND'
               }) ?? 'N/A'}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
-            <Text style={[globalStyles.title, { width: '40%' }]}>Phương thức thanh toán:</Text>
-            <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Phương thức thanh toán:</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
               {order.paymentMethod === 'CASH'
                 ? 'Tiền mặt'
                 : order.paymentMethod === 'MOMO'
@@ -122,7 +130,7 @@ export const OrderDetail = (
             </Text>
           </View>
           {!order.isPaid && order.paymentMethod !== 'CASH' && (
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
               <Text style={{ color: theme.colors.error }}>
                 Đơn hàng này không trả bằng tiền mặt và chưa thanh toán trước. Vui lòng thanh toán
                 để admin xác nhận đơn hàng.

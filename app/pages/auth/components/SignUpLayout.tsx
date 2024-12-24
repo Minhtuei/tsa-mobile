@@ -68,7 +68,7 @@ export const SignUpLayout = (props: SignUpLayoutProps) => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 40}
       >
         <ScrollView
-          keyboardShouldPersistTaps='handled'
+          keyboardShouldPersistTaps='never'
           style={{ flex: 1 }}
           contentContainerStyle={[styles.scrollView, { backgroundColor: theme.colors.background }]}
         >

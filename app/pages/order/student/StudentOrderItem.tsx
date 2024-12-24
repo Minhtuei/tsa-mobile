@@ -1,9 +1,10 @@
 import Feather from '@expo/vector-icons/Feather';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { getBrandIcon } from '@utils/getBrandIcon';
 import { getStatusRender } from '@utils/order';
 import { Order } from 'app/types/order';
 import moment from 'moment';
-import { TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
 
 export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: () => void }) => {
@@ -29,19 +30,26 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
           }
         ]}
       >
-        <View
-          style={{
-            backgroundColor: theme.colors.primary,
-            padding: 8,
-            borderRadius: 10,
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: 48,
-            height: 48
-          }}
-        >
-          <Feather name='package' size={24} color={theme.colors.onPrimary} />
-        </View>
+        {order.brand ? (
+          <Image
+            source={getBrandIcon(order.brand)}
+            style={{ width: 48, height: 48, borderRadius: 10 }}
+          />
+        ) : (
+          <View
+            style={{
+              backgroundColor: theme.colors.primary,
+              padding: 8,
+              borderRadius: 10,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: 48,
+              height: 48
+            }}
+          >
+            <Feather name='package' size={24} color={theme.colors.onPrimary} />
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
             #{order.checkCode}

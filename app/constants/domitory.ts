@@ -1,3 +1,4 @@
+import { getBrandIcon } from '@utils/getBrandIcon';
 import { ImageSourcePropType } from 'react-native';
 
 export const DOMITORIES = ['A', 'B'];
@@ -298,41 +299,36 @@ export const PAYMENT_METHOD_DATA = [
     image: momoIcon
   }
 ];
-const shopeeIcon = require('../../assets/icons/Shopee.jpg') as ImageSourcePropType;
-const lazadaIcon = require('../../assets/icons/Lazada.png') as ImageSourcePropType;
-const tikiIcon = require('../../assets/icons/Tiki.png') as ImageSourcePropType;
-const tikTokIcon = require('../../assets/icons/Tiktok.png') as ImageSourcePropType;
-const sendoIcon = require('../../assets/icons/Sendo.png') as ImageSourcePropType;
-const bachhoaxanhIcon = require('../../assets/icons/Bachhoaxanh.png') as ImageSourcePropType;
+
 export const ECOMMERCE_DATA = [
   {
     label: 'Shopee',
     value: 'Shopee',
-    image: shopeeIcon
+    image: getBrandIcon('Shopee')
   },
   {
     label: 'Lazada',
     value: 'Lazada',
-    image: lazadaIcon
+    image: getBrandIcon('Lazada')
   },
   {
     label: 'Tiki',
     value: 'Tiki',
-    image: tikiIcon
+    image: getBrandIcon('Tiki')
   },
   {
     label: 'TikTok',
     value: 'TikTok',
-    image: tikTokIcon
+    image: getBrandIcon('TikTok')
   },
   {
     label: 'Sendo',
     value: 'Sendo',
-    image: sendoIcon
+    image: getBrandIcon('Sendo')
   },
   {
     label: 'Bách hoá xanh',
     value: 'Bách hoá xanh',
-    image: bachhoaxanhIcon
+    image: getBrandIcon('Bách hoá xanh')
   }
 ];
