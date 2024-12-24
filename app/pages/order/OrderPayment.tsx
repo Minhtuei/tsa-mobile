@@ -4,30 +4,36 @@ import { useCreateOrdersMutation } from '@services/order.service';
 import { useCreatePayOSPaymentMutation } from '@services/payment.service';
 import { getVietQrCodeLink } from '@utils/qrcode';
 import { OrderStackParamList } from 'app/types/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Image, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, IconButton, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
-
+import { useSocketContext } from 'app/context/SocketContext';
+import { apiService } from '@services/api.service';
+const VietQrLogo = require('../../../assets/icons/VietQr.png');
 export const OrderPayment = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderPayment'>
 ) => {
   const theme = useAppTheme();
+  const order = props.route.params.order;
   const [createOrder, { isLoading }] = useCreateOrdersMutation();
   const [getLinkPayment, { isLoading: isGettingLink }] = useCreatePayOSPaymentMutation();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [amount, setAmount] = useState<number>(0);
   const [accountNumber, setAccountNumber] = useState<string>('');
   const [description, setDescription] = useState<string>('');
+  const [gotLink, setGotLink] = useState(false);
+  const { socket } = useSocketContext();
 
   const getPayment = useCallback(() => {
     getLinkPayment({
-      amount: props.route.params.amount,
-      description: 'Thanh toán đơn hàng',
+      amount: order.remainingAmount!,
+      description: `Thanh toán đơn hàng`,
       returnUrl: 'localhost:3000',
-      cancelUrl: 'localhost:3000'
+      cancelUrl: 'localhost:3000',
+      orderId: order.id
     })
       .unwrap()
       .then((res) => {
@@ -40,7 +46,7 @@ export const OrderPayment = (
         //   description: res.paymentLink.description,
         //   accountNumber: res.paymentLink.accountNumber
         // });
-        console.log(res.paymentLink);
+        setGotLink(true);
         setQrCodeUrl(res.paymentLink.qrCode);
       })
       .catch(() => {
@@ -69,6 +75,42 @@ export const OrderPayment = (
       textColor: theme.colors.onPrimary
     });
   }, []);
+  useEffect(() => {
+    if (socket && order.id && gotLink) {
+      const paymentUpdateHandler = (data: any) => {
+        console.log(`Received payment update: ${JSON.stringify(data)}`);
+        if (data.isPaid) {
+          Toast.show('Thanh toán thành công', {
+            duration: Toast.durations.LONG,
+            position: Toast.positions.CENTER,
+            shadow: true,
+            animation: true,
+            hideOnPress: true,
+            delay: 0,
+            backgroundColor: theme.colors.success,
+            textColor: theme.colors.onSuccess
+          });
+          setTimeout(() => {
+            props.navigation.navigate('OrderList');
+            apiService.util.invalidateTags(['Orders']);
+          }, 2000);
+        }
+      };
+
+      socket.emit('subscribeToPayment', { orderId: order.id });
+      console.log(`Subscribed to payment with order ID ${order.id}`);
+
+      socket.on('paymentUpdate', paymentUpdateHandler);
+
+      return () => {
+        // Cleanup event listener when dependencies change or component unmounts.
+        socket.emit('unsubscribeFromPayment', { orderId: order.id });
+        console.log(`Unsubscribed from payment with order ID ${order.id}`);
+        socket.off('paymentUpdate', paymentUpdateHandler);
+      };
+    }
+  }, [socket, order.id, gotLink]);
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -100,7 +142,7 @@ export const OrderPayment = (
                 alignItems: 'center'
               }}
             >
-              <QRCode value={qrCodeUrl} size={200} quietZone={16} />
+              <QRCode logo={VietQrLogo} value={qrCodeUrl} size={200} quietZone={16} />
               <View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>

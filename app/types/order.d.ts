@@ -29,6 +29,7 @@ type Order = {
   };
   student?: any;
   brand?: string;
+  remainingAmount?: number;
 };
 
 type HistoryTime = {

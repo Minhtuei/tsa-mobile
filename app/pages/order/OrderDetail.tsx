@@ -129,11 +129,15 @@ export const OrderDetail = (
                   : 'Qua ngân hàng'}
             </Text>
           </View>
-          {!order.isPaid && order.paymentMethod !== 'CASH' && (
+          {!order.isPaid && Boolean(order.remainingAmount) && order.paymentMethod !== 'CASH' && (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
               <Text style={{ color: theme.colors.error }}>
-                Đơn hàng này không trả bằng tiền mặt và chưa thanh toán trước. Vui lòng thanh toán
-                để admin xác nhận đơn hàng.
+                Bạn còn nợ:{' '}
+                {order.remainingAmount?.toLocaleString('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND'
+                })}{' '}
+                Vui lòng thanh toán trước khi nhận hàng để được admin xác nhận
               </Text>
             </View>
           )}
@@ -177,7 +181,7 @@ export const OrderDetail = (
                 mode='contained'
                 style={{ minWidth: 60 }}
                 onPress={() => {
-                  props.navigation.navigate('OrderPayment', { amount: order.shippingFee! });
+                  props.navigation.navigate('OrderPayment', { order });
                 }}
                 icon={'credit-card'}
               >

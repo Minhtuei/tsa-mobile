@@ -19,4 +19,5 @@ type PayOSCheckoutRequestType = {
   returnUrl: string;
   cancelUrl: string;
   extraData?: string;
+  orderId: string;
 };
