@@ -10,7 +10,7 @@ import { Text } from 'react-native-paper';
 import HeaderLogo from '../../assets/tsa-header.svg';
 import InfoCard from '../pages/home/InfoCard';
 const BackgroundImg = require('../../assets/header-background.png');
-export const DashboardHeader = ({ onPress }: { onPress: () => void }) => {
+export const DashboardHeader = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   const auth = useAppSelector((state) => state.auth);
@@ -104,9 +104,6 @@ export const DashboardHeader = ({ onPress }: { onPress: () => void }) => {
                   ]}
                 >{`${auth.userInfo?.lastName} ${auth.userInfo?.firstName}`}</Text>
               </View>
-              <TouchableOpacity onPress={onPress}>
-                <FontAwesome name='bell' size={24} color={theme.colors.primary} />
-              </TouchableOpacity>
             </View>
             {auth.userInfo?.role === 'STAFF' && (
               <>

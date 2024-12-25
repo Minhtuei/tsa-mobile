@@ -1,12 +1,12 @@
 import { DashboardHeader } from '@components/DashboardHeader';
 import { QueryType } from '@components/QueryTypeBtnTab';
-import { useAppSelector } from '@hooks/redux';
+import { useAppDispatch, useAppSelector } from '@hooks/redux';
 import { useGlobalStyles } from '@hooks/theme';
 import { CompositeScreenProps } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { HomeStackParamList, NotificationStackParamList } from 'app/types/navigation';
 import * as SplashScreenExpo from 'expo-splash-screen';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Barchart } from './components/Barchart';
 import { Piechart } from './components/Piechart';
@@ -16,16 +16,18 @@ import { Text } from 'react-native-paper';
 import { useGetOrdersQuery } from '@services/order.service';
 import { formatUnixTimestamp } from '@utils/format';
 import { Feather } from '@expo/vector-icons';
+import { useGetNotificationsQuery } from '@services/notification.service';
+import { setReadNotifcation, setUnReadNotificationCount } from '@slices/app.slice';
 export const Dashboard = (
   props: CompositeScreenProps<
-    NativeStackScreenProps<HomeStackParamList>,
-    NativeStackScreenProps<NotificationStackParamList>
+    NativeStackScreenProps<HomeStackParamList, 'Dashboard'>,
+    NativeStackScreenProps<NotificationStackParamList, 'NotificationList'>
   >
 ) => {
   const globalStyles = useGlobalStyles();
   const [selectedType, setSelectedType] = useState<QueryType>('week');
   const auth = useAppSelector((state) => state.auth);
-
+  const dispatch = useAppDispatch();
   // const [registerPushNoti] = useRegisterPushNotiMutation();
   // const { deviceToken } = useNotification();
   // useEffect(() => {
@@ -49,6 +51,15 @@ export const Dashboard = (
   //   }
   // }, [deviceToken]);
   const { data: orders, isLoading } = useGetOrdersQuery();
+  const { data: notifications } = useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true
+  });
+  useEffect(() => {
+    if (notifications) {
+      dispatch(setUnReadNotificationCount(notifications.unreadCount));
+    }
+  }, [notifications]);
+
   const getStartOfWeek = (date: Date) => {
     const startOfWeek = new Date(date);
     const day = startOfWeek.getDay();
@@ -96,11 +107,7 @@ export const Dashboard = (
         contentContainerStyle={{ paddingBottom: 120, flexGrow: 1 }}
         stickyHeaderIndices={[0]}
       >
-        <DashboardHeader
-          onPress={() => {
-            props.navigation.navigate('NotificationList');
-          }}
-        />
+        <DashboardHeader />
         {auth.userInfo?.role === 'STUDENT' && (
           <View style={{ padding: 16 }}>
             <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>

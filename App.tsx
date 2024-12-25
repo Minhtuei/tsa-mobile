@@ -15,7 +15,7 @@ import { stopTimer } from '@slices/timer.slice';
 import { store } from '@utils/store';
 import { MainTabParamList, RootStackParamList } from 'app/types/navigation';
 import { StatusBar } from 'expo-status-bar';
-import { Appearance, Platform, useColorScheme } from 'react-native';
+import { Appearance, Platform, TextInput, useColorScheme, Text } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
@@ -36,6 +36,24 @@ import SocketProvider from 'app/context/SocketContext';
 import moment from 'moment';
 import 'moment/locale/vi';
 moment.locale('vi');
+
+/**
+ * Below code is to limit the max size of text font user can custom in Accessibility
+ * StackOverflow: https://stackoverflow.com/a/65193181/27724785
+ */
+interface TextWithDefaultProps extends Text {
+  defaultProps?: { maxFontSizeMultiplier?: number };
+}
+interface TextInputWithDefaultProps extends TextInput {
+  defaultProps?: { maxFontSizeMultiplier?: number };
+}
+(Text as unknown as TextWithDefaultProps).defaultProps =
+  (Text as unknown as TextWithDefaultProps).defaultProps || {};
+(Text as unknown as TextWithDefaultProps).defaultProps!.maxFontSizeMultiplier = 1.5;
+(TextInput as unknown as TextInputWithDefaultProps).defaultProps =
+  (TextInput as unknown as TextInputWithDefaultProps).defaultProps || {};
+(TextInput as unknown as TextInputWithDefaultProps).defaultProps!.maxFontSizeMultiplier = 1.5;
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -162,7 +180,6 @@ function AppContent() {
 const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) => {
   const theme = useAppTheme();
   const auth = useAppSelector((state) => state.auth);
-  const app = useAppSelector((state) => state.app);
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
   useEffect(() => {
@@ -283,114 +300,6 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
           })}
         />
       </Tab.Navigator>
-      {/* <Tab.Navigator
-        id='MainTab'
-        initialRouteName='Home'
-        barStyle={{
-          justifyContent: 'center',
-          maxHeight: Platform.OS === 'ios' ? 64 : 80,
-          backgroundColor: theme.colors.background,
-          display: app.isHideTabBar ? 'none' : undefined
-        }}
-        activeColor={theme.colors.primary}
-        activeIndicatorStyle={{
-          backgroundColor: theme.colors.onPrimary
-        }}
-      >
-        <Tab.Screen
-          options={{
-            tabBarIcon: 'home',
-            title: 'Trang chủ'
-          }}
-          name='Home'
-          component={Home}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              e.preventDefault();
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Home' }]
-              });
-            }
-          })}
-        />
-        <Tab.Screen
-          options={{
-            tabBarIcon: 'shopping',
-            title: 'Đơn hàng'
-          }}
-          name='Order'
-          component={Order}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              // Prevent default action
-              e.preventDefault();
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Order' }]
-              });
-            }
-          })}
-        />
-        {auth.userInfo?.role === 'STUDENT' && (
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'file-document',
-              title: 'Khiếu nại'
-            }}
-            name='Report'
-            component={Report}
-            listeners={({ navigation }) => ({
-              tabPress: (e) => {
-                // Prevent default action
-                e.preventDefault();
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Report' }]
-                });
-              }
-            })}
-          />
-        )}
-        {auth.userInfo?.role === 'STAFF' && (
-          <Tab.Screen
-            options={{
-              tabBarIcon: 'motorbike',
-              title: 'Chuyến đi'
-            }}
-            name='Delivery'
-            component={Delivery}
-            listeners={({ navigation }) => ({
-              tabPress: (e) => {
-                // Prevent default action
-                e.preventDefault();
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'Delivery' }]
-                });
-              }
-            })}
-          />
-        )}
-        <Tab.Screen
-          options={{
-            tabBarIcon: 'account',
-            title: 'Cá nhân'
-          }}
-          name='Account'
-          component={Account}
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              // Prevent default action
-              e.preventDefault();
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Account' }]
-              });
-            }
-          })}
-        />
-      </Tab.Navigator> */}
     </>
   );
 };

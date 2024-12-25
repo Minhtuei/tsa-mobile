@@ -29,7 +29,6 @@ export async function registerForPushNotificationsAsync() {
     }
     try {
       const pushTokenString = (await Notifications.getDevicePushTokenAsync()).data;
-      console.log(pushTokenString);
       return pushTokenString;
     } catch (e: unknown) {
       handleRegistrationError(`${e}`);

@@ -9,7 +9,6 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming
 } from 'react-native-reanimated';
 import { useAppSelector } from '@hooks/redux';
@@ -146,13 +145,27 @@ const TabbarButton = memo(function TabbarButton({
       top
     };
   });
+  const unreadCount = useAppSelector((state) => state.app.unReadNotificationCount);
+  const formatNotificationCount = (count: number) => {
+    if (count > 9) {
+      return '9+';
+    }
+    return count;
+  };
 
+  const isShowBadge = routeName === 'Notification' && unreadCount > 0 && !isFocused;
   return (
     <Pressable onPress={onPress} onLongPress={onLongPress} style={styles.tabbarButton}>
       <Animated.View style={animatedIconStyle}>
         {icon[routeName as 'Home' | 'Order' | 'Delivery' | 'Notification' | 'Account']({
           color
         })}
+        {/* Render the notification badge for the Notification tab */}
+        {isShowBadge && (
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{formatNotificationCount(unreadCount)}</Text>
+          </View>
+        )}
       </Animated.View>
       <Animated.Text style={[{ color, fontSize: 12 }, animatedTextStyle]}>{label}</Animated.Text>
     </Pressable>
@@ -184,5 +197,22 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     gap: 5
+  },
+  badge: {
+    position: 'absolute',
+    top: -5,
+    right: -10,
+    backgroundColor: 'red',
+    borderRadius: 8,
+    height: 16,
+    minWidth: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 4
+  },
+  badgeText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: 'bold'
   }
 });

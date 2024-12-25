@@ -1,55 +1,167 @@
-import { NotificationFilterType, NOTIFICATIONS } from '@constants/notification';
+import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { LoadingScreen } from '@components/LoadingScreen';
+import { NotificationFilterType } from '@constants/notification';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useAppDispatch } from '@hooks/redux';
 import { AppTheme, useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NotificationFilter } from '@pages/notification/NotificationFilter';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { HomeStackParamList, NotificationStackParamList } from 'app/types/navigation';
+import {
+  useGetNotificationsQuery,
+  useMarkAsReadMutation,
+  useReadAllNotiMutation
+} from '@services/notification.service';
+import {
+  setReadAllNotification,
+  setReadNotifcation,
+  setUnReadNotificationCount
+} from '@slices/app.slice';
+import { getErrorMessage } from '@utils/helper';
+import { NotificationStackParamList } from 'app/types/navigation';
 import moment from 'moment';
-import { memo, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
   StyleSheet,
   TouchableOpacity,
   View
 } from 'react-native';
-import { Divider, Text } from 'react-native-paper';
+import { Divider, Portal, Text } from 'react-native-paper';
 
 export const NotificationList = (
   props: NativeStackScreenProps<NotificationStackParamList, 'NotificationList'>
 ) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
+  const dispatch = useAppDispatch();
   const [notificationType, setNotificationType] = useState<NotificationFilterType>(
     NotificationFilterType.ALL
   );
+  const [err, setErr] = useState<string>('');
+  const {
+    data: notifications,
+    isFetching,
+    refetch,
+    isError
+  } = useGetNotificationsQuery(undefined, {
+    refetchOnMountOrArgChange: true
+  });
+  const [readNoti] = useMarkAsReadMutation();
+  const [readAllNoti] = useReadAllNotiMutation();
+  const [isReadAll, setIsReadAll] = useState<boolean>(false);
+  const markAsRead = useCallback((notiId: string) => {
+    readNoti({ id: notiId })
+      .unwrap()
+      .then(() => {
+        dispatch(setReadNotifcation());
+      })
+      .catch((err) => {
+        setErr(getErrorMessage(err));
+      });
+  }, []);
+  const markAllAsRead = useCallback(() => {
+    readAllNoti()
+      .unwrap()
+      .then(() => {
+        refetch();
+        dispatch(setReadAllNotification());
+      })
+      .catch((err) => {
+        setErr(getErrorMessage(err));
+      });
+  }, []);
   const filteredNotifications = useMemo(() => {
-    if (notificationType === NotificationFilterType.ALL) {
-      return NOTIFICATIONS;
+    if (!notifications || !notifications.notifications) {
+      return [];
     }
-    return NOTIFICATIONS.filter((notification) => notification.type === notificationType);
-  }, [notificationType]);
+    if (notificationType === NotificationFilterType.ALL) {
+      return notifications.notifications;
+    }
+    return notifications.notifications.filter(
+      (notification) => notification.type === notificationType
+    );
+  }, [notificationType, notifications]);
   const styles = createStyles(theme);
-
+  useEffect(() => {
+    if (isError) {
+      setErr('Lỗi trong quá trình tải thông báo');
+    }
+  }, [isError]);
+  if (isFetching) {
+    return <LoadingScreen />;
+  }
   return (
     <KeyboardAvoidingView
       style={globalStyles.keyboardAvoidingView}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <Portal>
+        <ConfirmationDialog
+          visible={!!err}
+          setVisible={() => {
+            setErr('');
+          }}
+          onSubmit={() => {
+            setErr('');
+          }}
+          title='Lỗi'
+          content={err}
+          notShowCancel
+          isErr
+        />
+        <ConfirmationDialog
+          visible={isReadAll}
+          setVisible={() => {
+            setIsReadAll(false);
+          }}
+          onSubmit={() => {
+            setIsReadAll(false);
+            markAllAsRead();
+          }}
+          title='Thông báo'
+          content='Đánh dấu tất cả thông báo đã đọc'
+        />
+      </Portal>
       <FlatList
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={() => refetch()} />}
         ListHeaderComponent={
           <NotificationFilter
             currentNotificationType={notificationType}
             onChange={setNotificationType}
           />
         }
+        ListEmptyComponent={
+          <View
+            style={[
+              globalStyles.center,
+              {
+                marginTop: 32
+              }
+            ]}
+          >
+            <Text style={globalStyles.text}>Không có thông báo</Text>
+          </View>
+        }
         nestedScrollEnabled={true}
         stickyHeaderIndices={[0]}
         data={filteredNotifications}
         renderItem={({ index, item }) => {
-          return <NotificationItem index={index} item={item} />;
+          return (
+            <NotificationItem
+              index={index}
+              item={item}
+              onMarkAsRead={markAsRead}
+              onReadAll={
+                notificationType === NotificationFilterType.ALL
+                  ? () => setIsReadAll(true)
+                  : undefined
+              }
+            />
+          );
         }}
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={() => <Divider style={{ backgroundColor: theme.colors.outline }} />}
@@ -59,44 +171,58 @@ export const NotificationList = (
   );
 };
 
-const NotificationHeader = memo(function NotificationHeader() {
+const NotificationHeader = memo(function NotificationHeader({
+  onReadAll
+}: {
+  onReadAll?: () => void;
+}) {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const styles = createStyles(theme);
   return (
     <View style={styles.headerContainer}>
       <Text style={[globalStyles.text, styles.headerText]}>Tất cả thông báo</Text>
-      <TouchableOpacity>
-        <View style={styles.iconButton}>
-          <MaterialCommunityIcons
-            name='checkbox-multiple-marked-outline'
-            size={24}
-            color={theme.colors.onBackground}
-          />
-        </View>
-      </TouchableOpacity>
+      {onReadAll && (
+        <TouchableOpacity onPress={onReadAll}>
+          <View style={styles.iconButton}>
+            <MaterialCommunityIcons
+              name='checkbox-multiple-marked-outline'
+              size={24}
+              color={theme.colors.onBackground}
+            />
+          </View>
+        </TouchableOpacity>
+      )}
     </View>
   );
 });
 
 const NotificationItem = memo(function NotificationItem({
   item,
-  index
+  index,
+  onMarkAsRead,
+  onReadAll
 }: {
   item: NormalNotification;
   index: number;
+  onMarkAsRead?: (id: string) => void;
+  onReadAll?: () => void;
 }) {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const styles = createStyles(theme);
-  const [isRead, setIsRead] = useState<boolean>(item.isRead);
+  const [isRead, setIsRead] = useState<boolean>(true);
+  useEffect(() => {
+    setIsRead(item.isRead);
+  }, [item.isRead]);
   return (
     <>
-      {index === 0 && <NotificationHeader />}
+      {index === 0 && <NotificationHeader onReadAll={onReadAll} />}
       <TouchableOpacity
         onPress={() => {
           if (!isRead) {
             setIsRead(true);
+            onMarkAsRead?.(item.id);
           }
         }}
         disabled={isRead}
@@ -123,7 +249,7 @@ const NotificationItem = memo(function NotificationItem({
             </View>
             <View style={styles.notificationRow}>
               <Text style={[globalStyles.text, styles.timeText]}>
-                {moment(item.createdAt).fromNow()}
+                {moment.unix(Number(item.createdAt)).fromNow()}
               </Text>
             </View>
           </View>
@@ -189,6 +315,6 @@ const createStyles = (theme: AppTheme) =>
     },
     contentContainer: {
       paddingHorizontal: 16,
-      paddingBottom: 32
+      paddingBottom: 120
     }
   });

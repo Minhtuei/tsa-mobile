@@ -2,12 +2,24 @@ import { apiService } from './api.service';
 const notificationService = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    getNotifications: build.query<NormalNotification[], void>({
+    getNotifications: build.query<
+      {
+        notifications: NormalNotification[];
+        unreadCount: number;
+      },
+      void
+    >({
       query: () => '/notifications'
     }),
-    markAsRead: build.mutation<void, number>({
-      query: (id) => ({
+    markAsRead: build.mutation<void, { id: string }>({
+      query: ({ id }) => ({
         url: `/notifications/${id}`,
+        method: 'PATCH'
+      })
+    }),
+    readAllNoti: build.mutation<void, void>({
+      query: () => ({
+        url: `/notifications/read-all`,
         method: 'PATCH'
       })
     }),
@@ -44,5 +56,6 @@ export const {
   useMarkAsReadMutation,
   useRegisterPushNotiMutation,
   useCheckPushNotiMutation,
-  useUnRegisterPushNotiMutation
+  useUnRegisterPushNotiMutation,
+  useReadAllNotiMutation
 } = notificationService;

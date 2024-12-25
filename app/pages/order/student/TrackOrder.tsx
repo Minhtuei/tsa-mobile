@@ -30,7 +30,7 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
       <OrderMap order={order} setDistance={setDistance} />
       <BottomSheet index={1} snapPoints={snapPoints}>
         <BottomSheetView style={{ padding: 12, gap: 8 }}>
-          {order.latestStatus === 'ACCEPTED' && (
+          {order.latestStatus === 'IN_TRANSPORT' && (
             <View
               style={[
                 {

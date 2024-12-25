@@ -7,6 +7,7 @@ type ConfirmationDialogProps = {
   title: string;
   content: string;
   notShowCancel?: boolean;
+  isErr?: boolean;
 };
 
 export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
@@ -47,7 +48,7 @@ export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
             props.setVisible(false);
           }}
           style={{ minWidth: 60 }}
-          buttonColor={theme.colors.primary}
+          buttonColor={props.isErr ? theme.colors.error : theme.colors.primary}
           textColor={theme.colors.onPrimary}
         >
           {props.notShowCancel ? 'OK' : 'Xác nhận'}

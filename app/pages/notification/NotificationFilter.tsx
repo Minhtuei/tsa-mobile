@@ -4,6 +4,7 @@ import { FlatList, StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 import { NotificationFilterType } from '@constants/notification';
 import { LayoutChangeEvent } from 'react-native';
+import { useAppSelector } from '@hooks/redux';
 
 type notificationFilterMetadata = { name: string; value: NotificationFilterType };
 
@@ -76,7 +77,7 @@ export const NotificationFilter = memo(function NotificationFilter({
   const ref = useRef<FlatList>(null);
   const theme = useAppTheme();
   const [itemWidths, setItemWidths] = useState<number[]>([]);
-
+  const auth = useAppSelector((state) => state.auth);
   // Store each item's width when it's laid out
   const handleItemLayout = (width: number, index: number) => {
     setItemWidths((prev) => {
@@ -107,6 +108,9 @@ export const NotificationFilter = memo(function NotificationFilter({
 
   const renderItem = useCallback(
     ({ item, index }: { item: notificationFilterMetadata; index: number }) => {
+      if (auth.userInfo?.role !== 'STAFF' && item.value === NotificationFilterType.DELIVERY) {
+        return null;
+      }
       const isActive = currentNotificationType === item.value;
       return (
         <NotificationFilterButton
@@ -118,7 +122,7 @@ export const NotificationFilter = memo(function NotificationFilter({
         />
       );
     },
-    [currentNotificationType, handlePress]
+    [currentNotificationType, handlePress, auth.userInfo?.role]
   );
 
   return (

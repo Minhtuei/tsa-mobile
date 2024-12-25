@@ -19,6 +19,7 @@ import { useLogoutMutation } from '@services/auth.service';
 import { googleSignOut } from '@utils/googleSignIn';
 import { AccountStackParamList } from 'app/types/navigation';
 import { getErrorMessage } from '@utils/helper';
+import { useUnRegisterPushNotiMutation } from '@services/notification.service';
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple
 export const AccountScreen = (
@@ -33,10 +34,7 @@ export const AccountScreen = (
   const [logOutErr, setlogOutErr] = useState('');
   // Show error but doesn't log out
   const [unregisterErr, setUnregisterErr] = useState('');
-  const [notification, setNotification] = useState(false);
-  const [switchNotificationLoading, setSwitchNotificationLoading] = useState(false);
   const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
-
   const [visible, setVisible] = useState(false);
 
   const isVerified = useMemo(() => {

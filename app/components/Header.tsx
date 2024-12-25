@@ -11,7 +11,6 @@ export const Header = (props: NativeStackHeaderProps) => {
   const backgroundColor = theme.colors.primary;
   const color = theme.colors.onPrimary;
   useEffect(() => {
-    console.log('props.route.name', props.route.name);
     if (
       ['Dashboard', 'OrderList', 'ReportList', 'Report', 'AccountScreen', 'DeliveryList'].includes(
         props.route.name
@@ -30,7 +29,9 @@ export const Header = (props: NativeStackHeaderProps) => {
       theme={theme}
       style={{ backgroundColor: backgroundColor }}
     >
-      {canGoBack && <Appbar.BackAction color={color} onPress={props.navigation.goBack} />}
+      {props.route.name !== 'NotificationList' && (
+        <Appbar.BackAction color={color} onPress={props.navigation.goBack} />
+      )}
 
       <Appbar.Content titleStyle={{ color: color }} title={props.options.title ?? 'TSA Mobile'} />
     </Appbar.Header>
