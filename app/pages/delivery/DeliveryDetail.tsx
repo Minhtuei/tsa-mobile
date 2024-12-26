@@ -1,18 +1,46 @@
+import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { SlideButton } from '@components/SlideButton';
+import { DeliveryStatus } from 'app/types/delivery';
 import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
+import { useAppTheme } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useGetDeliveryQuery } from '@services/delivery.service';
+import { useGetDeliveryQuery, useUpdateDeliveryStatusMutation } from '@services/delivery.service';
 import { formatDate, formatUnixTimestamp, formatVNDcurrency } from '@utils/format';
+import { getBrandIcon, getPamentMethodIcon } from '@utils/getBrandIcon';
+import { getErrorMessage } from '@utils/helper';
 import { DeliveryStackParamList } from 'app/types/navigation';
 import { Order } from 'app/types/order';
-import React, { useMemo } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Card, Divider, Text } from 'react-native-paper';
+import React, { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  Image,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
+import { Button, Card, Divider, IconButton, Portal, Text } from 'react-native-paper';
+import { LoadingScreen } from '@components/LoadingScreen';
+import { OrderStatus } from '@constants/status';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
 const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) => {
   const { deliveryId } = route.params;
-  const { data: delivery, isLoading } = useGetDeliveryQuery(deliveryId);
+  const theme = useAppTheme();
+  const {
+    data: delivery,
+    isLoading,
+    refetch,
+    isFetching
+  } = useGetDeliveryQuery(deliveryId, {
+    refetchOnMountOrArgChange: true
+  });
+  const [err, setErr] = useState('');
+  const [isStartDeliSwipe, setIsStartDeliSwipe] = useState(false);
+  const [isCancelDeli, setIsCancelDeli] = useState(false);
+  const [updateDeliveryStatus, { isLoading: isUpdating }] = useUpdateDeliveryStatusMutation();
+
   const deliveryInfo = useMemo(
     () => [
       {
@@ -30,16 +58,90 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     ],
     [delivery]
   );
+  const currentOrder = useMemo(() => {
+    if (!delivery) {
+      return undefined;
+    }
+    return delivery.orders.find((order) => order.latestStatus === OrderStatus.IN_TRANSPORT);
+  }, [delivery]);
+
+  const onSlideComplete = useCallback(() => {
+    setIsStartDeliSwipe(true);
+  }, []);
+  const onTrackOrder = useCallback(() => {
+    navigation.navigate('StaffTrackOrder', {
+      order: currentOrder as unknown as Order
+    });
+  }, [currentOrder]);
+  const onUpdateDelivery = useCallback(
+    (status: Omit<DeliveryStatus, 'PENDING'>) => {
+      updateDeliveryStatus({ id: deliveryId, status })
+        .unwrap()
+        .then(() => {
+          onTrackOrder();
+        })
+        .catch((err) => {
+          setErr(getErrorMessage(err));
+        });
+    },
+    [deliveryId, currentOrder]
+  );
 
   if (isLoading) {
     return <ActivityIndicator size='large' color='#34A853' />;
   }
-
+  const latestStatus = delivery?.DeliveryStatusHistory[1].status;
+  if (isUpdating) {
+    return <LoadingScreen />;
+  }
   return (
     <View style={styles.rootContainer}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <Portal>
+        {latestStatus === 'PENDING' && (
+          <ConfirmationDialog
+            visible={isStartDeliSwipe}
+            setVisible={() => {
+              setIsStartDeliSwipe(false);
+            }}
+            onSubmit={() => {
+              onUpdateDelivery('ACCEPTED');
+            }}
+            title='Thông báo'
+            content='Bạn có chắc chắn muốn bắt đầu chuyến đi?'
+          />
+        )}
+        <ConfirmationDialog
+          visible={isCancelDeli}
+          setVisible={() => {
+            setIsCancelDeli(false);
+          }}
+          onSubmit={() => {
+            onUpdateDelivery('CANCELLED');
+            setIsCancelDeli(false);
+          }}
+          title='Thông báo'
+          content='Bạn có chắc chắn muốn huỷ chuyến đi?'
+        />
+        <ConfirmationDialog
+          visible={!!err}
+          setVisible={() => {
+            setErr('');
+          }}
+          onSubmit={() => {
+            setErr('');
+          }}
+          title='Lỗi'
+          content={err}
+          notShowCancel
+          isErr
+        />
+      </Portal>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+      >
         <View style={styles.container}>
-          <Card>
+          <Card elevation={4} style={{ backgroundColor: theme.colors.surface }}>
             <Card.Content>
               <Text style={styles.headerText}>Thông tin chung</Text>
               <View style={styles.infoContainer}>
@@ -57,54 +159,109 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             <Text style={styles.orderListHeaderText}>Danh sách đơn hàng</Text>
           </View>
           <View style={styles.orderListContainer}>
-            {delivery?.orders.map((order, index) => (
-              <Card key={index}>
-                <Card.Content>
-                  <Text style={styles.orderCode}>Mã Đơn hàng: #{order.checkCode}</Text>
-                  <View style={styles.orderDetails}>
-                    <View style={styles.orderInfo}>
-                      <View style={styles.iconContainer}>
-                        <Feather name='box' size={24} color='black' />
+            {delivery?.orders.map((order, index) => {
+              const isFinished =
+                order.latestStatus === 'DELIVERED' || currentOrder?.id !== order.id;
+              const isCanceled = order.latestStatus === 'CANCELLED';
+              return (
+                <Card
+                  elevation={2}
+                  key={index}
+                  style={{
+                    backgroundColor: isFinished
+                      ? theme.colors.surfaceVariant
+                      : isCanceled
+                        ? theme.colors.errorContainer
+                        : theme.colors.surface
+                  }}
+                  onPress={() => {
+                    navigation.navigate('StaffTrackOrder', {
+                      order: order as unknown as Order
+                    });
+                  }}
+                  disabled={
+                    isFinished ||
+                    isCanceled ||
+                    latestStatus === 'PENDING' ||
+                    currentOrder?.id !== order.id
+                  }
+                >
+                  <Card.Content>
+                    <Text style={styles.orderCode}>Mã Đơn hàng: #{order.checkCode}</Text>
+                    <View style={styles.orderDetails}>
+                      <View style={styles.orderInfo}>
+                        {order.brand ? (
+                          <Image
+                            source={getBrandIcon(order.brand)}
+                            style={{ width: 48, height: 48 }}
+                          />
+                        ) : (
+                          <View style={styles.iconContainer}>
+                            <FontAwesome name='shopping-cart' size={24} color='white' />
+                          </View>
+                        )}
+                        <View style={styles.orderTextContainer}>
+                          <Text>{order.product}</Text>
+                          <Text>
+                            P.{order.room}, T.{order.building}, KTX khu {order.dormitory}
+                          </Text>
+                        </View>
                       </View>
-                      <View style={styles.orderTextContainer}>
-                        <Text>{order.product}</Text>
-                        <Text>
-                          P.{order.room}, T.{order.building}, KTX khu {order.dormitory}
-                        </Text>
-                      </View>
+
+                      <Image
+                        source={getPamentMethodIcon(order.paymentMethod)}
+                        style={{ width: 48, height: 48 }}
+                      />
                     </View>
-                    {order.paymentMethod === 'CASH' ? (
-                      <FontAwesome name='money' size={24} color='black' />
-                    ) : order.paymentMethod === 'CREDIT' ? (
-                      <AntDesign name='creditcard' size={24} color='black' />
-                    ) : (
-                      <View style={styles.momoContainer}>
-                        <Text style={styles.momoText}>MOMO</Text>
-                      </View>
-                    )}
-                  </View>
-                  <Divider style={styles.divider} />
-                  <View style={styles.orderFooter}>
-                    <Text>{formatDate(formatUnixTimestamp(order.deliveryDate))}</Text>
-                    <Text>{formatVNDcurrency(order.shippingFee)}</Text>
-                    <AntDesign name='rightcircleo' size={24} color='black' />
-                  </View>
-                </Card.Content>
-              </Card>
-            ))}
+                    <Divider style={styles.divider} />
+                    <View style={styles.orderFooter}>
+                      <Text>{formatDate(formatUnixTimestamp(order.deliveryDate))}</Text>
+                      <Text>{formatVNDcurrency(order.shippingFee)}</Text>
+                      <AntDesign name='rightcircleo' size={24} color='black' />
+                    </View>
+                  </Card.Content>
+                </Card>
+              );
+            })}
           </View>
         </View>
       </ScrollView>
-      <View style={styles.circleButton}>
-        <TouchableOpacity
+      <View style={{ flexDirection: 'row', paddingVertical: 16, alignItems: 'center' }}>
+        <View style={{ flex: 0.95 }}>
+          {latestStatus === 'PENDING' ? (
+            <SlideButton onSlideComplete={onSlideComplete} title='Bắt đầu chuyến đi' />
+          ) : (
+            <Button
+              mode='contained'
+              onPress={onTrackOrder}
+              style={{
+                backgroundColor: theme.colors.primary,
+                borderRadius: 8,
+                height: 60,
+                width: '90%',
+                alignSelf: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              Đến bước hiện tại
+            </Button>
+          )}
+        </View>
+        <IconButton
+          icon={'trash-can-outline'}
+          size={24}
           onPress={() => {
-            navigation.navigate('StaffTrackOrder', {
-              order: delivery?.orders[0] as unknown as Order
-            });
+            setIsCancelDeli(true);
           }}
-        >
-          <Text style={styles.circleButtonText}>Bắt đầu</Text>
-        </TouchableOpacity>
+          mode='contained'
+          style={{
+            backgroundColor: theme.colors.error,
+            borderRadius: 8,
+            height: 60,
+            width: 60
+          }}
+          iconColor={theme.colors.onError}
+        />
       </View>
     </View>
   );
@@ -112,7 +269,8 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
 
 const styles = StyleSheet.create({
   rootContainer: {
-    flex: 1
+    flex: 1,
+    paddingBottom: 90
   },
   scrollContainer: {
     padding: 16
@@ -142,7 +300,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    marginVertical: 8
+    marginVertical: 16
   },
   orderListHeaderText: {
     fontWeight: 'bold',

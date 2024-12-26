@@ -7,3 +7,7 @@ export async function getDirection(from: number[], to: number[]) {
   const json = await response.json();
   return json;
 }
+
+export const formatDistance = (distance: string) => {
+  return `${(parseInt(distance) / 1000).toFixed(1)} km`;
+};

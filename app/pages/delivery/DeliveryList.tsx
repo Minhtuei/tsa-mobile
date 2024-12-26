@@ -73,7 +73,7 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
                 }}
                 numberOfLines={1}
               >
-                #{delivery.id.slice(0, 5)}saddddddddddddddd
+                #{delivery.id.slice(0, 5)}
               </Text>
               <Text style={{ opacity: 0.4 }}>
                 {formatDate(formatUnixTimestamp(delivery.createdAt))}

@@ -18,12 +18,13 @@ export const SocketContext = createContext<ContextValue>({
   socket: null,
   sendMessage: () => {}
 });
-console.log(process.env.EXPO_SOCKET_SERVER_URL);
+console.log('SocketUrl:', process.env.EXPO_SOCKET_SERVER_URL);
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const auth = useAppSelector((state) => state.auth);
   useEffect(() => {
     const newSocket = io(process.env.EXPO_SOCKET_SERVER_URL, {
+      // const newSocket = io('https://api.transportsupport.systems', {
       transportOptions: {
         polling: {
           extraHeaders: {

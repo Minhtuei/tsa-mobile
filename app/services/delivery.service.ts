@@ -1,6 +1,7 @@
 import { CreateDeliverySchemaType, UpdateDeliverySchemaType } from '@validations/delivery.schema';
 import { Delivery } from '@slices/delivery.slice';
 import { apiService } from './api.service';
+import { DeliveryStatus } from 'app/types/delivery';
 
 const deliveryService = apiService.injectEndpoints({
   overrideExisting: true,
@@ -21,7 +22,10 @@ const deliveryService = apiService.injectEndpoints({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Deliveries', id }]
     }),
-    updateDeliveryStatus: build.mutation<void, { id: string; status: string }>({
+    updateDeliveryStatus: build.mutation<
+      void,
+      { id: string; status: Omit<DeliveryStatus, 'PENDING'> }
+    >({
       query: ({ id, status }) => ({
         url: `deliveries/status/${id}`,
         method: 'PATCH',

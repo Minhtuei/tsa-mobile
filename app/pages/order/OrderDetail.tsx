@@ -9,6 +9,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ScrollView } from 'react-native';
 import { SCREEN } from '@constants/screen';
 import { CompositeScreenProps } from '@react-navigation/native';
+import { formatVNDcurrency } from '@utils/format';
 
 export const OrderDetail = (
   props: CompositeScreenProps<
@@ -113,10 +114,7 @@ export const OrderDetail = (
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '45%' }]}>Giá tiền:</Text>
             <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
-              {order.shippingFee?.toLocaleString('vi-VN', {
-                style: 'currency',
-                currency: 'VND'
-              }) ?? 'N/A'}
+              {formatVNDcurrency(order.shippingFee || 0)}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
@@ -132,12 +130,8 @@ export const OrderDetail = (
           {!order.isPaid && Boolean(order.remainingAmount) && order.paymentMethod !== 'CASH' && (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
               <Text style={{ color: theme.colors.error }}>
-                Bạn còn nợ:{' '}
-                {order.remainingAmount?.toLocaleString('vi-VN', {
-                  style: 'currency',
-                  currency: 'VND'
-                })}{' '}
-                Vui lòng thanh toán trước khi nhận hàng để được admin xác nhận
+                Bạn còn nợ: {formatVNDcurrency(order.remainingAmount || 0)} Vui lòng thanh toán
+                trước khi nhận hàng để được admin xác nhận
               </Text>
             </View>
           )}

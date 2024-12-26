@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import Mapbox, {
   Camera,
@@ -28,7 +28,10 @@ interface StaffOrderMapProps {
   setDistance: (distance: string) => void;
 }
 
-const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => {
+export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOrderMap({
+  order,
+  setDistance
+}) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const { socket } = useSocketContext();
@@ -124,7 +127,7 @@ const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => 
           centerCoordinate={studentCoordinate}
           animationMode={'flyTo'}
           animationDuration={3000}
-          pitch={60}
+          pitch={20}
         />
         {mapLoaded && routeCoordinates && (
           <ShapeSource
@@ -195,7 +198,7 @@ const StaffOrderMap: React.FC<StaffOrderMapProps> = ({ order, setDistance }) => 
       </View> */}
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -206,5 +209,3 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
-
-export default StaffOrderMap;

@@ -15,7 +15,7 @@ export const Barchart = () => {
     { value: 2, label: 'CN' }
   ];
   return (
-    <View style={{ paddingHorizontal: 24 }}>
+    <View>
       <BarChart
         barWidth={22}
         noOfSections={3}

@@ -19,12 +19,13 @@ interface RefreshTokenRes {
 const mutex = new Mutex();
 console.log('process.env.EXPO_PUBLIC_SERVER_HOST', process.env.EXPO_PUBLIC_SERVER_HOST);
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
+  // baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
+  baseUrl: 'https://2nzxg168-8000.asse.devtunnels.ms/api/',
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;
+    console.log('state auth', state.auth);
     const token = state.auth?.accessToken;
-    console.log('token', token);
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
@@ -44,6 +45,7 @@ export const baseQueryWithReauth: BaseQueryFn<
     result.error.status === 401 &&
     (result.error.data as any)?.code === 'INVALID_ACCESS_TOKEN'
   ) {
+    console.log('lỗi vc:', result.error);
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       result = await baseQuery(
@@ -58,7 +60,6 @@ export const baseQueryWithReauth: BaseQueryFn<
         extraOptions
       );
       if (result.data) {
-        console.log('refresh token success');
         const { accessToken, refreshToken } = (result.data as RefreshTokenRes).data;
         api.dispatch(setToken({ accessToken, refreshToken }));
         release();

@@ -15,6 +15,7 @@ import { useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCreateOrdersMutation, useGetShippingFeeQuery } from '@services/order.service';
+import { formatVNDcurrency } from '@utils/format';
 import { createOrderSchema, CreateOrderSchemaType } from '@validations/order.schema';
 import { OrderStackParamList } from 'app/types/navigation';
 import moment from 'moment';
@@ -494,10 +495,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                 <Text style={{ color: theme.colors.onSurface, fontSize: 16 }}>
                   {isShippingFeeLoading
                     ? 'Đang tính...'
-                    : shippingFee?.shippingFee.toLocaleString('vi', {
-                        style: 'currency',
-                        currency: 'VND'
-                      }) || 'N/A'}
+                    : formatVNDcurrency(shippingFee?.shippingFee || 0)}
                 </Text>
               </View>
             </View>
@@ -561,10 +559,7 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                 Bạn xác nhận tạo đơn hàng này với thông tin đã nhập và phí vận chuyển là{' '}
                 {isShippingFeeLoading
                   ? 'Đang tính...'
-                  : shippingFee?.shippingFee.toLocaleString('vi', {
-                      style: 'currency',
-                      currency: 'VND'
-                    }) || 'N/A'}
+                  : formatVNDcurrency(shippingFee?.shippingFee || 0)}
               </Text>
             </Dialog.Content>
             <Dialog.Actions>

@@ -1,4 +1,4 @@
-import { getBrandIcon } from '@utils/getBrandIcon';
+import { getBrandIcon, getPamentMethodIcon } from '@utils/getBrandIcon';
 import { ImageSourcePropType } from 'react-native';
 
 export const DOMITORIES = ['A', 'B'];
@@ -279,24 +279,22 @@ export const ROOM_DATA = [
     value: '302'
   }
 ];
-const cashIcon = require('../../assets/icons/Cash.png') as ImageSourcePropType;
-const creditIcon = require('../../assets/icons/Credit.png') as ImageSourcePropType;
-const momoIcon = require('../../assets/icons/Momo.png') as ImageSourcePropType;
+
 export const PAYMENT_METHOD_DATA = [
   {
     label: 'Tiền mặt',
     value: 'CASH',
-    image: cashIcon
+    image: getPamentMethodIcon('CASH')
   },
   {
     label: 'Chuyển khoản',
     value: 'CREDIT',
-    image: creditIcon
+    image: getPamentMethodIcon('CREDIT')
   },
   {
     label: 'Momo',
     value: 'MOMO',
-    image: momoIcon
+    image: getPamentMethodIcon('MOMO')
   }
 ];
 

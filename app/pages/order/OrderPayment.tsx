@@ -12,6 +12,7 @@ import * as Clipboard from 'expo-clipboard';
 import QRCode from 'react-native-qrcode-svg';
 import { useSocketContext } from 'app/context/SocketContext';
 import { apiService } from '@services/api.service';
+import { formatVNDcurrency } from '@utils/format';
 const VietQrLogo = require('../../../assets/icons/VietQr.png');
 export const OrderPayment = (
   props: NativeStackScreenProps<OrderStackParamList, 'OrderPayment'>
@@ -159,12 +160,7 @@ export const OrderPayment = (
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
                   <Text style={{ fontSize: 16, fontWeight: 'bold', width: '40%' }}>Số tiền:</Text>
-                  <Text style={{ fontSize: 16 }}>
-                    {amount.toLocaleString('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND'
-                    })}
-                  </Text>
+                  <Text style={{ fontSize: 16 }}>{formatVNDcurrency(amount)}</Text>
                   <IconButton
                     style={{
                       marginLeft: 'auto'
