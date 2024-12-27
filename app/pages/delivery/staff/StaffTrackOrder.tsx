@@ -83,16 +83,15 @@ export const StaffTrackOrder = (
                   justifyContent: 'center'
                 }}
               >
-                {/* {auth.userInfo?.photoUrl ? (
+                {order.studentInfo.photoUrl ? (
                   <Image
-                    source={{ uri: auth.userInfo?.photoUrl }}
+                    source={{ uri: order.studentInfo.photoUrl }}
                     style={{ width: 48, height: 48, borderRadius: 24 }}
                   />
-                ) : ( */}
-                <FontAwesome name='user' size={24} color='white' />
-                {/* )} */}
+                ) : (
+                  <FontAwesome name='user' size={24} color='white' />
+                )}
               </View>
-
               <Text
                 style={[
                   globalStyles.text,
@@ -105,13 +104,13 @@ export const StaffTrackOrder = (
                   }
                 ]}
               >
-                Trần Văn Cường
+                {order.studentInfo.firstName} {order.studentInfo.lastName}
               </Text>
               <IconButton
                 icon={'phone'}
                 size={24}
                 onPress={() => {
-                  Linking.openURL(`tel:${order.staffInfo?.phoneNumber}`);
+                  Linking.openURL(`tel:${order.studentInfo.phoneNumber}`);
                 }}
                 mode='outlined'
               />
@@ -123,7 +122,10 @@ export const StaffTrackOrder = (
                 justifyContent: 'space-between'
               }}
             >
-              <Text style={[globalStyles.title, { fontSize: 20 }]}> {shortenUUID(order.id)}</Text>
+              <Text style={[globalStyles.title, { fontSize: 20 }]}>
+                {' '}
+                {shortenUUID(order.id, 'ORDER')}
+              </Text>
               <Text
                 style={[
                   globalStyles.text,

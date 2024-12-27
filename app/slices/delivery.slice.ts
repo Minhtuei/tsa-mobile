@@ -10,10 +10,22 @@ export interface Delivery {
   DeliveryStatusHistory: {
     status: DeliveryStatus;
     time: string;
-    reason?: string;
+    reason: string | null;
   }[];
-  orders: OrderDetail[];
   staffId: string;
+  numberOrder: number;
+  latestStatus: DeliveryStatus;
+}
+export interface DeliverOrderDetail extends OrderDetail {
+  studentInfo: {
+    lastName: string;
+    firstName: string;
+    phoneNumber: string;
+    photoUrl: string;
+  };
+}
+export interface DetailDelivery extends Delivery {
+  orders: DeliverOrderDetail[];
 }
 
 export const deliveryStatusMap = {

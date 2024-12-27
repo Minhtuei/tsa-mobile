@@ -1,6 +1,6 @@
 type PaymentMethod = 'CASH' | 'MOMO' | 'CREDIT';
 export type OrderStatus =
-  | 'CANCELLED'
+  | 'CANCELED'
   | 'DELIVERED'
   | 'PENDING'
   | 'REJECTED'

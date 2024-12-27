@@ -13,8 +13,8 @@ import * as Location from 'expo-location';
 import { getDirection } from '@utils/getDirection';
 import { coordinateList } from '@constants/coordinate';
 import { SCREEN } from '@constants/screen';
-import { Order } from 'app/types/order';
 import { useSocketContext } from 'app/context/SocketContext';
+import { DeliverOrderDetail } from '@slices/delivery.slice';
 
 Mapbox.setAccessToken((process.env.EXPO_MAPBOX_ACCESS_TOKEN as string) || '');
 Mapbox.setTelemetryEnabled(false);
@@ -24,7 +24,7 @@ const studentLogo = require('../../../../assets/student.png');
 const wareHouseLogo = require('../../../../assets/warehouse.png');
 
 interface StaffOrderMapProps {
-  order: Order;
+  order: DeliverOrderDetail;
   setDistance: (distance: string) => void;
 }
 

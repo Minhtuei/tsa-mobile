@@ -1,5 +1,5 @@
 import { CreateDeliverySchemaType, UpdateDeliverySchemaType } from '@validations/delivery.schema';
-import { Delivery } from '@slices/delivery.slice';
+import { Delivery, DetailDelivery } from '@slices/delivery.slice';
 import { apiService } from './api.service';
 import { DeliveryStatus } from 'app/types/delivery';
 
@@ -10,7 +10,7 @@ const deliveryService = apiService.injectEndpoints({
       query: () => 'deliveries',
       providesTags: ['Deliveries']
     }),
-    getDelivery: build.query<Delivery, string>({
+    getDelivery: build.query<DetailDelivery, string>({
       query: (id) => `deliveries/${id}`,
       providesTags: (result, error, id) => [{ type: 'Deliveries', id }]
     }),

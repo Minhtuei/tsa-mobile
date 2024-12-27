@@ -3,6 +3,7 @@ import { Order } from './order';
 import { ReportType } from './report';
 import { UserInfo } from '@slices/auth.slice';
 import { CreateOrderSchemaType } from '@validations/order.schema';
+import { DeliverOrderDetail } from '@slices/delivery.slice';
 
 type RootStackParamList = {
   SplashScreen: undefined;
@@ -38,7 +39,7 @@ type NotificationStackParamList = {
 type DeliveryStackParamList = {
   DeliveryList: { deliveries: DeliveryDetail[] };
   DeliveryDetail: { deliveryId: string };
-  StaffTrackOrder: { order: Order };
+  StaffTrackOrder: { order: DeliverOrderDetail };
 };
 
 type OrderStackParamList = {
