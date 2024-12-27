@@ -45,7 +45,6 @@ export const baseQueryWithReauth: BaseQueryFn<
     result.error.status === 401 &&
     (result.error.data as any)?.code === 'INVALID_ACCESS_TOKEN'
   ) {
-    console.log('lỗi vc:', result.error);
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       result = await baseQuery(
@@ -60,7 +59,8 @@ export const baseQueryWithReauth: BaseQueryFn<
         extraOptions
       );
       if (result.data) {
-        const { accessToken, refreshToken } = (result.data as RefreshTokenRes).data;
+        console.log('dm loi', (result as RefreshTokenRes).data);
+        const { accessToken, refreshToken } = (result as RefreshTokenRes).data;
         api.dispatch(setToken({ accessToken, refreshToken }));
         release();
         return await baseQuery(args, api, extraOptions);
