@@ -1,10 +1,11 @@
+import { DeliveryStatus } from 'app/types/delivery';
 import { OrderStatus } from 'app/types/order';
 import { ReportStatus } from 'app/types/report';
 
-export const shortenUUID = (uuid: string) => {
-  return `#TSA-${uuid.slice(uuid.length - 8, uuid.length)}`;
+export const shortenUUID = (uuid: string, type: 'ORDER' | 'DELIVERY') => {
+  return `#${type === 'ORDER' ? 'TSA' : 'DELI'}${uuid.slice(uuid.length - 6, uuid.length).toUpperCase()}`;
 };
-export const getStatusRender = (status: OrderStatus | ReportStatus) => {
+export const getStatusRender = (status: OrderStatus | ReportStatus | DeliveryStatus) => {
   switch (status) {
     case 'PENDING': {
       return {
@@ -41,6 +42,12 @@ export const getStatusRender = (status: OrderStatus | ReportStatus) => {
       return {
         color: 'rgba(251,2,9,1)',
         label: 'Đã hủy'
+      };
+    }
+    case 'FINISHED': {
+      return {
+        color: 'rgba(52, 168, 83, 1)',
+        label: 'Hoàn thành'
       };
     }
     default: {

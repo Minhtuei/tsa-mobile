@@ -10,37 +10,10 @@ import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/forma
 import { OrderListHeader } from '../components/OrderListHeader';
 import { useGetOrdersQuery } from '@services/order.service';
 import { useAppSelector } from '@hooks/redux';
+import { getStatusRender } from '@utils/order';
 
 const OrderItem: React.FC<{ order: OrderDetail; onPress: () => void }> = ({ order, onPress }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'CANCELLED':
-        return 'red';
-      case 'DELIVERED':
-        return 'green';
-      case 'IN_TRANSPORT':
-        return 'blue';
-      case 'PENDING':
-        return 'orange';
-      default:
-        return 'red';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'CANCELLED':
-        return 'Đã hủy';
-      case 'DELIVERED':
-        return 'Đã giao';
-      case 'IN_TRANSPORT':
-        return 'Đang giao';
-      case 'PENDING':
-        return 'Chờ xử lý';
-      default:
-        return 'Bị từ chối';
-    }
-  };
+  const statusRender = getStatusRender(order.latestStatus);
 
   return (
     <Card style={{ marginBottom: 12 }} onPress={onPress}>
@@ -70,14 +43,14 @@ const OrderItem: React.FC<{ order: OrderDetail; onPress: () => void }> = ({ orde
             </View>
             <Chip
               style={{
-                backgroundColor: getStatusColor(order.latestStatus)
+                backgroundColor: statusRender.color
               }}
               textStyle={{
                 fontWeight: 'bold',
                 color: 'white'
               }}
             >
-              {getStatusLabel(order.latestStatus)}
+              {statusRender.label}
             </Chip>
           </View>
           <Divider />

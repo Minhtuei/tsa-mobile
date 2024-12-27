@@ -22,6 +22,8 @@ import {
 import { Button, Card, Divider, IconButton, Portal, Text } from 'react-native-paper';
 import { LoadingScreen } from '@components/LoadingScreen';
 import { OrderStatus } from '@constants/status';
+import { DeliverOrderDetail } from '@slices/delivery.slice';
+import { shortenUUID } from '@utils/order';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
@@ -70,7 +72,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   }, []);
   const onTrackOrder = useCallback(() => {
     navigation.navigate('StaffTrackOrder', {
-      order: currentOrder as unknown as Order
+      order: currentOrder as unknown as DeliverOrderDetail
     });
   }, [currentOrder]);
   const onUpdateDelivery = useCallback(
@@ -90,7 +92,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   if (isLoading) {
     return <ActivityIndicator size='large' color='#34A853' />;
   }
-  const latestStatus = delivery?.DeliveryStatusHistory[1].status;
+  const latestStatus = delivery?.DeliveryStatusHistory[1]?.status;
   if (isUpdating) {
     return <LoadingScreen />;
   }
@@ -162,7 +164,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             {delivery?.orders.map((order, index) => {
               const isFinished =
                 order.latestStatus === 'DELIVERED' || currentOrder?.id !== order.id;
-              const isCanceled = order.latestStatus === 'CANCELLED';
+              const isCanceled = order.latestStatus === 'CANCELED';
               return (
                 <Card
                   elevation={2}
@@ -176,7 +178,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
                   }}
                   onPress={() => {
                     navigation.navigate('StaffTrackOrder', {
-                      order: order as unknown as Order
+                      order: order as unknown as DeliverOrderDetail
                     });
                   }}
                   disabled={
@@ -187,7 +189,9 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
                   }
                 >
                   <Card.Content>
-                    <Text style={styles.orderCode}>Mã Đơn hàng: #{order.checkCode}</Text>
+                    <Text style={styles.orderCode}>
+                      Mã Đơn hàng: {shortenUUID(order.id, 'ORDER')}
+                    </Text>
                     <View style={styles.orderDetails}>
                       <View style={styles.orderInfo}>
                         {order.brand ? (

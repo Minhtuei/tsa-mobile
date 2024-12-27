@@ -10,50 +10,29 @@ import React, { useMemo, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Card, Chip, Divider, Text } from 'react-native-paper';
 import DeliveryListHeader from './components/DeliveryListHeader';
+import { getStatusRender, shortenUUID } from '@utils/order';
 
 const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> = ({
   delivery,
   onPress
 }) => {
   const theme = useAppTheme();
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'orange';
-      case 'ACCEPTED':
-        return 'blue';
-      case 'FINISHED':
-        return 'green';
-      case 'CANCELED':
-        return 'red';
-      default:
-        return 'red';
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'Chờ xử lý';
-      case 'ACCEPTED':
-        return 'Chấp nhận';
-      case 'FINISHED':
-        return 'Hoàn thành';
-      case 'CANCELED':
-        return 'Đã hủy';
-      default:
-        return 'Chờ xử lý';
-    }
-  };
-  const latestStatus = delivery.DeliveryStatusHistory[0].status;
+  const statusRender = getStatusRender(delivery.latestStatus);
   return (
     <Card
       style={{ marginBottom: 12, backgroundColor: theme.colors.surface, marginHorizontal: 16 }}
       onPress={onPress}
     >
       <Card.Content style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <View style={styles.square}>
-          <MaterialCommunityIcons name='motorbike' size={32} color='green' />
+        <View
+          style={[
+            styles.square,
+            {
+              backgroundColor: theme.colors.primary
+            }
+          ]}
+        >
+          <MaterialCommunityIcons name='motorbike' size={32} color={theme.colors.onPrimary} />
         </View>
         <View style={{ flexDirection: 'column', gap: 12, flex: 1 }}>
           <View
@@ -73,7 +52,7 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
                 }}
                 numberOfLines={1}
               >
-                #{delivery.id.slice(0, 5)}
+                {shortenUUID(delivery.id, 'DELIVERY')}
               </Text>
               <Text style={{ opacity: 0.4 }}>
                 {formatDate(formatUnixTimestamp(delivery.createdAt))}
@@ -81,14 +60,14 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
             </View>
             <Chip
               style={{
-                backgroundColor: getStatusColor(latestStatus)
+                backgroundColor: statusRender.color
               }}
               textStyle={{
                 fontWeight: 'bold',
                 color: 'white'
               }}
             >
-              {getStatusLabel(latestStatus)}
+              {statusRender.label}
             </Chip>
           </View>
           <Divider />
@@ -100,7 +79,7 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
             }}
           >
             <Text style={{ fontWeight: 'bold', flex: 1 }}>
-              {delivery?.orders?.length || 0} đơn hàng
+              {delivery?.numberOrder || 0} đơn hàng
             </Text>
             <EvilIcons name='pencil' size={32} color='blue' />
           </View>
@@ -130,9 +109,7 @@ export const DeliveryList = (
   const filteredDeliveries = useMemo(() => {
     return deliveries?.filter((delivery) => {
       const matchesSearchText = delivery.id.includes(searchText);
-      const matchesStatus = filterStatus
-        ? delivery.DeliveryStatusHistory[0].status === filterStatus
-        : true;
+      const matchesStatus = filterStatus ? delivery.latestStatus === filterStatus : true;
       const matchesDate = filterDate
         ? new Date(Number(delivery.createdAt) * 1000).toDateString() === filterDate.toDateString()
         : true;

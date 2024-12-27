@@ -86,7 +86,7 @@ export const StaffOrderDetail = (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '40%', fontSize: 16 }]}>Mã Đơn hàng:</Text>
             <Text style={[globalStyles.text, { width: '60%', textAlign: 'right' }]}>
-              {shortenUUID(order.id)}
+              {shortenUUID(order.id, 'ORDER')}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
