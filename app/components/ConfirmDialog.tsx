@@ -8,6 +8,7 @@ type ConfirmationDialogProps = {
   content: string;
   notShowCancel?: boolean;
   isErr?: boolean;
+  renderContent?: () => JSX.Element;
 };
 
 export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
@@ -28,6 +29,7 @@ export const ConfirmationDialog = (props: ConfirmationDialogProps) => {
       </Dialog.Title>
       <Dialog.Content>
         <Text style={{ color: theme.colors.onSurface, fontSize: 16 }}>{props.content}</Text>
+        {props.renderContent && props.renderContent()}
       </Dialog.Content>
       <Dialog.Actions>
         {!props.notShowCancel && (

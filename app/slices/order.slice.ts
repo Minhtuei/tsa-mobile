@@ -1,11 +1,6 @@
+import { OrderCancelReason, OrderStatus } from '@constants/status';
+
 type PaymentMethod = 'CASH' | 'MOMO' | 'CREDIT';
-export type OrderStatus =
-  | 'CANCELED'
-  | 'DELIVERED'
-  | 'PENDING'
-  | 'REJECTED'
-  | 'IN_TRANSPORT'
-  | 'REJECTED';
 
 export const orderStatusMap = {
   'Đã giao': 'DELIVERED',
@@ -49,4 +44,14 @@ export interface Order {
 
 export interface OrderDetail extends Order {
   brand?: string;
+}
+
+export interface UpdateOrderStatus {
+  orderId: string;
+  status: OrderStatus;
+  finishedImage?: string;
+  canceledImage?: string;
+  reason?: string;
+  distance?: number;
+  cancelReasonType?: OrderCancelReason;
 }

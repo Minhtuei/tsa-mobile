@@ -1,21 +1,31 @@
-import { SCREEN } from '@constants/screen';
-import { OrderStackParamList, DeliveryStackParamList } from 'app/types/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { Image, Linking, StyleSheet, View } from 'react-native';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { Avatar, Button, IconButton, Portal, Text } from 'react-native-paper';
-import { useAppDispatch } from '@hooks/redux';
-import { setHideTabBar } from '@slices/app.slice';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { StaffOrderMap } from './StaffOrderMap';
-import moment from 'moment';
-import { shortenUUID } from '@utils/order';
-import { FontAwesome } from '@expo/vector-icons';
-import { formatDistance } from '@utils/getDirection';
-import { formatVNDcurrency } from '@utils/format';
-import { SlideButton } from '@components/SlideButton';
+import { ChooseImageModal } from '@components/ChooseImageModal';
 import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { LoadingScreen } from '@components/LoadingScreen';
+import { PreViewImageModal } from '@components/PreviewImageModal';
+import { SlideButton } from '@components/SlideButton';
+import { OrderStatus } from '@constants/status';
+import { FontAwesome } from '@expo/vector-icons';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useAppDispatch } from '@hooks/redux';
+import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useUpdateOrderStatusMutation } from '@services/order.service';
+import { useUpLoadImageMutation } from '@services/report.service';
+import { setHideTabBar } from '@slices/app.slice';
+import { formatVNDcurrency } from '@utils/format';
+import { formatDistance } from '@utils/getDirection';
+import { getErrorMessage } from '@utils/helper';
+import { shortenUUID } from '@utils/order';
+import { updateOrderStatusSchema, UpdateOrderStatusSchemaType } from '@validations/order.schema';
+import { DeliveryStackParamList } from 'app/types/navigation';
+import moment from 'moment';
+import { useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Image, Linking, StyleSheet, View } from 'react-native';
+import { IconButton, Portal, Text } from 'react-native-paper';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { FinishedImageInput } from '../components/DeliveryField';
+import { StaffOrderMap } from './StaffOrderMap';
 export const StaffTrackOrder = (
   props: NativeStackScreenProps<DeliveryStackParamList, 'StaffTrackOrder'>
 ) => {
@@ -24,11 +34,63 @@ export const StaffTrackOrder = (
   const theme = useAppTheme();
 
   const [isComplete, setIsComplete] = useState(false);
-  const [isCancel, setIsCancel] = useState(false);
+  const [isErr, setIsErr] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
+  const [isShowCamera, setIsShowCamera] = useState(false);
 
   const snapPoints = useMemo(() => ['50%'], []);
   const dispatch = useAppDispatch();
   const [distance, setDistance] = useState<string | null>(null);
+
+  const [finishOrder, { isLoading: isFinishOrderLoading }] = useUpdateOrderStatusMutation();
+  const [uploadImage] = useUpLoadImageMutation();
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(updateOrderStatusSchema),
+    defaultValues: {
+      status: OrderStatus.DELIVERED as string,
+      finishedImage: '',
+      distance: 0
+    }
+  });
+  // Captured image state
+  const finishedImage = watch('finishedImage');
+  const [fileName, setFileName] = useState<string | null | undefined>(null);
+  const [fileType, setFileType] = useState<string | null | undefined>(null);
+  const onSubmit = async (data: UpdateOrderStatusSchemaType) => {
+    if (fileName && fileType) {
+      try {
+        const formData = new FormData();
+        const file = {
+          uri: data.finishedImage,
+          name: fileName,
+          type: fileType
+        } as any;
+        formData.append('image', file);
+        // const result = await uploadImage(formData).unwrap();
+        const validateData = {
+          status: OrderStatus.DELIVERED,
+          distance: data.distance,
+          finishedImage: 'result.url',
+          orderId: order.id
+        };
+        await finishOrder(validateData).unwrap();
+        props.navigation.goBack();
+      } catch (error) {
+        setIsErr(getErrorMessage(error));
+      }
+    }
+  };
+  useEffect(() => {
+    if (distance) {
+      setValue('distance', Number(distance));
+    }
+  }, [distance]);
   useEffect(() => {
     dispatch(setHideTabBar(true));
     return () => {
@@ -39,25 +101,64 @@ export const StaffTrackOrder = (
     <View style={styles.page}>
       <Portal>
         <ConfirmationDialog
-          visible={isComplete || isCancel}
+          visible={isComplete}
           setVisible={() => {
-            if (isComplete) {
-              setIsComplete(false);
-            }
-            if (isCancel) {
-              setIsCancel(false);
-            }
+            setIsComplete(false);
           }}
-          onSubmit={() => {
-            props.navigation.goBack();
-          }}
-          title='Thông báo'
-          content={
-            isComplete
-              ? 'Bạn có chắc chắn muốn hoàn thành đơn hàng này?'
-              : 'Bạn có chắc chắn muốn hủy đơn hàng này?'
-          }
+          onSubmit={handleSubmit(onSubmit)}
+          title='Xác nhận hoàn thành'
+          content={'Bạn có chắc chắn muốn hoàn thành đơn hàng này?'}
+          renderContent={() => (
+            <>
+              <Text
+                style={[
+                  globalStyles.text,
+                  { color: theme.colors.error, fontSize: 14, fontStyle: 'italic' }
+                ]}
+              >
+                *Vui lòng chụp ảnh đơn hàng trước khi hoàn thành
+              </Text>
+              <FinishedImageInput
+                control={control}
+                errors={errors}
+                setViewImageModalVisible={setIsPreview}
+                setProofModalVisible={setIsShowCamera}
+              />
+            </>
+          )}
         />
+        <ChooseImageModal
+          title='Chọn ảnh hoàn thành'
+          visible={isShowCamera}
+          setVisible={setIsShowCamera}
+          forceCamera={isShowCamera}
+          onSuccess={({ uri, name, type }) => {
+            setValue('finishedImage', uri);
+            setFileName(name);
+            setFileType(type);
+          }}
+        />
+        <PreViewImageModal
+          visible={isPreview}
+          setVisible={setIsPreview}
+          proofUri={finishedImage}
+          setValue={(field, value) => setValue('finishedImage', value)}
+          title='Ảnh hoàn thành'
+        />
+        <ConfirmationDialog
+          visible={Boolean(isErr)}
+          setVisible={() => {
+            setIsErr('');
+          }}
+          title='Lỗi'
+          notShowCancel={true}
+          content={isErr}
+          onSubmit={() => {
+            setIsErr('');
+          }}
+        />
+
+        {isFinishOrderLoading && <LoadingScreen />}
       </Portal>
       <StaffOrderMap order={order} setDistance={setDistance} />
       <BottomSheet index={1} snapPoints={snapPoints}>
@@ -190,9 +291,7 @@ export const StaffTrackOrder = (
             <IconButton
               icon={'trash-can-outline'}
               size={24}
-              onPress={() => {
-                setIsCancel(true);
-              }}
+              onPress={() => {}}
               mode='contained'
               style={{
                 backgroundColor: theme.colors.error,

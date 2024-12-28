@@ -2,6 +2,7 @@ import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
 import { Order } from 'app/types/order';
 import { getShippingFee } from '@utils/shippingFee';
+import { UpdateOrderStatus } from '@slices/order.slice';
 
 const orderService = apiService.injectEndpoints({
   overrideExisting: true,
@@ -33,7 +34,20 @@ const orderService = apiService.injectEndpoints({
         body: order
       }),
       invalidatesTags: ['Orders']
+    }),
+    updateOrderStatus: build.mutation<void, UpdateOrderStatus>({
+      query: ({ orderId, ...rest }) => ({
+        url: `orders/status/${orderId}`,
+        method: 'PATCH',
+        body: rest
+      }),
+      invalidatesTags: ['Orders', 'Deliveries']
     })
   })
 });
-export const { useGetOrdersQuery, useCreateOrdersMutation, useGetShippingFeeQuery } = orderService;
+export const {
+  useGetOrdersQuery,
+  useCreateOrdersMutation,
+  useGetShippingFeeQuery,
+  useUpdateOrderStatusMutation
+} = orderService;

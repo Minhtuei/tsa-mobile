@@ -88,9 +88,9 @@ const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance }) => {
       >
         {mapLoaded && (
           <Camera
-            zoomLevel={18}
+            zoomLevel={17}
             centerCoordinate={studentCoordinate}
-            animationMode={'flyTo'}
+            animationMode={'easeTo'}
             animationDuration={3000}
             pitch={60}
           />

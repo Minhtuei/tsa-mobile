@@ -1,15 +1,17 @@
 import { ConfirmationDialog } from '@components/ConfirmDialog';
+import { LoadingScreen } from '@components/LoadingScreen';
 import { SlideButton } from '@components/SlideButton';
-import { DeliveryStatus } from 'app/types/delivery';
+import { DeliveryStatus, OrderStatus } from '@constants/status';
 import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
 import { useAppTheme } from '@hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetDeliveryQuery, useUpdateDeliveryStatusMutation } from '@services/delivery.service';
+import { DeliverOrderDetail } from '@slices/delivery.slice';
 import { formatDate, formatUnixTimestamp, formatVNDcurrency } from '@utils/format';
 import { getBrandIcon, getPamentMethodIcon } from '@utils/getBrandIcon';
 import { getErrorMessage } from '@utils/helper';
+import { shortenUUID } from '@utils/order';
 import { DeliveryStackParamList } from 'app/types/navigation';
-import { Order } from 'app/types/order';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -20,10 +22,6 @@ import {
   View
 } from 'react-native';
 import { Button, Card, Divider, IconButton, Portal, Text } from 'react-native-paper';
-import { LoadingScreen } from '@components/LoadingScreen';
-import { OrderStatus } from '@constants/status';
-import { DeliverOrderDetail } from '@slices/delivery.slice';
-import { shortenUUID } from '@utils/order';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
@@ -67,6 +65,13 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     return delivery.orders.find((order) => order.latestStatus === OrderStatus.IN_TRANSPORT);
   }, [delivery]);
 
+  const canFinishDelivery = useMemo(() => {
+    if (!delivery) {
+      return false;
+    }
+    return delivery.orders.every((order) => order.latestStatus === OrderStatus.DELIVERED);
+  }, [delivery]);
+
   const onSlideComplete = useCallback(() => {
     setIsStartDeliSwipe(true);
   }, []);
@@ -80,7 +85,11 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
       updateDeliveryStatus({ id: deliveryId, status })
         .unwrap()
         .then(() => {
-          onTrackOrder();
+          if (status === DeliveryStatus.FINISHED || status === DeliveryStatus.CANCELED) {
+            navigation.goBack();
+          } else {
+            onTrackOrder();
+          }
         })
         .catch((err) => {
           setErr(getErrorMessage(err));
@@ -92,21 +101,21 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   if (isLoading) {
     return <ActivityIndicator size='large' color='#34A853' />;
   }
-  const latestStatus = delivery?.DeliveryStatusHistory[1]?.status;
+  const latestStatus = delivery?.latestStatus;
   if (isUpdating) {
     return <LoadingScreen />;
   }
   return (
     <View style={styles.rootContainer}>
       <Portal>
-        {latestStatus === 'PENDING' && (
+        {latestStatus === DeliveryStatus.PENDING && (
           <ConfirmationDialog
             visible={isStartDeliSwipe}
             setVisible={() => {
               setIsStartDeliSwipe(false);
             }}
             onSubmit={() => {
-              onUpdateDelivery('ACCEPTED');
+              onUpdateDelivery(DeliveryStatus.ACCEPTED);
             }}
             title='Thông báo'
             content='Bạn có chắc chắn muốn bắt đầu chuyến đi?'
@@ -118,7 +127,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             setIsCancelDeli(false);
           }}
           onSubmit={() => {
-            onUpdateDelivery('CANCELLED');
+            onUpdateDelivery(DeliveryStatus.CANCELED);
             setIsCancelDeli(false);
           }}
           title='Thông báo'
@@ -162,19 +171,21 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
           </View>
           <View style={styles.orderListContainer}>
             {delivery?.orders.map((order, index) => {
-              const isFinished =
-                order.latestStatus === 'DELIVERED' || currentOrder?.id !== order.id;
-              const isCanceled = order.latestStatus === 'CANCELED';
+              const isFinished = order.latestStatus === OrderStatus.DELIVERED;
+              const isCanceled = order.latestStatus === OrderStatus.CANCELED;
+              const isDelivering = order.id === currentOrder?.id;
               return (
                 <Card
                   elevation={2}
                   key={index}
                   style={{
-                    backgroundColor: isFinished
-                      ? theme.colors.surfaceVariant
-                      : isCanceled
-                        ? theme.colors.errorContainer
-                        : theme.colors.surface
+                    backgroundColor: isDelivering
+                      ? theme.colors.surface
+                      : isFinished
+                        ? theme.colors.surfaceVariant
+                        : isCanceled
+                          ? theme.colors.error
+                          : theme.colors.surfaceVariant
                   }}
                   onPress={() => {
                     navigation.navigate('StaffTrackOrder', {
@@ -184,7 +195,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
                   disabled={
                     isFinished ||
                     isCanceled ||
-                    latestStatus === 'PENDING' ||
+                    latestStatus === OrderStatus.PENDING ||
                     currentOrder?.id !== order.id
                   }
                 >
@@ -230,43 +241,51 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
           </View>
         </View>
       </ScrollView>
-      <View style={{ flexDirection: 'row', paddingVertical: 16, alignItems: 'center' }}>
-        <View style={{ flex: 0.95 }}>
-          {latestStatus === 'PENDING' ? (
-            <SlideButton onSlideComplete={onSlideComplete} title='Bắt đầu chuyến đi' />
-          ) : (
-            <Button
-              mode='contained'
-              onPress={onTrackOrder}
-              style={{
-                backgroundColor: theme.colors.primary,
-                borderRadius: 8,
-                height: 60,
-                width: '90%',
-                alignSelf: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              Đến bước hiện tại
-            </Button>
-          )}
+      {latestStatus !== DeliveryStatus.FINISHED && latestStatus !== DeliveryStatus.CANCELED && (
+        <View style={{ flexDirection: 'row', paddingVertical: 16, alignItems: 'center' }}>
+          <View style={{ flex: 0.95 }}>
+            {latestStatus === DeliveryStatus.PENDING ? (
+              <SlideButton onSlideComplete={onSlideComplete} title='Bắt đầu chuyến đi' />
+            ) : (
+              <Button
+                mode='contained'
+                onPress={
+                  canFinishDelivery ? () => onUpdateDelivery(DeliveryStatus.FINISHED) : onTrackOrder
+                }
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  borderRadius: 8,
+                  height: 60,
+                  width: '90%',
+                  alignSelf: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {canFinishDelivery ? 'Hoàn thành chuyến đi' : 'Đến bước hiện tại'}
+              </Button>
+            )}
+          </View>
+          <IconButton
+            icon={'trash-can-outline'}
+            size={24}
+            onPress={() => {
+              setIsCancelDeli(true);
+            }}
+            mode='contained'
+            style={{
+              backgroundColor:
+                currentOrder !== undefined || canFinishDelivery
+                  ? theme.colors.surfaceDisabled
+                  : theme.colors.error,
+              borderRadius: 8,
+              height: 60,
+              width: 60
+            }}
+            iconColor={theme.colors.onError}
+            disabled={currentOrder !== undefined || canFinishDelivery}
+          />
         </View>
-        <IconButton
-          icon={'trash-can-outline'}
-          size={24}
-          onPress={() => {
-            setIsCancelDeli(true);
-          }}
-          mode='contained'
-          style={{
-            backgroundColor: theme.colors.error,
-            borderRadius: 8,
-            height: 60,
-            width: 60
-          }}
-          iconColor={theme.colors.onError}
-        />
-      </View>
+      )}
     </View>
   );
 };

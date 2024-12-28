@@ -4,6 +4,7 @@ import { Modal, Text } from 'react-native-paper';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import * as ImagePicker from 'expo-image-picker';
+import { useEffect } from 'react';
 type ChooseImageModalProps = {
   visible: boolean;
   title: string;
@@ -17,6 +18,7 @@ type ChooseImageModalProps = {
     type: string | null | undefined;
   }) => void;
   setVisible: (visible: boolean) => void;
+  forceCamera?: boolean;
 };
 
 export const ChooseImageModal = (props: ChooseImageModalProps) => {
@@ -43,7 +45,7 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
 
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          allowsEditing: false,
           aspect: [1, 1],
           quality: 1
         });
@@ -63,7 +65,7 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
 
         result = await ImagePicker.launchCameraAsync({
           cameraType: ImagePicker.CameraType.back,
-          allowsEditing: true,
+          allowsEditing: false,
           aspect: [1, 1],
           quality: 1
         });
@@ -77,6 +79,8 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
           name: result.assets[0].fileName,
           type: result.assets[0].mimeType
         });
+        props.setVisible(false);
+      } else {
         props.setVisible(false);
       }
     } catch (error) {
@@ -101,9 +105,14 @@ export const ChooseImageModal = (props: ChooseImageModalProps) => {
       ]
     );
   };
+  useEffect(() => {
+    if (props.forceCamera) {
+      uploadProof('camera');
+    }
+  }, [props.forceCamera]);
   return (
     <Modal
-      visible={props.visible}
+      visible={props.visible && !props.forceCamera}
       contentContainerStyle={{
         backgroundColor: theme.colors.surface,
         padding: 24,

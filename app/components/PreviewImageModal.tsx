@@ -1,3 +1,4 @@
+import { SCREEN } from '@constants/screen';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import React from 'react';
 import { Image, ScrollView, View } from 'react-native';
@@ -6,7 +7,7 @@ import { Button, Modal, Text } from 'react-native-paper';
 interface PreViewImageModalProps {
   visible: boolean;
   setVisible: (visible: boolean) => void;
-  proofUri: string | null;
+  proofUri: string | null | undefined;
   setValue: (field: string, value: any) => void;
   disabled?: boolean;
   title: string;
@@ -38,19 +39,33 @@ export const PreViewImageModal: React.FC<PreViewImageModalProps> = ({
       visible={visible}
       onDismiss={() => setVisible(false)}
     >
-      <ScrollView contentContainerStyle={{ alignItems: 'center' }}>
+      <ScrollView
+        style={{
+          width: '100%',
+          maxHeight: 500
+        }}
+        contentContainerStyle={{ alignItems: 'center' }}
+        nestedScrollEnabled={true}
+      >
         <Text style={[globalStyles.title, { marginBottom: 16 }]}>{title}</Text>
         {proofUri && (
-          <Image
-            source={{ uri: proofUri }}
+          <ScrollView
+            horizontal
             style={{
-              width: 350,
-              height: 350
+              width: '100%',
+              maxHeight: 350
             }}
-            resizeMethod='scale'
-            resizeMode='contain'
-          />
+          >
+            <Image
+              source={{ uri: proofUri }}
+              style={{
+                width: 350,
+                height: 350
+              }}
+            />
+          </ScrollView>
         )}
+
         <View style={{ flexDirection: 'row', gap: 32, marginTop: 16 }}>
           {!disabled ? (
             <Button

@@ -123,9 +123,9 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
         }}
       >
         <Camera
-          zoomLevel={18}
+          zoomLevel={17}
           centerCoordinate={studentCoordinate}
-          animationMode={'flyTo'}
+          animationMode={'easeTo'}
           animationDuration={3000}
           pitch={20}
         />
@@ -202,7 +202,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
 
 const styles = StyleSheet.create({
   container: {
-    height: SCREEN.height,
+    height: SCREEN.height / 2,
     width: SCREEN.width
   },
   map: {
