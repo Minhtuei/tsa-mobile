@@ -102,9 +102,11 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
           props.navigation.navigate('OrderList');
           return;
         } else {
-          props.navigation.navigate('OrderPayment', {
-            amount: shippingFee?.shippingFee || 0
-          });
+          // props.navigation.navigate('OrderPayment', {
+          //   amount: shippingFee?.shippingFee || 0
+          // });
+          props.navigation.navigate('OrderList');
+          return;
         }
       })
       .catch(() => {

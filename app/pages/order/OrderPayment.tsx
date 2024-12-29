@@ -91,10 +91,7 @@ export const OrderPayment = (
             backgroundColor: theme.colors.success,
             textColor: theme.colors.onSuccess
           });
-          setTimeout(() => {
-            props.navigation.navigate('OrderList');
-            apiService.util.invalidateTags(['Orders']);
-          }, 2000);
+          props.navigation.navigate('OrderList');
         }
       };
 

@@ -23,7 +23,7 @@ export const getBrandIcon = (brand: string) => {
       return tikTokIcon;
     case 'Sendo':
       return sendoIcon;
-    case 'Bachhoaxanh':
+    case 'Bách hoá xanh':
       return bachhoaxanhIcon;
     default:
       return shopeeIcon;

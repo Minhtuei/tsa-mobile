@@ -77,9 +77,11 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   }, []);
   const onTrackOrder = useCallback(() => {
     navigation.navigate('StaffTrackOrder', {
-      order: currentOrder as unknown as DeliverOrderDetail
+      order: currentOrder
+        ? (currentOrder as unknown as DeliverOrderDetail)
+        : (delivery?.orders[0] as unknown as DeliverOrderDetail)
     });
-  }, [currentOrder]);
+  }, [currentOrder, delivery]);
   const onUpdateDelivery = useCallback(
     (status: Omit<DeliveryStatus, 'PENDING'>) => {
       updateDeliveryStatus({ id: deliveryId, status })

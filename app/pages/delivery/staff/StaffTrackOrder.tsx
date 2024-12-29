@@ -43,7 +43,7 @@ export const StaffTrackOrder = (
   const [distance, setDistance] = useState<string | null>(null);
 
   const [finishOrder, { isLoading: isFinishOrderLoading }] = useUpdateOrderStatusMutation();
-  const [uploadImage] = useUpLoadImageMutation();
+  const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
   const {
     handleSubmit,
     control,
@@ -59,6 +59,8 @@ export const StaffTrackOrder = (
     }
   });
   // Captured image state
+  console.log(errors);
+
   const finishedImage = watch('finishedImage');
   const [fileName, setFileName] = useState<string | null | undefined>(null);
   const [fileType, setFileType] = useState<string | null | undefined>(null);
@@ -72,16 +74,17 @@ export const StaffTrackOrder = (
           type: fileType
         } as any;
         formData.append('image', file);
-        // const result = await uploadImage(formData).unwrap();
+        const result = await uploadImage(formData).unwrap();
         const validateData = {
           status: OrderStatus.DELIVERED,
           distance: data.distance,
-          finishedImage: 'result.url',
+          finishedImage: result.url,
           orderId: order.id
         };
         await finishOrder(validateData).unwrap();
         props.navigation.goBack();
       } catch (error) {
+        console.log(error);
         setIsErr(getErrorMessage(error));
       }
     }
@@ -146,19 +149,21 @@ export const StaffTrackOrder = (
           title='Ảnh hoàn thành'
         />
         <ConfirmationDialog
-          visible={Boolean(isErr)}
+          visible={Boolean(isErr) || Number(distance) < 150}
           setVisible={() => {
             setIsErr('');
           }}
           title='Lỗi'
           notShowCancel={true}
-          content={isErr}
+          content={
+            Boolean(isErr) ? isErr : 'Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 150m'
+          }
           onSubmit={() => {
             setIsErr('');
           }}
         />
 
-        {isFinishOrderLoading && <LoadingScreen />}
+        {(isFinishOrderLoading || isUploadImageLoading) && <LoadingScreen />}
       </Portal>
       <StaffOrderMap order={order} setDistance={setDistance} />
       <BottomSheet index={1} snapPoints={snapPoints}>

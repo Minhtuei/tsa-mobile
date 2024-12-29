@@ -11,7 +11,8 @@ const paymentService = apiService.injectEndpoints({
         url: 'payment/payos',
         method: 'POST',
         body
-      })
+      }),
+      invalidatesTags: ['Orders', 'Notification']
     })
   })
 });
