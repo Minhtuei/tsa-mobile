@@ -54,9 +54,6 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
         console.error('Permission to access location was denied');
         return;
       }
-
-      const location = await Location.getCurrentPositionAsync({});
-      setShipperCoordinate([location.coords.longitude, location.coords.latitude]);
     };
 
     getLocation();
@@ -67,8 +64,6 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
       try {
         if (shipperCoordinate && studentCoordinate) {
           const direction = await getDirection(shipperCoordinate, studentCoordinate);
-          console.log('Direction response:', direction);
-
           if (
             direction &&
             direction.routes &&
@@ -94,14 +89,19 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
 
   useEffect(() => {
     const sendLocation = async () => {
-      if (socket && shipperCoordinate) {
+      if (socket) {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Highest
+        });
+        console.log([location.coords.longitude, location.coords.latitude]);
+        setShipperCoordinate([location.coords.longitude, location.coords.latitude]);
         socket.emit('locationUpdate', {
           orderId: order.id,
           staffId: order.shipperId,
-          latitude: shipperCoordinate[1],
-          longitude: shipperCoordinate[0]
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude
         });
-        console.log(`Sent location update: ${JSON.stringify(shipperCoordinate)}`);
+        // console.log(`Sent location update: ${JSON.stringify(shipperCoordinate)}`);
       }
     };
 
