@@ -11,7 +11,7 @@ const orderService = apiService.injectEndpoints({
       providesTags: ['Orders'],
       transformResponse: (response: any) => {
         return response.results.sort((a: Order, b: Order) => {
-          return Number(b.historyTime[0].time) - Number(a.historyTime[0].time);
+          return Number(b.deliveryDate) - Number(a.deliveryDate);
         });
       }
     }),

@@ -65,25 +65,7 @@ export const Dashboard = (
   }, []);
   return (
     <View style={[globalStyles.background]} onLayout={onLayoutRootView}>
-      {auth.userInfo?.role === 'STUDENT' ? (
-        <StudentDashBoard />
-      ) : (
-        <ScrollView
-          // refreshControl={
-          //   <RefreshControl
-          //     refreshing={isGetOrderStatisticFetching}
-          //     onRefresh={() => {
-          //       refetchOrderStatistic();
-          //     }}
-          //   />
-          // }
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 120, flexGrow: 1 }}
-          stickyHeaderIndices={[0]}
-        >
-          <StaffDashBoard />
-        </ScrollView>
-      )}
+      {auth.userInfo?.role === 'STUDENT' ? <StudentDashBoard /> : <StaffDashBoard />}
     </View>
   );
 };

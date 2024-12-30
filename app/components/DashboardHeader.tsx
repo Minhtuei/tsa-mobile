@@ -1,22 +1,18 @@
-import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
 import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useAppSelector } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
 import Constants from 'expo-constants';
-import { useState } from 'react';
-import { Image, ImageBackground, Platform, TouchableOpacity, View } from 'react-native';
+import { Image, ImageBackground, Platform, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import HeaderLogo from '../../assets/tsa-header.svg';
-import InfoCard from '../pages/home/InfoCard';
 const BackgroundImg = require('../../assets/header-background.png');
 export const DashboardHeader = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   const auth = useAppSelector((state) => state.auth);
-  const [selectedType, setSelectedType] = useState<'week' | 'month' | 'year'>('week');
   return (
-    <View style={auth.userInfo?.role === 'STAFF' && { height: SCREEN.height / 2.5 }}>
+    <View>
       <ImageBackground
         source={BackgroundImg}
         style={[
@@ -105,30 +101,6 @@ export const DashboardHeader = () => {
                 >{`${auth.userInfo?.lastName} ${auth.userInfo?.firstName}`}</Text>
               </View>
             </View>
-            {auth.userInfo?.role === 'STAFF' && (
-              <>
-                <QueryTypeBtnTab selectedType={selectedType} setSelectedType={setSelectedType} />
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    flexWrap: 'wrap',
-                    padding: 16
-                  }}
-                >
-                  <InfoCard iconName='account-box' itemName='Đơn hàng' value={25} />
-                  <InfoCard
-                    iconName='attach-money'
-                    itemName='Phí Ship'
-                    value={Intl.NumberFormat('vi-VN', {
-                      style: 'currency',
-                      currency: 'VND'
-                    }).format(250000)}
-                  />
-                </View>
-              </>
-            )}
           </View>
         </View>
       </ImageBackground>
