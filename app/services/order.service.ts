@@ -1,9 +1,8 @@
 import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from './api.service';
 import { Order } from 'app/types/order';
-import { getShippingFee } from '@utils/shippingFee';
-import { UpdateOrderStatus } from '@slices/order.slice';
-
+import { OrderStatistics, UpdateOrderStatus } from '@slices/order.slice';
+import { QueryType } from '@components/QueryTypeBtnTab';
 const orderService = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
@@ -11,7 +10,9 @@ const orderService = apiService.injectEndpoints({
       query: () => 'orders',
       providesTags: ['Orders'],
       transformResponse: (response: any) => {
-        return response.results;
+        return response.results.sort((a: Order, b: Order) => {
+          return Number(b.historyTime[0].time) - Number(a.historyTime[0].time);
+        });
       }
     }),
     getShippingFee: build.query<
@@ -42,6 +43,16 @@ const orderService = apiService.injectEndpoints({
         body: rest
       }),
       invalidatesTags: ['Orders', 'Deliveries']
+    }),
+    getStatistics: build.query<
+      OrderStatistics, // Response type
+      { type: QueryType } // Query argument type
+    >({
+      query: ({ type }) => ({
+        url: 'orders/stats',
+        params: { type }
+      }),
+      providesTags: ['Statistics']
     })
   })
 });
@@ -49,5 +60,6 @@ export const {
   useGetOrdersQuery,
   useCreateOrdersMutation,
   useGetShippingFeeQuery,
-  useUpdateOrderStatusMutation
+  useUpdateOrderStatusMutation,
+  useGetStatisticsQuery
 } = orderService;

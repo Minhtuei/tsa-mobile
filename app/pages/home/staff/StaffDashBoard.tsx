@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import { Text, Card, Button } from 'react-native-paper';
 import { View, StyleSheet } from 'react-native';
 import { OrderDetail } from '@slices/order.slice';
@@ -11,7 +11,7 @@ import { formatUnixTimestamp } from '@utils/format';
 import { useAppSelector } from '@hooks/redux';
 import { Barchart } from '../components/Barchart';
 
-const StaffCurrentOrder: React.FC<{ order: OrderDetail }> = ({ order }) => {
+const StaffCurrentOrder = memo(function StaffCurrentOrder({ order }: { order: OrderDetail }) {
   return (
     <View>
       <Text style={styles.header}>Đơn hàng hiện tại</Text>
@@ -48,72 +48,15 @@ const StaffCurrentOrder: React.FC<{ order: OrderDetail }> = ({ order }) => {
       </Card>
     </View>
   );
-};
+});
 
 export const StaffDashBoard = () => {
-  const { data: orders, isLoading } = useGetOrdersQuery();
-  const { data: deliveries, isLoading: isDeliveryLoading } = useGetDeliveriesQuery();
-  const auth = useAppSelector((state) => state.auth);
-
-  const getStartOfWeek = (date: Date) => {
-    const startOfWeek = new Date(date);
-    const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1);
-    startOfWeek.setDate(diff);
-    startOfWeek.setHours(0, 0, 0, 0);
-    return startOfWeek;
-  };
-
-  const getEndOfWeek = (date: Date) => {
-    const endOfWeek = new Date(date);
-    const day = endOfWeek.getDay();
-    const diff = endOfWeek.getDate() + (7 - day);
-    endOfWeek.setDate(diff);
-    endOfWeek.setHours(23, 59, 59, 999);
-    return endOfWeek;
-  };
-
-  const thisMonthOrder = useMemo(() => {
-    return orders?.filter((order) => {
-      const orderDate = new Date(formatUnixTimestamp(order.deliveryDate));
-      const currentMonth = new Date().getMonth();
-      const isStaff = order.shipperId === auth.userInfo?.id;
-      return orderDate.getMonth() === currentMonth && isStaff;
-    });
-  }, [orders, auth]);
-
-  const thisWeekOrder = useMemo(() => {
-    const startOfWeek = getStartOfWeek(new Date());
-    const endOfWeek = getEndOfWeek(new Date());
-    return orders?.filter((order) => {
-      const orderDate = new Date(formatUnixTimestamp(order.deliveryDate));
-      const isStaff = order.shipperId === auth.userInfo?.id;
-      return orderDate >= startOfWeek && orderDate <= endOfWeek && isStaff;
-    });
-  }, [orders, auth]);
-
-  const thisMonthDelivery = useMemo(() => {
-    return deliveries?.filter((delivery) => {
-      const deliveryDate = new Date(formatUnixTimestamp(delivery.createdAt));
-      const currentMonth = new Date().getMonth();
-      const isStaff = delivery.staffId === auth.userInfo?.id;
-      return deliveryDate.getMonth() === currentMonth && isStaff;
-    });
-  }, [deliveries, auth]);
-
-  const thisWeekDelivery = useMemo(() => {
-    const startOfWeek = getStartOfWeek(new Date());
-    const endOfWeek = getEndOfWeek(new Date());
-    return deliveries?.filter((delivery) => {
-      const deliveryDate = new Date(formatUnixTimestamp(delivery.createdAt));
-      const isStaff = delivery.staffId === auth.userInfo?.id;
-      return deliveryDate >= startOfWeek && deliveryDate <= endOfWeek && isStaff;
-    });
-  }, [deliveries, auth]);
+  // const { data: orders, isLoading } = useGetOrdersQuery();
+  // const { data: deliveries, isLoading: isDeliveryLoading } = useGetDeliveriesQuery();
 
   return (
     <View style={styles.dashboardContainer}>
-      {orders && orders.length > 0 && <StaffCurrentOrder order={orders[0]} />}
+      {/* {orders && orders.length > 0 && <StaffCurrentOrder order={orders[0]} />} */}
       <View>
         <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>
           <Feather name='box' size={24} color='black' />

@@ -1,22 +1,29 @@
 import { useAppTheme } from '@hooks/theme';
+import { OrderStatistics } from '@slices/order.slice';
+import { getBrandColor } from '@utils/getBrandIcon';
+import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';
 import { Text } from 'react-native-paper';
 
-export const Piechart = () => {
+export const Piechart = ({ data }: { data: OrderStatistics['brandPercentages'] | undefined }) => {
   const theme = useAppTheme();
-  const pieData = [
-    {
-      value: 72,
-      color: '#FF6600',
-      focused: true
-    },
-    { value: 16, color: '#333' },
-    { value: 10, color: '#006DFF' },
-    { value: 2, color: '#FF7F97' }
-  ];
-
-  const renderDot = (color: string) => {
+  const mostUsedBrand = useMemo(() => {
+    if (!data) return null;
+    // return the brand with the highest percentage and count
+    return data.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current));
+  }, [data]);
+  const pieData = useMemo(() => {
+    if (!data) return [];
+    return data.map((value) => {
+      return {
+        value: value.count,
+        color: getBrandColor(value.brand),
+        focused: value.brand === mostUsedBrand?.brand
+      };
+    });
+  }, [data, mostUsedBrand]);
+  const renderDot = useCallback((color: string) => {
     return (
       <View
         style={{
@@ -28,63 +35,38 @@ export const Piechart = () => {
         }}
       />
     );
-  };
-
-  const renderLegendComponent = () => {
+  }, []);
+  const renderLegendComponent = useCallback(() => {
+    if (!data || data.length === 0) return null;
     return (
-      <>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center'
-          }}
-        >
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        {data.map((item, index) => (
           <View
+            key={index}
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              width: 120,
-              marginRight: 20
-            }}
-          >
-            {renderDot('#FF6600')}
-            <Text style={{ color: theme.colors.onBackground }}>Shopee: 72%</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', width: 120 }}>
-            {renderDot('#333')}
-            <Text style={{ color: theme.colors.onBackground }}>Tiktok: 16%</Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              width: 120,
-              marginRight: 20
-            }}
-          >
-            {renderDot('#006DFF')}
-            <Text style={{ color: theme.colors.onBackground }}>Lazada: 10%</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', width: 120 }}>
-            {renderDot('#FF7F97')}
-            <Text style={{ color: theme.colors.onBackground }}>Khác: 2%</Text>
-          </View>
-        </View>
-        <Text
-          style={{
-            textAlign: 'center',
-            marginTop: 12,
-            color: theme.colors.onBackground
-          }}
-        >
-          Biểu đồ phân bố nguồn đơn hàng
-        </Text>
-      </>
-    );
-  };
 
+              marginBottom: 10,
+              marginRight: 20
+            }}
+          >
+            {renderDot(getBrandColor(item.brand))}
+            <Text style={{ color: theme.colors.onBackground }}>
+              {item.brand}: {item.percentage}%
+            </Text>
+          </View>
+        ))}
+      </View>
+    );
+  }, [data, renderDot, theme.colors.onBackground]);
   return (
     <View
       style={{
@@ -99,12 +81,16 @@ export const Piechart = () => {
           sectionAutoFocus
           radius={90}
           innerRadius={60}
-          innerCircleColor={theme.colors.primary}
+          innerCircleColor={
+            mostUsedBrand ? getBrandColor(mostUsedBrand.brand) : theme.colors.background
+          }
           centerLabelComponent={() => {
             return (
               <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>72%</Text>
-                <Text style={{ fontSize: 14, color: 'white' }}>Shopee</Text>
+                <Text style={{ fontSize: 22, color: 'white', fontWeight: 'bold' }}>
+                  {mostUsedBrand?.percentage}%
+                </Text>
+                <Text style={{ fontSize: 14, color: 'white' }}>{mostUsedBrand?.brand}</Text>
               </View>
             );
           }}

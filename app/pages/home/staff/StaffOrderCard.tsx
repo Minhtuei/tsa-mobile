@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 
 interface StaffOrderCardProps {
   color: string;
-  numberOfOrders: number;
+  numberOfOrders: number | undefined;
   title: string;
 }
 
-export const StaffOrderCard: React.FC<StaffOrderCardProps> = (props) => {
+export const StaffOrderCard = memo(function StaffOrderCard(props: StaffOrderCardProps) {
   return (
     <View
       style={{
@@ -29,7 +29,7 @@ export const StaffOrderCard: React.FC<StaffOrderCardProps> = (props) => {
           fontSize: 28
         }}
       >
-        {props.numberOfOrders}
+        {props.numberOfOrders || 0}
       </Text>
       <Text
         style={{
@@ -42,4 +42,4 @@ export const StaffOrderCard: React.FC<StaffOrderCardProps> = (props) => {
       </Text>
     </View>
   );
-};
+});

@@ -1,3 +1,4 @@
+import { EcommerceBrand } from '@constants/status';
 import { ImageSourcePropType } from 'react-native';
 
 const shopeeIcon = require('../../assets/icons/Shopee.jpg') as ImageSourcePropType;
@@ -40,5 +41,24 @@ export const getPamentMethodIcon = (method: string) => {
       return momoIcon;
     default:
       return cashIcon;
+  }
+};
+
+export const getBrandColor = (brand: string) => {
+  switch (brand) {
+    case EcommerceBrand.SHOPEE:
+      return '#fe5a37';
+    case EcommerceBrand.TIKTOK:
+      return '#333';
+    case EcommerceBrand.LAZADA:
+      return '#000bb5';
+    case EcommerceBrand.SENDO:
+      return '#fe3636';
+    case EcommerceBrand.TIKI:
+      return '#27c7fe';
+    case EcommerceBrand.BACHHOAXANH:
+      return '#02ba4a';
+    default:
+      return 'gray';
   }
 };
