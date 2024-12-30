@@ -28,11 +28,11 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
           style={[
             styles.square,
             {
-              backgroundColor: theme.colors.primary
+              backgroundColor: statusRender.color
             }
           ]}
         >
-          <MaterialCommunityIcons name='motorbike' size={32} color={theme.colors.onPrimary} />
+          <MaterialCommunityIcons name='motorbike' size={32} color={'white'} />
         </View>
         <View style={{ flexDirection: 'column', gap: 12, flex: 1 }}>
           <View

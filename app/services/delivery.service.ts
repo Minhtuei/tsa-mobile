@@ -8,11 +8,24 @@ const deliveryService = apiService.injectEndpoints({
   endpoints: (build) => ({
     getDeliveries: build.query<Delivery[], void>({
       query: () => 'deliveries',
-      providesTags: ['Deliveries']
+      providesTags: ['Deliveries'],
+      transformResponse: (response: any) => {
+        return response.sort((a: Delivery, b: Delivery) => {
+          return Number(b.createdAt) - Number(a.createdAt);
+        });
+      }
     }),
     getDelivery: build.query<DetailDelivery, string>({
       query: (id) => `deliveries/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Deliveries', id }]
+      providesTags: (result, error, id) => [{ type: 'Deliveries', id }],
+      transformResponse: (response: any) => {
+        return {
+          ...response,
+          orders: response.orders.sort((a: any, b: any) => {
+            return Number(a.deliveryDate) - Number(b.deliveryDate);
+          })
+        };
+      }
     }),
     updateDelivery: build.mutation<void, { id: string; data: UpdateDeliverySchemaType }>({
       query: ({ id, data }) => ({

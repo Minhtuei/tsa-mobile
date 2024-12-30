@@ -1,16 +1,27 @@
-import React, { memo, useMemo } from 'react';
-import { Text, Card, Button } from 'react-native-paper';
-import { View, StyleSheet } from 'react-native';
-import { OrderDetail } from '@slices/order.slice';
-import { Ionicons, MaterialCommunityIcons, Feather, FontAwesome } from '@expo/vector-icons';
-import { StaffOrderCard } from './StaffOrderCard';
-import { StaffDeliveryCard } from './StaffDeliveryCard';
-import { useGetOrdersQuery } from '@services/order.service';
-import { useGetDeliveriesQuery } from '@services/delivery.service';
-import { formatUnixTimestamp } from '@utils/format';
+import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
+import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
+import { Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppSelector } from '@hooks/redux';
+import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useGetStatisticsQuery } from '@services/order.service';
+import { OrderDetail } from '@slices/order.slice';
+import { formatVNDcurrency } from '@utils/format';
+import Constants from 'expo-constants';
+import React, { memo, useEffect, useState } from 'react';
+import {
+  Image,
+  ImageBackground,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View
+} from 'react-native';
+import { Button, Card, Text } from 'react-native-paper';
+import HeaderLogo from '../../../../assets/tsa-header.svg';
+import InfoCard from '../InfoCard';
 import { Barchart } from '../components/Barchart';
-
+const BackgroundImg = require('../../../../assets/header-background.png');
 const StaffCurrentOrder = memo(function StaffCurrentOrder({ order }: { order: OrderDetail }) {
   return (
     <View>
@@ -51,28 +62,168 @@ const StaffCurrentOrder = memo(function StaffCurrentOrder({ order }: { order: Or
 });
 
 export const StaffDashBoard = () => {
-  // const { data: orders, isLoading } = useGetOrdersQuery();
-  // const { data: deliveries, isLoading: isDeliveryLoading } = useGetDeliveriesQuery();
-
+  const theme = useAppTheme();
+  const globalStyles = useGlobalStyles();
+  const [selectedType, setSelectedType] = useState<'week' | 'month' | 'year'>('week');
+  const auth = useAppSelector((state) => state.auth);
+  const {
+    data: orderStatistic,
+    isFetching: isGetOrderStatisticFetching,
+    refetch: refetchOrderStatistic,
+    isLoading: isOrderStatisticLoading
+  } = useGetStatisticsQuery({ type: selectedType });
+  useEffect(() => {
+    refetchOrderStatistic();
+  }, [selectedType]);
   return (
-    <View style={styles.dashboardContainer}>
-      {/* {orders && orders.length > 0 && <StaffCurrentOrder order={orders[0]} />} */}
-      <View>
-        <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>
-          <Feather name='box' size={24} color='black' />
-          <Text style={styles.sectionHeader}>Thống kê đơn hàng</Text>
-        </View>
-        <Barchart />
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={isGetOrderStatisticFetching}
+          onRefresh={() => {
+            refetchOrderStatistic();
+          }}
+        />
+      }
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 120, flexGrow: 1 }}
+      stickyHeaderIndices={[0]}
+    >
+      <View style={{ height: SCREEN.height / 2.5 }}>
+        <ImageBackground
+          source={BackgroundImg}
+          style={[
+            {
+              width: SCREEN.width,
+              height: DASHBOARD_HEADER_HEIGHT
+            }
+          ]}
+        >
+          <View
+            style={[
+              {
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: -60
+              },
+              Platform.OS === 'ios' && {
+                paddingTop: Constants.statusBarHeight
+              }
+            ]}
+          >
+            <HeaderLogo width={SCREEN.width / 2} height={SCREEN.width / 2} />
+            <View
+              style={[
+                globalStyles.SurfaceContainer,
+                {
+                  width: Platform.OS === 'ios' ? SCREEN.width * 0.8 : SCREEN.width * 0.9,
+                  alignItems: 'center',
+                  marginTop: 24,
+                  position: 'absolute',
+                  top: Platform.OS === 'android' ? '50%' : '75%',
+                  zIndex: 1
+                }
+              ]}
+            >
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 8,
+                  alignItems: 'center',
+                  marginBottom: 16,
+                  paddingHorizontal: 16,
+                  paddingTop: 16
+                }}
+              >
+                <View
+                  style={{
+                    backgroundColor: theme.colors.primary,
+                    width: 48,
+                    height: 48,
+                    borderRadius: 24,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {auth.userInfo?.photoUrl ? (
+                    <Image
+                      source={{ uri: auth.userInfo?.photoUrl }}
+                      style={{ width: 48, height: 48, borderRadius: 24 }}
+                    />
+                  ) : (
+                    <FontAwesome name='user' size={24} color='white' />
+                  )}
+                </View>
+                <View style={{ gap: 2, flex: 1 }}>
+                  <Text
+                    style={[
+                      globalStyles.text,
+                      {
+                        fontStyle: 'italic'
+                      }
+                    ]}
+                  >
+                    Xin chào,
+                  </Text>
+                  <Text
+                    style={[
+                      globalStyles.text,
+                      {
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                        textTransform: 'capitalize'
+                      }
+                    ]}
+                  >{`${auth.userInfo?.lastName} ${auth.userInfo?.firstName}`}</Text>
+                </View>
+              </View>
+              <>
+                <QueryTypeBtnTab selectedType={selectedType} setSelectedType={setSelectedType} />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    flexWrap: 'wrap',
+                    padding: 16
+                  }}
+                >
+                  <InfoCard
+                    iconName='account-box'
+                    itemName='Đơn hàng'
+                    value={orderStatistic?.totalOrders || 0}
+                  />
+                  <InfoCard
+                    iconName='attach-money'
+                    itemName='Phí Ship'
+                    value={formatVNDcurrency(orderStatistic?.totalShippingFee || 0)}
+                  />
+                </View>
+              </>
+            </View>
+          </View>
+        </ImageBackground>
       </View>
-      {/* delivery statistic */}
-      <View>
-        <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>
-          <FontAwesome name='bicycle' size={24} color='black' />
-          <Text style={styles.sectionHeader}>Thống kê chuyến đi</Text>
+      <View style={styles.dashboardContainer}>
+        {/* {orders && orders.length > 0 && <StaffCurrentOrder order={orders[0]} />} */}
+        <View>
+          <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>
+            <Feather name='box' size={24} color='black' />
+            <Text style={styles.sectionHeader}>Thống kê đơn hàng</Text>
+          </View>
+          <Barchart />
         </View>
-        <Barchart />
+        {/* delivery statistic */}
+        <View>
+          <View style={{ ...styles.rowWithGap, marginBottom: 8 }}>
+            <FontAwesome name='bicycle' size={24} color='black' />
+            <Text style={styles.sectionHeader}>Thống kê chuyến đi</Text>
+          </View>
+          <Barchart />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -80,7 +231,8 @@ const styles = StyleSheet.create({
   dashboardContainer: {
     paddingHorizontal: 24,
     flexDirection: 'column',
-    gap: 16
+    gap: 16,
+    marginTop: 32
   },
   header: {
     fontSize: 20,

@@ -25,9 +25,10 @@ const wareHouseLogo = require('../../../../assets/warehouse.png');
 interface OrderMapProps {
   order: Order;
   setDistance: (distance: string) => void;
+  setIsFinished: (isFinished: boolean) => void;
 }
 
-const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance }) => {
+const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance, setIsFinished }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const { socket } = useSocketContext();
@@ -68,11 +69,19 @@ const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance }) => {
 
       socket.on(
         'locationUpdate',
-        (data: { shipperId: string; latitude: number; longitude: number }) => {
-          setShipperCoordinate([Number(data.latitude), Number(data.longitude)]);
+        (data: { shipperId: string; latitude: number; longitude: number; isFinished: boolean }) => {
+          setShipperCoordinate([Number(data.longitude), Number(data.latitude)]);
           console.log(`Received location update: ${JSON.stringify(data)}`);
+          if (data.isFinished) {
+            setIsFinished(true);
+          }
         }
       );
+      return () => {
+        socket.off('locationUpdate');
+        socket.emit('unsubscribeToShipper', { shipperId: order.shipperId });
+        console.log(`Unsubscribed to shipper with ID ${order.shipperId}`);
+      };
     }
   }, [socket, order.shipperId]);
 

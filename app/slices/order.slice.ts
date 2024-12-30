@@ -59,11 +59,13 @@ export interface UpdateOrderStatus {
 }
 
 export interface OrderStatistics {
-  totalOrdersLastMonth: number;
-  totalOrdersLastWeek: number;
+  totalOrdersLastMonth?: number;
+  totalOrdersLastWeek?: number;
   brandPercentages: {
     brand: string;
     count: number;
     percentage: string;
   }[];
+  totalShippingFee?: number;
+  totalOrders?: number;
 }

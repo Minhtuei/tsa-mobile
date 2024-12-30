@@ -44,16 +44,16 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   const deliveryInfo = useMemo(
     () => [
       {
+        title: 'Mã chuyến đi',
+        value: shortenUUID(deliveryId, 'DELIVERY')
+      },
+      {
         title: 'Thời gian tạo',
         value: formatDate(formatUnixTimestamp(delivery?.createdAt as string))
       },
       {
         title: 'Số lượng đơn hàng',
-        value: delivery?.orders.length
-      },
-      {
-        title: 'Thời gian giới hạn',
-        value: `${delivery?.limitTime} giây`
+        value: delivery?.numberOrder
       }
     ],
     [delivery]
@@ -82,6 +82,8 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
         : (delivery?.orders[0] as unknown as DeliverOrderDetail)
     });
   }, [currentOrder, delivery]);
+  console.log('currentOrder', currentOrder);
+  console.log('delivery[0]', delivery?.orders[0]);
   const onUpdateDelivery = useCallback(
     (status: Omit<DeliveryStatus, 'PENDING'>) => {
       updateDeliveryStatus({ id: deliveryId, status })

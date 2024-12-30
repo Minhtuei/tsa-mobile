@@ -10,6 +10,7 @@ import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/nati
 import OrderMap from '../components/OrderMap'; // Import the new component
 import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
 import { FontAwesome } from '@expo/vector-icons';
+import { apiService } from '@services/api.service';
 export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'TrackOrder'>) => {
   const order = props.route.params.order;
   const globalStyles = useGlobalStyles();
@@ -18,16 +19,22 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
   const snapPoints = useMemo(() => ['5%', '40%', '90%'], []);
   const dispatch = useAppDispatch();
   const [distance, setDistance] = useState<string | null>(null);
+  const [isFinished, setIsFinished] = useState<boolean>(false);
   useEffect(() => {
     dispatch(setHideTabBar(true));
     return () => {
       dispatch(setHideTabBar(false));
     };
   }, [dispatch]);
-
+  useEffect(() => {
+    if (isFinished) {
+      dispatch(apiService.util.invalidateTags(['Orders']));
+      props.navigation.navigate('OrderList');
+    }
+  }, [isFinished, props.navigation, order, dispatch]);
   return (
     <View style={styles.page}>
-      <OrderMap order={order} setDistance={setDistance} />
+      <OrderMap order={order} setDistance={setDistance} setIsFinished={setIsFinished} />
       <BottomSheet index={1} snapPoints={snapPoints}>
         <BottomSheetView style={{ padding: 12, gap: 8 }}>
           {order.latestStatus === 'IN_TRANSPORT' && (

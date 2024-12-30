@@ -26,11 +26,13 @@ const wareHouseLogo = require('../../../../assets/warehouse.png');
 interface StaffOrderMapProps {
   order: DeliverOrderDetail;
   setDistance: (distance: string) => void;
+  isFinishOrder: boolean;
 }
 
 export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOrderMap({
   order,
-  setDistance
+  setDistance,
+  isFinishOrder
 }) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
@@ -91,7 +93,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
     const sendLocation = async () => {
       if (socket) {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Highest
+          accuracy: Location.Accuracy.High
         });
         console.log([location.coords.longitude, location.coords.latitude]);
         setShipperCoordinate([location.coords.longitude, location.coords.latitude]);
@@ -99,18 +101,21 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
           orderId: order.id,
           staffId: order.shipperId,
           latitude: location.coords.latitude,
-          longitude: location.coords.longitude
+          longitude: location.coords.longitude,
+          isFinished: isFinishOrder
         });
         // console.log(`Sent location update: ${JSON.stringify(shipperCoordinate)}`);
       }
     };
+
+    // sendLocation();
 
     const intervalId = setInterval(() => {
       sendLocation();
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [socket, shipperCoordinate, order.shipperId]);
+  }, [socket, shipperCoordinate, order.shipperId, order.id, isFinishOrder]);
 
   return (
     <View style={styles.container}>

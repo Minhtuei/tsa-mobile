@@ -46,7 +46,7 @@ export const getStatusRender = (status: OrderStatus | ReportStatus | DeliverySta
     }
     case 'FINISHED': {
       return {
-        color: 'rgba(52, 168, 83, 1)',
+        color: 'orange',
         label: 'Hoàn thành'
       };
     }

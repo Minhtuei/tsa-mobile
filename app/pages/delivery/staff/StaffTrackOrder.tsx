@@ -5,7 +5,7 @@ import { PreViewImageModal } from '@components/PreviewImageModal';
 import { SlideButton } from '@components/SlideButton';
 import { OrderStatus } from '@constants/status';
 import { FontAwesome } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch } from '@hooks/redux';
 import { useAppTheme, useGlobalStyles } from '@hooks/theme';
@@ -30,9 +30,9 @@ export const StaffTrackOrder = (
   props: NativeStackScreenProps<DeliveryStackParamList, 'StaffTrackOrder'>
 ) => {
   const order = props.route.params.order;
+  console.log('staffTrackOrder', order);
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
-
   const [isComplete, setIsComplete] = useState(false);
   const [isErr, setIsErr] = useState('');
   const [isPreview, setIsPreview] = useState(false);
@@ -42,7 +42,8 @@ export const StaffTrackOrder = (
   const dispatch = useAppDispatch();
   const [distance, setDistance] = useState<string | null>(null);
 
-  const [finishOrder, { isLoading: isFinishOrderLoading }] = useUpdateOrderStatusMutation();
+  const [finishOrder, { isLoading: isFinishOrderLoading, isSuccess: isFinishOrderSuccess }] =
+    useUpdateOrderStatusMutation();
   const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
   const {
     handleSubmit,
@@ -100,6 +101,7 @@ export const StaffTrackOrder = (
       dispatch(setHideTabBar(false));
     };
   }, [dispatch]);
+
   return (
     <View style={styles.page}>
       <Portal>
@@ -149,15 +151,13 @@ export const StaffTrackOrder = (
           title='Ảnh hoàn thành'
         />
         <ConfirmationDialog
-          visible={Boolean(isErr) || Number(distance) < 150}
+          visible={Boolean(isErr)}
           setVisible={() => {
             setIsErr('');
           }}
           title='Lỗi'
           notShowCancel={true}
-          content={
-            Boolean(isErr) ? isErr : 'Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 150m'
-          }
+          content={isErr}
           onSubmit={() => {
             setIsErr('');
           }}
@@ -165,8 +165,13 @@ export const StaffTrackOrder = (
 
         {(isFinishOrderLoading || isUploadImageLoading) && <LoadingScreen />}
       </Portal>
-      <StaffOrderMap order={order} setDistance={setDistance} />
-      <BottomSheet index={1} snapPoints={snapPoints}>
+      <StaffOrderMap order={order} setDistance={setDistance} isFinishOrder={isFinishOrderSuccess} />
+      <BottomSheet
+        enableDynamicSizing={true}
+        index={0}
+        snapPoints={snapPoints}
+        enableHandlePanningGesture={true}
+      >
         <BottomSheetView style={{ padding: 12, gap: 8 }}>
           <View
             style={[
@@ -290,7 +295,13 @@ export const StaffTrackOrder = (
             <View style={{ flex: 0.95 }}>
               <SlideButton
                 title='Hoàn thành đơn hàng'
-                onSlideComplete={() => setIsComplete(true)}
+                onSlideComplete={() => {
+                  if (Number(distance) < 150) {
+                    setIsErr('Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 150m');
+                  } else {
+                    setIsComplete(true);
+                  }
+                }}
               />
             </View>
             <IconButton
