@@ -1,5 +1,6 @@
 import { getBrandIcon, getPamentMethodIcon } from '@utils/getBrandIcon';
 import { ImageSourcePropType } from 'react-native';
+import { EcommerceBrand } from './status';
 
 export const DOMITORIES = ['A', 'B'];
 export const BUILDINGS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
@@ -300,33 +301,33 @@ export const PAYMENT_METHOD_DATA = [
 
 export const ECOMMERCE_DATA = [
   {
-    label: 'Shopee',
-    value: 'Shopee',
-    image: getBrandIcon('Shopee')
+    label: EcommerceBrand.SHOPEE,
+    value: EcommerceBrand.SHOPEE,
+    image: getBrandIcon(EcommerceBrand.SHOPEE)
   },
   {
-    label: 'Lazada',
-    value: 'Lazada',
-    image: getBrandIcon('Lazada')
+    label: EcommerceBrand.LAZADA,
+    value: EcommerceBrand.LAZADA,
+    image: getBrandIcon(EcommerceBrand.LAZADA)
   },
   {
-    label: 'Tiki',
-    value: 'Tiki',
-    image: getBrandIcon('Tiki')
+    label: EcommerceBrand.TIKI,
+    value: EcommerceBrand.TIKI,
+    image: getBrandIcon(EcommerceBrand.TIKI)
   },
   {
-    label: 'TikTok',
-    value: 'TikTok',
-    image: getBrandIcon('TikTok')
+    label: EcommerceBrand.TIKTOK,
+    value: EcommerceBrand.TIKTOK,
+    image: getBrandIcon(EcommerceBrand.TIKTOK)
   },
   {
-    label: 'Sendo',
-    value: 'Sendo',
-    image: getBrandIcon('Sendo')
+    label: EcommerceBrand.SENDO,
+    value: EcommerceBrand.SENDO,
+    image: getBrandIcon(EcommerceBrand.SENDO)
   },
   {
-    label: 'Bách hoá xanh',
-    value: 'Bách hoá xanh',
-    image: getBrandIcon('Bách hoá xanh')
+    label: EcommerceBrand.BACHHOAXANH,
+    value: EcommerceBrand.BACHHOAXANH,
+    image: getBrandIcon(EcommerceBrand.BACHHOAXANH)
   }
 ];

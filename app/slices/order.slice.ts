@@ -17,6 +17,7 @@ interface OrderStatusHistory {
   reason?: string;
   time: string;
   status: OrderStatus;
+  canceledImage?: string;
 }
 
 export interface Order {
@@ -40,6 +41,7 @@ export interface Order {
   phone?: string;
   createdTime?: string;
   historyTime: OrderStatusHistory[];
+  finishedImage?: string;
 }
 
 export interface OrderDetail extends Order {
@@ -54,4 +56,14 @@ export interface UpdateOrderStatus {
   reason?: string;
   distance?: number;
   cancelReasonType?: OrderCancelReason;
+}
+
+export interface OrderStatistics {
+  totalOrdersLastMonth: number;
+  totalOrdersLastWeek: number;
+  brandPercentages: {
+    brand: string;
+    count: number;
+    percentage: string;
+  }[];
 }

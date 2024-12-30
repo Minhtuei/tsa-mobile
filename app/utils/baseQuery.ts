@@ -24,7 +24,6 @@ const baseQuery = fetchBaseQuery({
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;
-    console.log('state auth', state.auth);
     const token = state.auth?.accessToken;
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
@@ -59,7 +58,6 @@ export const baseQueryWithReauth: BaseQueryFn<
         extraOptions
       );
       if (result.data) {
-        console.log('dm loi', (result as RefreshTokenRes).data);
         const { accessToken, refreshToken } = (result as RefreshTokenRes).data;
         api.dispatch(setToken({ accessToken, refreshToken }));
         release();

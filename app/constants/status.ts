@@ -30,3 +30,12 @@ export enum OrderCancelReason {
   'DAMEGED_VEHICLE' = 'DAMEGED_VEHICLE',
   'OTHER' = 'OTHER'
 }
+
+export enum EcommerceBrand {
+  SHOPEE = 'Shopee',
+  LAZADA = 'Lazada',
+  TIKI = 'Tiki',
+  TIKTOK = 'TikTok',
+  SENDO = 'Sendo',
+  BACHHOAXANH = 'Bách hoá xanh'
+}
