@@ -1,17 +1,20 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { ReportStackParamList } from 'app/types/navigation';
+import { ReportStackParamList } from 'app/shared/types/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Portal, Text, TextInput } from 'react-native-paper';
 
-import { ChooseImageModal } from '@components/ChooseImageModal';
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import { useAppSelector } from '@hooks/redux';
-import { createReportSchema, CreateReportSchemaType } from '@validations/report.schema';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { useAppSelector } from 'app/shared/hooks/redux';
+import {
+  createReportSchema,
+  CreateReportSchemaType
+} from 'app/features/report/schema/report.schema';
 import moment from 'moment';
 import Toast from 'react-native-root-toast';
 import {

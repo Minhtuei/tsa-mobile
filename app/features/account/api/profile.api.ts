@@ -1,7 +1,7 @@
-import { UserInfo } from 'app/state/auth.slice';
-import { apiService } from '../../../services/api.service';
+import { UserInfo } from 'app/shared/state/auth.slice';
+import { apiService } from '../../../shared/services/api.service';
 
-const userService = apiService.injectEndpoints({
+const profileApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getUserInfo: build.query<UserInfo, void>({
@@ -18,4 +18,4 @@ const userService = apiService.injectEndpoints({
     })
   })
 });
-export const { useGetUserInfoQuery, useUpdateUserInfoMutation } = userService;
+export const { useGetUserInfoQuery, useUpdateUserInfoMutation } = profileApi;

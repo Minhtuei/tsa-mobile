@@ -1,6 +1,6 @@
-import { DropDownList } from '@components/order/DropDownList';
+import { DropDownList } from 'app/shared/components/order/DropDownList';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { Controller } from 'react-hook-form';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { IconButton, Text, TextInput } from 'react-native-paper';

@@ -1,9 +1,9 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getErrorMessage } from '@utils/helper';
-import { signUpSchema, SignUpSchemaType } from '@validations/auth.schema';
-import { AuthNavigatorParamList } from 'app/types/navigation';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { signUpSchema, SignUpSchemaType } from 'app/features/authentication/schema/auth.schema';
+import { AuthNavigatorParamList } from 'app/shared/types/navigation';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';

@@ -1,12 +1,12 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useGlobalStyles } from '@hooks/theme';
+import { useGlobalStyles } from 'app/shared/hooks/theme';
 import { Divider, Surface } from 'react-native-paper';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountStackParamList } from '../../../types/navigation';
+import { AccountStackParamList } from '../../../shared/types/navigation';
 import { Appearance, useColorScheme } from 'react-native';
 import { useState } from 'react';
-import SettingButton from '@components/SettingButton';
-import { useAppSelector } from '@hooks/redux';
+import SettingButton from 'app/shared/components/SettingButton';
+import { useAppSelector } from 'app/shared/hooks/redux';
 
 export const ChangeTheme = (
   props: NativeStackScreenProps<AccountStackParamList, 'ChangeTheme'>

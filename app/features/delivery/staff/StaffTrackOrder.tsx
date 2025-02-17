@@ -1,23 +1,26 @@
-import { ChooseImageModal } from '@components/ChooseImageModal';
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import { LoadingScreen } from '@components/LoadingScreen';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import { SlideButton } from '@components/SlideButton';
-import { OrderStatus } from '@constants/status';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { LoadingScreen } from 'app/shared/components/LoadingScreen';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { SlideButton } from 'app/shared/components/SlideButton';
+import { OrderStatus } from 'app/shared/constants/status';
 import { FontAwesome } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppDispatch } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppDispatch } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { useUpdateOrderStatusMutation } from 'app/features/order/api/order.api';
-import { formatVNDcurrency } from '@utils/format';
-import { formatDistance } from '@utils/getDirection';
-import { getErrorMessage } from '@utils/helper';
-import { shortenUUID } from '@utils/order';
-import { updateOrderStatusSchema, UpdateOrderStatusSchemaType } from '@validations/order.schema';
+import { formatVNDcurrency } from 'app/shared/utils/format';
+import { formatDistance } from 'app/shared/utils/getDirection';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { shortenUUID } from 'app/shared/utils/order';
+import {
+  updateOrderStatusSchema,
+  UpdateOrderStatusSchemaType
+} from 'app/features/order/schema/order.schema';
 import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
-import { setHideTabBar } from 'app/state/app.slice';
-import { DeliveryStackParamList } from 'app/types/navigation';
+import { setHideTabBar } from 'app/shared/state/app.slice';
+import { DeliveryStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';

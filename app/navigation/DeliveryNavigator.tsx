@@ -1,9 +1,9 @@
-import { Header } from '@components/Header';
+import { Header } from 'app/shared/components/Header';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DeliveryDetail from 'app/features/delivery/DeliveryDetail';
-import DeliveryList from 'app/features/delivery/DeliveryList';
+import DeliveryDetail from 'app/features/delivery/screens/DeliveryDetail';
+import DeliveryList from 'app/features/delivery/screens/DeliveryList';
 import StaffTrackOrder from 'app/features/delivery/staff/StaffTrackOrder';
-import { DeliveryStackParamList } from 'app/types/navigation';
+import { DeliveryStackParamList } from 'app/shared/types/navigation';
 import React from 'react';
 
 const Stack = createNativeStackNavigator<DeliveryStackParamList>();

@@ -1,6 +1,6 @@
-import { useAppTheme } from '@hooks/theme';
-import { OrderStatistics } from 'app/state/order.slice';
-import { getBrandColor } from '@utils/getBrandIcon';
+import { useAppTheme } from 'app/shared/hooks/theme';
+import { OrderStatistics } from 'app/shared/state/order.slice';
+import { getBrandColor } from 'app/shared/utils/getBrandIcon';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 import { PieChart } from 'react-native-gifted-charts';

@@ -1,5 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AuthNavigatorParamList, RootStackParamList } from 'app/types/navigation';
+import { AuthNavigatorParamList, RootStackParamList } from 'app/shared/types/navigation';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
 

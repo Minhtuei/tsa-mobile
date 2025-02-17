@@ -1,6 +1,6 @@
-import { Header } from '@components/Header';
+import { Header } from 'app/shared/components/Header';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AccountStackParamList } from 'app/types/navigation';
+import { AccountStackParamList } from 'app/shared/types/navigation';
 import { AccountScreen } from '../features/account/screens/AccountScreen';
 import { ChangePassword } from '../features/account/setting/ChangePassword';
 import { ChangeTheme } from '../features/account/setting/ChangeTheme';

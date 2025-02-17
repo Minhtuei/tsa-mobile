@@ -1,4 +1,4 @@
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-paper';
 

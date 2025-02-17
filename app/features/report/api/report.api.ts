@@ -1,9 +1,8 @@
-import { CreateOrderSchemaType } from '@validations/order.schema';
 import { apiService } from '@services/api.service';
-import { CreateReportSchemaType } from '@validations/report.schema';
-import { ReportType, UploadedImage } from 'app/types/report';
+import { CreateReportSchemaType } from 'app/features/report/schema/report.schema';
+import { ReportType, UploadedImage } from 'app/shared/types/report';
 
-const reportService = apiService.injectEndpoints({
+const reportApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getReports: build.query<ReportType[], void>({
@@ -57,4 +56,4 @@ export const {
   useUpLoadImageMutation,
   useUpdateReportMutation,
   useDeleteReportMutation
-} = reportService;
+} = reportApi;

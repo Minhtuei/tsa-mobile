@@ -1,22 +1,22 @@
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Platform } from 'expo-modules-core';
 import React, { useEffect, useState } from 'react';
 import { Linking, View } from 'react-native';
 import { Divider, Portal, Switch } from 'react-native-paper';
 
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import SettingButton from '@components/SettingButton';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import SettingButton from 'app/shared/components/SettingButton';
 
-import { getErrorMessage } from '@utils/helper';
-import { useNotification } from 'app/context/NotificationContext';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { useNotification } from 'app/shared/context/NotificationContext';
 import {
   useCheckPushNotiMutation,
   useRegisterPushNotiMutation,
   useUnRegisterPushNotiMutation
 } from 'app/features/notification/api/notification.api';
-import { AccountStackParamList } from 'app/types/navigation';
+import { AccountStackParamList } from 'app/shared/types/navigation';
 
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple

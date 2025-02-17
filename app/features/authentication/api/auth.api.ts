@@ -1,11 +1,11 @@
-import { AuthState } from 'app/state/auth.slice';
+import { AuthState } from 'app/shared/state/auth.slice';
 import {
   CreateAccountSchemaType,
   SignInSchemaType,
   SignUpSchemaType
-} from '@validations/auth.schema';
+} from 'app/features/authentication/schema/auth.schema';
 import { apiService } from '@services/api.service';
-const authService = apiService.injectEndpoints({
+const authenticationApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     signIn: build.mutation<AuthState, SignInSchemaType>({
@@ -64,4 +64,4 @@ export const {
   useRefreshTokenMutation,
   useLogoutMutation,
   useGoogleSignInMutation
-} = authService;
+} = authenticationApi;

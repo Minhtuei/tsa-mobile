@@ -1,19 +1,22 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
-import { MainTabParamList, ReportStackParamList } from 'app/types/navigation';
+import { MainTabParamList, ReportStackParamList } from 'app/shared/types/navigation';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Portal } from 'react-native-paper';
 
-import { ChooseImageModal } from '@components/ChooseImageModal';
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import { useAppSelector } from '@hooks/redux';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { useAppSelector } from 'app/shared/hooks/redux';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { createReportSchema, CreateReportSchemaType } from '@validations/report.schema';
+import {
+  createReportSchema,
+  CreateReportSchemaType
+} from 'app/features/report/schema/report.schema';
 import Toast from 'react-native-root-toast';
 import { useCreateReportMutation, useUpLoadImageMutation } from '../api/report.api';
 import { ContentInput, OrderIdInput, ProofInput } from '../components/ReportField';

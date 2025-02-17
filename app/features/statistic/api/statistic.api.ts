@@ -1,9 +1,9 @@
 // services/statistics.service.ts
 import { apiService } from '@services/api.service';
-import { OrderStatistics } from 'app/state/order.slice';
-import { QueryType } from '@components/QueryTypeBtnTab';
+import { OrderStatistics } from 'app/shared/state/order.slice';
+import { QueryType } from 'app/shared/components/QueryTypeBtnTab';
 
-const statisticsService = apiService.injectEndpoints({
+const statisticApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getStatistics: build.query<
@@ -19,4 +19,4 @@ const statisticsService = apiService.injectEndpoints({
   })
 });
 
-export const { useGetStatisticsQuery } = statisticsService;
+export const { useGetStatisticsQuery } = statisticApi;

@@ -1,7 +1,7 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { getStatusRender } from '@utils/order';
-import { ReportType } from 'app/types/report';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { getStatusRender } from 'app/shared/utils/order';
+import { ReportType } from 'app/shared/types/report';
 import moment from 'moment';
 import { TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';

@@ -1,20 +1,23 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { AccountStackParamList } from 'app/types/navigation';
+import { AccountStackParamList } from 'app/shared/types/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Portal } from 'react-native-paper';
 
-import { ChooseImageModal } from '@components/ChooseImageModal';
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import { LoadingScreen } from '@components/LoadingScreen';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import { BUILDINGS, DOMITORIES, ROOMS } from '@constants/domitory';
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { saveUserInfo } from '@utils/userInfo';
-import { updateAccountSchema, UpdateAccountSchemaType } from '@validations/auth.schema';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { LoadingScreen } from 'app/shared/components/LoadingScreen';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { BUILDINGS, DOMITORIES, ROOMS } from 'app/shared/constants/domitory';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
+import { saveUserInfo } from 'app/shared/utils/userInfo';
+import {
+  updateAccountSchema,
+  UpdateAccountSchemaType
+} from 'app/features/authentication/schema/auth.schema';
 import { useUpdateUserInfoMutation } from 'app/features/account/api/profile.api';
 import {
   BuildingSelect,
@@ -25,7 +28,7 @@ import {
   RoomSelect
 } from 'app/features/authentication/components/AuthForm';
 import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
-import { setUser } from 'app/state/auth.slice';
+import { setUser } from 'app/shared/state/auth.slice';
 import { PhotoInput } from '../components/ProfileField';
 export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Profile'>) => {
   const { userInfo } = props.route.params;

@@ -1,10 +1,10 @@
-import { useAppTheme } from '@hooks/theme';
+import { useAppTheme } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { formatVNDcurrency } from '@utils/format';
-import { useSocketContext } from 'app/context/SocketContext';
+import { formatVNDcurrency } from 'app/shared/utils/format';
+import { useSocketContext } from 'app/shared/context/SocketContext';
 import { useCreateOrdersMutation } from 'app/features/order/api/order.api';
 import { useCreatePayOSPaymentMutation } from 'app/features/order/api/payment.api';
-import { OrderStackParamList } from 'app/types/navigation';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';

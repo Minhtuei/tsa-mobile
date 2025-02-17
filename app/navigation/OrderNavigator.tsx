@@ -1,7 +1,7 @@
-import { Header } from '@components/Header';
-import { useAppSelector } from '@hooks/redux';
+import { Header } from 'app/shared/components/Header';
+import { useAppSelector } from 'app/shared/hooks/redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { OrderStackParamList } from 'app/types/navigation';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import React from 'react';
 import { OrderDetail } from '../features/order/orderDetail/OrderDetail';
 import { OrderPayment } from '../features/order/orderDetail/OrderPayment';

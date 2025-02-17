@@ -1,5 +1,5 @@
 import { apiService } from '@services/api.service';
-const notificationService = apiService.injectEndpoints({
+const notificationApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getNotifications: build.query<
@@ -58,4 +58,4 @@ export const {
   useCheckPushNotiMutation,
   useUnRegisterPushNotiMutation,
   useReadAllNotiMutation
-} = notificationService;
+} = notificationApi;

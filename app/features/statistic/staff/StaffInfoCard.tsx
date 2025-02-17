@@ -1,9 +1,9 @@
 import React, { memo } from 'react';
 import { View, ViewStyle, TextStyle, ViewProps } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { MaterialIcons } from '@expo/vector-icons';
-import { SCREEN } from '@constants/screen';
+import { SCREEN } from 'app/shared/constants/screen';
 interface InfoCardProps extends ViewProps {
   iconName: keyof typeof MaterialIcons.glyphMap;
   itemName: string;

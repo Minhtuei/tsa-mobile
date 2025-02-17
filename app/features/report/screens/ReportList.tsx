@@ -1,16 +1,16 @@
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetReportsQuery } from '../api/report.api';
-import { getErrorMessage } from '@utils/helper';
-import { ReportStackParamList } from 'app/types/navigation';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { ReportStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
 import { FAB, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import { ReportItem } from '../components/ReportItem';
-import { HeaderWithSearchAndFilter } from '@components/HeaderWithSearchAndFilter';
-import { FILTER_DATA, REPORT_STATUS_DATA } from '@constants/filter';
+import { HeaderWithSearchAndFilter } from 'app/shared/components/HeaderWithSearchAndFilter';
+import { FILTER_DATA, REPORT_STATUS_DATA } from 'app/shared/constants/filter';
 
 export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, 'ReportList'>) => {
   const theme = useAppTheme();

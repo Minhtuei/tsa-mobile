@@ -1,23 +1,23 @@
-import DatePicker from '@components/order/DatePicker';
-import { DropDownList } from '@components/order/DropDownList';
-import { DropDownListWithImg } from '@components/order/DropDownListWithImg';
-import { SearchInput } from '@components/order/SearchInput';
+import DatePicker from 'app/shared/components/order/DatePicker';
+import { DropDownList } from 'app/shared/components/order/DropDownList';
+import { DropDownListWithImg } from 'app/shared/components/order/DropDownListWithImg';
+import { SearchInput } from 'app/shared/components/order/SearchInput';
 import {
   BUILDING_DATA,
   DOMITORY_DATA,
   ECOMMERCE_DATA,
   PAYMENT_METHOD_DATA,
   ROOM_DATA
-} from '@constants/domitory';
+} from 'app/shared/constants/domitory';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppSelector } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppSelector } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCreateOrdersMutation, useGetShippingFeeQuery } from 'app/features/order/api/order.api';
-import { formatVNDcurrency } from '@utils/format';
-import { createOrderSchema, CreateOrderSchemaType } from '@validations/order.schema';
-import { OrderStackParamList } from 'app/types/navigation';
+import { formatVNDcurrency } from 'app/shared/utils/format';
+import { createOrderSchema, CreateOrderSchemaType } from 'app/features/order/schema/order.schema';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';

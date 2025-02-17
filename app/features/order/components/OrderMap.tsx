@@ -9,11 +9,11 @@ import Mapbox, {
   LineLayer,
   CircleLayer
 } from '@rnmapbox/maps';
-import { getDirection } from '@utils/getDirection';
-import { coordinateList } from '@constants/coordinate';
-import { SCREEN } from '@constants/screen';
-import { Order } from 'app/types/order';
-import { useSocketContext } from 'app/context/SocketContext';
+import { getDirection } from 'app/shared/utils/getDirection';
+import { coordinateList } from 'app/shared/constants/coordinate';
+import { SCREEN } from 'app/shared/constants/screen';
+import { Order } from 'app/shared/types/order';
+import { useSocketContext } from 'app/shared/context/SocketContext';
 
 Mapbox.setAccessToken((process.env.EXPO_MAPBOX_ACCESS_TOKEN as string) || '');
 Mapbox.setTelemetryEnabled(false);

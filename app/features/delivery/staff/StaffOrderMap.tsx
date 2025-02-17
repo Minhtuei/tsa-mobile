@@ -1,5 +1,5 @@
-import { coordinateList } from '@constants/coordinate';
-import { SCREEN } from '@constants/screen';
+import { coordinateList } from 'app/shared/constants/coordinate';
+import { SCREEN } from 'app/shared/constants/screen';
 import Mapbox, {
   Camera,
   CircleLayer,
@@ -9,9 +9,9 @@ import Mapbox, {
   ShapeSource,
   SymbolLayer
 } from '@rnmapbox/maps';
-import { getDirection } from '@utils/getDirection';
-import { useSocketContext } from 'app/context/SocketContext';
-import { DeliverOrderDetail } from 'app/state/delivery.slice';
+import { getDirection } from 'app/shared/utils/getDirection';
+import { useSocketContext } from 'app/shared/context/SocketContext';
+import { DeliverOrderDetail } from 'app/shared/state/delivery.slice';
 import * as Location from 'expo-location';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';

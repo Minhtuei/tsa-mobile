@@ -1,10 +1,10 @@
-import { ONBOARDING_DATA, OnboardingDataType } from '@constants/onboarding';
-import { SCREEN } from '@constants/screen';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { ONBOARDING_DATA, OnboardingDataType } from 'app/shared/constants/onboarding';
+import { SCREEN } from 'app/shared/constants/screen';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from 'app/types/navigation';
+import { RootStackParamList } from 'app/shared/types/navigation';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useRef, useState } from 'react';

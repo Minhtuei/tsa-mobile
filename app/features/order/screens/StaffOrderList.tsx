@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Card, Chip, Divider } from 'react-native-paper';
-import { OrderDetail } from 'app/state/order.slice';
+import { OrderDetail } from 'app/shared/state/order.slice';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { OrderStackParamList } from 'app/types/navigation';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import Feather from '@expo/vector-icons/Feather';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
-import { formatVNDcurrency, formatUnixTimestamp, formatDate } from '@utils/format';
+import { formatVNDcurrency, formatUnixTimestamp, formatDate } from 'app/shared/utils/format';
 import { OrderListHeader } from '../components/OrderListHeader';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
-import { useAppSelector } from '@hooks/redux';
-import { getStatusRender } from '@utils/order';
+import { useAppSelector } from 'app/shared/hooks/redux';
+import { getStatusRender } from 'app/shared/utils/order';
 
 const OrderItem: React.FC<{ order: OrderDetail; onPress: () => void }> = ({ order, onPress }) => {
   const statusRender = getStatusRender(order.latestStatus);

@@ -1,10 +1,10 @@
-import QueryTypeBtnTab from '@components/QueryTypeBtnTab';
-import { DASHBOARD_HEADER_HEIGHT, SCREEN } from '@constants/screen';
+import QueryTypeBtnTab from 'app/shared/components/QueryTypeBtnTab';
+import { DASHBOARD_HEADER_HEIGHT, SCREEN } from 'app/shared/constants/screen';
 import { Feather, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useAppSelector } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { formatVNDcurrency } from '@utils/format';
-import { OrderDetail } from 'app/state/order.slice';
+import { useAppSelector } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { formatVNDcurrency } from 'app/shared/utils/format';
+import { OrderDetail } from 'app/shared/state/order.slice';
 import Constants from 'expo-constants';
 import React, { memo, useEffect, useState } from 'react';
 import {

@@ -1,6 +1,6 @@
-import { useAppTheme } from '@hooks/theme';
+import { useAppTheme } from 'app/shared/hooks/theme';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthNavigatorParamList } from 'app/types/navigation';
+import { AuthNavigatorParamList } from 'app/shared/types/navigation';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { CreateAccount } from '../features/authentication/screens/CreateAccount';

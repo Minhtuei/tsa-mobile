@@ -3,10 +3,10 @@ import { View, StyleSheet } from 'react-native';
 import StepIndicator from 'react-native-step-indicator';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Text } from 'react-native-paper';
-import { getStepperStyles } from '@constants/stepper';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { getStepperStyles } from 'app/shared/constants/stepper';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import moment from 'moment';
-import { getStatusRender } from '@utils/order';
+import { getStatusRender } from 'app/shared/utils/order';
 
 interface OrderStatusStepIndicatorProps {
   historyTime: { time: string; status: string }[];

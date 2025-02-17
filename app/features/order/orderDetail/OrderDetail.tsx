@@ -1,14 +1,18 @@
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { TouchableOpacity, View, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { MainTabParamList, OrderStackParamList, ReportStackParamList } from 'app/types/navigation';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { getStatusRender, shortenUUID } from '@utils/order';
+import {
+  MainTabParamList,
+  OrderStackParamList,
+  ReportStackParamList
+} from 'app/shared/types/navigation';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SCREEN } from '@constants/screen';
+import { SCREEN } from 'app/shared/constants/screen';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { formatVNDcurrency } from '@utils/format';
+import { formatVNDcurrency } from 'app/shared/utils/format';
 
 export const OrderDetail = (
   props: CompositeScreenProps<

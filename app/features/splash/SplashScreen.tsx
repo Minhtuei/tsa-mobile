@@ -1,11 +1,11 @@
-import { darkTheme, lightTheme } from '@constants/style';
-import { useAppDispatch } from '@hooks/redux';
+import { darkTheme, lightTheme } from 'app/shared/constants/style';
+import { useAppDispatch } from 'app/shared/hooks/redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { setColorScheme } from 'app/state/app.slice';
-import { setToken, setUser } from 'app/state/auth.slice';
-import { RootStackParamList } from 'app/types/navigation';
+import { setColorScheme } from 'app/shared/state/app.slice';
+import { setToken, setUser } from 'app/shared/state/auth.slice';
+import { RootStackParamList } from 'app/shared/types/navigation';
 import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreenExpo from 'expo-splash-screen';

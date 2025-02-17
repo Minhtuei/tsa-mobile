@@ -1,15 +1,15 @@
-import { ConfirmationDialog } from '@components/ConfirmDialog';
-import { LoadingScreen } from '@components/LoadingScreen';
-import { NotificationFilterType } from '@constants/notification';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { LoadingScreen } from 'app/shared/components/LoadingScreen';
+import { NotificationFilterType } from 'app/shared/constants/notification';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { useAppDispatch } from '@hooks/redux';
-import { AppTheme, useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppDispatch } from 'app/shared/hooks/redux';
+import { AppTheme, useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getErrorMessage } from '@utils/helper';
+import { getErrorMessage } from 'app/shared/utils/helper';
 import { NotificationFilter } from 'app/features/notification/components/NotificationFilter';
-import { setReadAllNotification, setReadNotifcation } from 'app/state/app.slice';
-import { NotificationStackParamList } from 'app/types/navigation';
+import { setReadAllNotification, setReadNotifcation } from 'app/shared/state/app.slice';
+import { NotificationStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import {

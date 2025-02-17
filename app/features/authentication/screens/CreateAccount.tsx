@@ -1,11 +1,14 @@
-import IconModal from '@components/IconModal';
-import { BUILDINGS, DOMITORIES, ROOMS } from '@constants/domitory';
+import IconModal from 'app/shared/components/IconModal';
+import { BUILDINGS, DOMITORIES, ROOMS } from 'app/shared/constants/domitory';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getErrorMessage } from '@utils/helper';
-import { createAccountSchema, CreateAccountSchemaType } from '@validations/auth.schema';
-import { AuthNavigatorParamList } from 'app/types/navigation';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import {
+  createAccountSchema,
+  CreateAccountSchemaType
+} from 'app/features/authentication/schema/auth.schema';
+import { AuthNavigatorParamList } from 'app/shared/types/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { View } from 'react-native';

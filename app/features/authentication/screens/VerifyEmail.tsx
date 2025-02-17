@@ -1,7 +1,7 @@
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { getErrorMessage } from '@utils/helper';
-import { AuthNavigatorParamList } from 'app/types/navigation';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { AuthNavigatorParamList } from 'app/shared/types/navigation';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';

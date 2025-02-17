@@ -1,8 +1,8 @@
-import { Header } from '@components/Header';
+import { Header } from 'app/shared/components/Header';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ReportDetail } from 'app/features/report/screens/ReportDetail';
 import { ReportList } from 'app/features/report/screens/ReportList';
-import { ReportStackParamList } from 'app/types/navigation';
+import { ReportStackParamList } from 'app/shared/types/navigation';
 import { CreateReport } from '../features/report/screens/CreateReport';
 
 const Stack = createNativeStackNavigator<ReportStackParamList>();

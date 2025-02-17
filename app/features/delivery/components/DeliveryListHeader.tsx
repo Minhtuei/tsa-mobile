@@ -13,7 +13,7 @@ import { Divider, Text, TextInput, Button } from 'react-native-paper';
 import Feather from '@expo/vector-icons/Feather';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { DeliveryStackParamList } from 'app/types/navigation';
+import { DeliveryStackParamList } from 'app/shared/types/navigation';
 
 const deliveryStatusMap: { [key: string]: string } = {
   'Chờ xử lý': 'PENDING',

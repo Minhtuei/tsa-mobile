@@ -1,12 +1,12 @@
 import { Avatar, Button, Divider, Text } from 'react-native-paper';
 import { TouchableOpacity, View, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import { OrderStackParamList } from 'app/types/navigation';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { getStatusRender, shortenUUID } from '@utils/order';
+import { OrderStackParamList } from 'app/shared/types/navigation';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
 import moment from 'moment';
 import { LinearGradient } from 'expo-linear-gradient';
-import { SCREEN } from '@constants/screen';
+import { SCREEN } from 'app/shared/constants/screen';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 export const StaffOrderDetail = (

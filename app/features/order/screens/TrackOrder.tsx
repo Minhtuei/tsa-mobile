@@ -1,8 +1,8 @@
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { useAppDispatch } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { setHideTabBar } from 'app/state/app.slice';
-import { OrderStackParamList } from 'app/types/navigation';
+import { useAppDispatch } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { setHideTabBar } from 'app/shared/state/app.slice';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Linking, StyleSheet, View } from 'react-native';
 import { Avatar, Button, IconButton, Text } from 'react-native-paper';

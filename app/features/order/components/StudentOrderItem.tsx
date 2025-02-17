@@ -1,8 +1,8 @@
 import Feather from '@expo/vector-icons/Feather';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
-import { getBrandIcon } from '@utils/getBrandIcon';
-import { getStatusRender } from '@utils/order';
-import { Order } from 'app/types/order';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { getBrandIcon } from 'app/shared/utils/getBrandIcon';
+import { getStatusRender } from 'app/shared/utils/order';
+import { Order } from 'app/shared/types/order';
 import moment from 'moment';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';

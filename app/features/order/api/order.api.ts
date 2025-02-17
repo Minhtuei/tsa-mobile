@@ -1,10 +1,10 @@
 // services/order.service.ts
-import { CreateOrderSchemaType } from '@validations/order.schema';
+import { CreateOrderSchemaType } from 'app/features/order/schema/order.schema';
 import { apiService } from '@services/api.service';
-import { Order } from 'app/types/order';
-import { UpdateOrderStatus } from 'app/state/order.slice';
+import { Order } from 'app/shared/types/order';
+import { UpdateOrderStatus } from 'app/shared/state/order.slice';
 
-const orderService = apiService.injectEndpoints({
+const orderApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getOrders: build.query<Order[], void>({
@@ -52,4 +52,4 @@ export const {
   useCreateOrdersMutation,
   useGetShippingFeeQuery,
   useUpdateOrderStatusMutation
-} = orderService;
+} = orderApi;

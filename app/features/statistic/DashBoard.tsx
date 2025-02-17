@@ -1,7 +1,7 @@
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { useGlobalStyles } from '@hooks/theme';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
+import { useGlobalStyles } from 'app/shared/hooks/theme';
 import { useGetNotificationsQuery } from 'app/features/notification/api/notification.api';
-import { setUnReadNotificationCount } from 'app/state/app.slice';
+import { setUnReadNotificationCount } from 'app/shared/state/app.slice';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { useCallback, useEffect } from 'react';
 import { View } from 'react-native';

@@ -1,24 +1,24 @@
-import IconModal from '@components/IconModal';
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import IconModal from 'app/shared/components/IconModal';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { removeUser, UserInfo } from 'app/state/auth.slice';
+import { removeUser, UserInfo } from 'app/shared/state/auth.slice';
 import { Platform } from 'expo-modules-core';
 import * as SecureStore from 'expo-secure-store';
 import React, { useMemo, useState } from 'react';
 import { Image, Linking, ScrollView, TouchableOpacity, View } from 'react-native';
 import { Divider, Portal, Text } from 'react-native-paper';
 
-import { AccountHeader } from '@components/AccountHeader';
-import { PreViewImageModal } from '@components/PreviewImageModal';
-import SettingButton from '@components/SettingButton';
-import { DASHBOARD_HEADER_HEIGHT } from '@constants/screen';
+import { AccountHeader } from 'app/shared/components/AccountHeader';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import SettingButton from 'app/shared/components/SettingButton';
+import { DASHBOARD_HEADER_HEIGHT } from 'app/shared/constants/screen';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { googleSignOut } from '@utils/googleSignIn';
-import { getErrorMessage } from '@utils/helper';
+import { googleSignOut } from '@services/google.service';
+import { getErrorMessage } from 'app/shared/utils/helper';
 import { useLogoutMutation } from 'app/features/authentication/api/auth.api';
-import { AccountStackParamList } from 'app/types/navigation';
+import { AccountStackParamList } from 'app/shared/types/navigation';
 
 // Dùng làm điều kiện hiển thị tính năng 'Xoá Tài Khoản' --> chỉ hiển thị cho Apple review
 const APPLE_DEMO_ACCOUNT_NAME = 'Nguyen Van A'; // Account name của tài khoản Demo cung cấp cho Apple

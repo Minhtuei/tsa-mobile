@@ -1,9 +1,9 @@
-import { useAppTheme } from '@hooks/theme';
+import { useAppTheme } from 'app/shared/hooks/theme';
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, LayoutChangeEvent } from 'react-native';
 import { Button } from 'react-native-paper';
-import { NotificationFilterType } from '@constants/notification';
-import { useAppSelector } from '@hooks/redux';
+import { NotificationFilterType } from 'app/shared/constants/notification';
+import { useAppSelector } from 'app/shared/hooks/redux';
 
 type notificationFilterMetadata = { name: string; value: NotificationFilterType };
 

@@ -1,9 +1,9 @@
-import { CreateDeliverySchemaType, UpdateDeliverySchemaType } from '@validations/delivery.schema';
-import { Delivery, DetailDelivery } from 'app/state/delivery.slice';
 import { apiService } from '@services/api.service';
-import { DeliveryStatus } from 'app/types/delivery';
+import { UpdateDeliverySchemaType } from 'app/features/delivery/schema/delivery.schema';
+import { Delivery, DetailDelivery } from 'app/shared/state/delivery.slice';
+import { DeliveryStatus } from 'app/shared/types/delivery';
 
-const deliveryService = apiService.injectEndpoints({
+export const deliveryApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
     getDeliveries: build.query<Delivery[], void>({
@@ -54,6 +54,4 @@ export const {
   useGetDeliveryQuery,
   useUpdateDeliveryMutation,
   useUpdateDeliveryStatusMutation
-} = deliveryService;
-
-export default deliveryService;
+} = deliveryApi;

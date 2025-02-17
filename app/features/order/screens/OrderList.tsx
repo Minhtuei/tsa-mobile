@@ -1,10 +1,10 @@
-import { HeaderWithSearchAndFilter } from '@components/HeaderWithSearchAndFilter';
-import { SCREEN } from '@constants/screen';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { HeaderWithSearchAndFilter } from 'app/shared/components/HeaderWithSearchAndFilter';
+import { SCREEN } from 'app/shared/constants/screen';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
-import { getErrorMessage } from '@utils/helper';
-import { OrderStackParamList } from 'app/types/navigation';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { OrderStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
@@ -12,7 +12,7 @@ import { FAB, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import BackgroundIcon from '../../../../assets/background-icon.svg';
 import { StudentOrderItem } from '../components/StudentOrderItem';
-import { FILTER_DATA, ORDER_STATUS_DATA } from '@constants/filter';
+import { FILTER_DATA, ORDER_STATUS_DATA } from 'app/shared/constants/filter';
 
 export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>) => {
   const theme = useAppTheme();

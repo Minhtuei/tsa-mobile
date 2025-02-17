@@ -1,4 +1,4 @@
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { View } from 'react-native';

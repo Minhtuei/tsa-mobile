@@ -1,5 +1,5 @@
-import { DashboardHeader } from '@components/DashboardHeader';
-import { LoadingScreen } from '@components/LoadingScreen';
+import { DashboardHeader } from 'app/shared/components/DashboardHeader';
+import { LoadingScreen } from 'app/shared/components/LoadingScreen';
 import { Feather } from '@expo/vector-icons';
 import { useGetStatisticsQuery } from '../api/statistic.api';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';

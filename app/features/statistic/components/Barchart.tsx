@@ -1,4 +1,4 @@
-import { useAppTheme } from '@hooks/theme';
+import { useAppTheme } from 'app/shared/hooks/theme';
 import { View } from 'react-native';
 import { BarChart } from 'react-native-gifted-charts';
 import { Text } from 'react-native-paper';

@@ -1,7 +1,7 @@
-import { SCREEN } from '@constants/screen';
-import { getStepperStyles } from '@constants/stepper';
+import { SCREEN } from 'app/shared/constants/screen';
+import { getStepperStyles } from 'app/shared/constants/stepper';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useAppTheme, useGlobalStyles } from '@hooks/theme';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import {
   KeyboardAvoidingView,
   Platform,
