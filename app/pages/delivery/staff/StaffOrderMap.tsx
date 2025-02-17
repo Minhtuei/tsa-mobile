@@ -26,13 +26,11 @@ const wareHouseLogo = require('../../../../assets/warehouse.png');
 interface StaffOrderMapProps {
   order: DeliverOrderDetail;
   setDistance: (distance: string) => void;
-  isFinishOrder: boolean;
 }
 
 export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOrderMap({
   order,
-  setDistance,
-  isFinishOrder
+  setDistance
 }) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
@@ -93,7 +91,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
     const sendLocation = async () => {
       if (socket) {
         const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High
+          accuracy: Location.Accuracy.Highest
         });
         console.log([location.coords.longitude, location.coords.latitude]);
         setShipperCoordinate([location.coords.longitude, location.coords.latitude]);
@@ -101,8 +99,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
           orderId: order.id,
           staffId: order.shipperId,
           latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          isFinished: isFinishOrder
+          longitude: location.coords.longitude
         });
         // console.log(`Sent location update: ${JSON.stringify(shipperCoordinate)}`);
       }
@@ -115,7 +112,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
     }, 5000);
 
     return () => clearInterval(intervalId);
-  }, [socket, shipperCoordinate, order.shipperId, order.id, isFinishOrder]);
+  }, [socket, shipperCoordinate, order.shipperId, order.id]);
 
   return (
     <View style={styles.container}>
@@ -207,7 +204,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
 
 const styles = StyleSheet.create({
   container: {
-    height: SCREEN.height / 2,
+    height: SCREEN.height,
     width: SCREEN.width
   },
   map: {

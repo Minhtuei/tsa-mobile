@@ -42,8 +42,7 @@ export const StaffTrackOrder = (
   const dispatch = useAppDispatch();
   const [distance, setDistance] = useState<string | null>(null);
 
-  const [finishOrder, { isLoading: isFinishOrderLoading, isSuccess: isFinishOrderSuccess }] =
-    useUpdateOrderStatusMutation();
+  const [finishOrder, { isLoading: isFinishOrderLoading }] = useUpdateOrderStatusMutation();
   const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
   const {
     handleSubmit,
@@ -165,7 +164,7 @@ export const StaffTrackOrder = (
 
         {(isFinishOrderLoading || isUploadImageLoading) && <LoadingScreen />}
       </Portal>
-      <StaffOrderMap order={order} setDistance={setDistance} isFinishOrder={isFinishOrderSuccess} />
+      <StaffOrderMap order={order} setDistance={setDistance} />
       <BottomSheet
         enableDynamicSizing={true}
         index={0}
@@ -296,8 +295,8 @@ export const StaffTrackOrder = (
               <SlideButton
                 title='Hoàn thành đơn hàng'
                 onSlideComplete={() => {
-                  if (Number(distance) < 150) {
-                    setIsErr('Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 150m');
+                  if (Number(distance) > 100) {
+                    setIsErr('Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 100m');
                   } else {
                     setIsComplete(true);
                   }

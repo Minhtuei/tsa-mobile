@@ -62,7 +62,8 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     if (!delivery) {
       return undefined;
     }
-    return delivery.orders.find((order) => order.latestStatus === OrderStatus.IN_TRANSPORT);
+    const order = delivery.orders.find((order) => order.latestStatus === OrderStatus.IN_TRANSPORT);
+    return order ? order : delivery.orders[0];
   }, [delivery]);
 
   const canFinishDelivery = useMemo(() => {
@@ -77,11 +78,9 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   }, []);
   const onTrackOrder = useCallback(() => {
     navigation.navigate('StaffTrackOrder', {
-      order: currentOrder
-        ? (currentOrder as unknown as DeliverOrderDetail)
-        : (delivery?.orders[0] as unknown as DeliverOrderDetail)
+      order: currentOrder as unknown as DeliverOrderDetail
     });
-  }, [currentOrder, delivery]);
+  }, [currentOrder]);
   console.log('currentOrder', currentOrder);
   console.log('delivery[0]', delivery?.orders[0]);
   const onUpdateDelivery = useCallback(
@@ -177,7 +176,9 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             {delivery?.orders.map((order, index) => {
               const isFinished = order.latestStatus === OrderStatus.DELIVERED;
               const isCanceled = order.latestStatus === OrderStatus.CANCELED;
-              const isDelivering = order.id === currentOrder?.id;
+              const isDelivering =
+                order.id === currentOrder?.id &&
+                currentOrder?.latestStatus === OrderStatus.IN_TRANSPORT;
               return (
                 <Card
                   elevation={2}

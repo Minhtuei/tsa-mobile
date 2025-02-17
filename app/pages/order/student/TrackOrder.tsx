@@ -19,22 +19,21 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
   const snapPoints = useMemo(() => ['5%', '40%', '90%'], []);
   const dispatch = useAppDispatch();
   const [distance, setDistance] = useState<string | null>(null);
-  const [isFinished, setIsFinished] = useState<boolean>(false);
   useEffect(() => {
     dispatch(setHideTabBar(true));
     return () => {
       dispatch(setHideTabBar(false));
     };
   }, [dispatch]);
-  useEffect(() => {
-    if (isFinished) {
-      dispatch(apiService.util.invalidateTags(['Orders']));
-      props.navigation.navigate('OrderList');
-    }
-  }, [isFinished, props.navigation, order, dispatch]);
+  // useEffect(() => {
+  //   if (isFinished) {
+  //     dispatch(apiService.util.invalidateTags(['Orders']));
+  //     props.navigation.navigate('OrderList');
+  //   }
+  // }, [isFinished, props.navigation, order, dispatch]);
   return (
     <View style={styles.page}>
-      <OrderMap order={order} setDistance={setDistance} setIsFinished={setIsFinished} />
+      <OrderMap order={order} setDistance={setDistance} />
       <BottomSheet index={1} snapPoints={snapPoints}>
         <BottomSheetView style={{ padding: 12, gap: 8 }}>
           {order.latestStatus === 'IN_TRANSPORT' && (

@@ -8,7 +8,12 @@ const reportService = apiService.injectEndpoints({
   endpoints: (build) => ({
     getReports: build.query<ReportType[], void>({
       query: () => 'reports',
-      providesTags: ['Reports']
+      providesTags: ['Reports'],
+      transformResponse: (response: any) => {
+        return response.results.sort((a: ReportType, b: ReportType) => {
+          return Number(b.reportedAt) - Number(a.reportedAt);
+        });
+      }
     }),
     createReport: build.mutation<void, CreateReportSchemaType>({
       query: (report) => ({

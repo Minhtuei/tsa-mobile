@@ -44,7 +44,7 @@ const deliveryService = apiService.injectEndpoints({
         method: 'PATCH',
         body: { status }
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Deliveries', id }]
+      invalidatesTags: [{ type: 'Deliveries' }]
     })
   })
 });

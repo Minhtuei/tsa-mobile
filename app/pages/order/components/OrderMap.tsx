@@ -25,10 +25,9 @@ const wareHouseLogo = require('../../../../assets/warehouse.png');
 interface OrderMapProps {
   order: Order;
   setDistance: (distance: string) => void;
-  setIsFinished: (isFinished: boolean) => void;
 }
 
-const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance, setIsFinished }) => {
+const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   const { socket } = useSocketContext();
@@ -73,7 +72,6 @@ const OrderMap: React.FC<OrderMapProps> = ({ order, setDistance, setIsFinished }
           setShipperCoordinate([Number(data.longitude), Number(data.latitude)]);
           console.log(`Received location update: ${JSON.stringify(data)}`);
           if (data.isFinished) {
-            setIsFinished(true);
           }
         }
       );
