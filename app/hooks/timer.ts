@@ -1,4 +1,4 @@
-import { updateTimer } from '@slices/timer.slice';
+import { updateTimer } from 'app/state/timer.slice';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './redux';
 

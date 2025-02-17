@@ -8,7 +8,7 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "format": "prettier '**/*.{tsx,ts,js,json,md,yml,yaml}' --write",
-    "lint": "eslint '**/*.{tsx,ts,js}' --fix",
+    "lint": "eslint \"**/*.{tsx,ts,js}\" --fix",
     "prepare": "husky install"
   },
   "dependencies": {

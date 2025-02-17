@@ -11,7 +11,7 @@
       "@services/*": ["app/services/*"],
       "@validations/*": ["app/validations/*"],
       "@utils/*": ["app/utils/*"],
-      "@slices/*": ["app/slices/*"],
+      "@slices/*": ["app/state/*"],
       "@hooks/*": ["app/hooks/*"],
       "@pages/*": ["app/pages/*"]
     }

@@ -1,9 +1,9 @@
-import { Order, OrderDetail, OrderStatus } from '@slices/order.slice';
-import { Delivery } from '@slices/delivery.slice';
-import { Report } from '@slices/report.slice';
-import { ReportStatus } from 'app/types/report';
-import { PaymentMethod } from 'app/types/order';
+import { Delivery } from 'app/state/delivery.slice';
+import { Order, OrderStatus } from 'app/state/order.slice';
+import { Report } from 'app/state/report.slice';
 import { DeliveryStatus } from 'app/types/delivery';
+import { PaymentMethod } from 'app/types/order';
+import { ReportStatus } from 'app/types/report';
 
 export const AddressData = {
   dormitories: ['A', 'B'],

@@ -1,18 +1,18 @@
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { Order } from './order';
 import { ReportType } from './report';
-import { UserInfo } from '@slices/auth.slice';
+import { UserInfo } from 'app/state/auth.slice';
 import { CreateOrderSchemaType } from '@validations/order.schema';
-import { DeliverOrderDetail } from '@slices/delivery.slice';
+import { DeliverOrderDetail } from 'app/state/delivery.slice';
 
 type RootStackParamList = {
   SplashScreen: undefined;
-  Onboarding: NavigatorScreenParams<AuthStackParamList> | undefined;
-  AuthStack: NavigatorScreenParams<AuthStackParamList> | undefined;
+  Onboarding: NavigatorScreenParams<AuthNavigatorParamList> | undefined;
+  AuthNavigator: NavigatorScreenParams<AuthNavigatorParamList> | undefined;
   MainTab: NavigatorScreenParams<MainTabParamList> | undefined;
 };
 
-type AuthStackParamList = {
+type AuthNavigatorParamList = {
   SignIn: undefined;
   SignUp: undefined;
   ForgotPassword: undefined;

@@ -7,7 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { Mutex } from 'async-mutex';
 import { RootState } from '@utils/store';
-import { setToken } from '@slices/auth.slice';
+import { setToken } from 'app/state/auth.slice';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 interface RefreshTokenRes {

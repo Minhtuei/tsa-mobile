@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { UserInfo } from '@slices/auth.slice';
+import { UserInfo } from 'app/state/auth.slice';
 import { Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 export const saveUserInfo = async (userInfo: UserInfo | null) => {

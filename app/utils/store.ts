@@ -1,8 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '@slices/auth.slice';
-import appReducer from '@slices/app.slice';
-import timerReducer from '@slices/timer.slice';
-import socketReducer from '@slices/socket.slice';
+import authReducer from 'app/state/auth.slice';
+import appReducer from 'app/state/app.slice';
+import timerReducer from 'app/state/timer.slice';
+import socketReducer from 'app/state/socket.slice';
 import { apiService } from '@services/api.service';
 export const store = configureStore({
   reducer: {
