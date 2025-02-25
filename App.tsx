@@ -1,40 +1,40 @@
-import { SCREEN } from '@constants/screen';
-import { darkTheme, lightTheme } from '@constants/style';
-import { useAppDispatch, useAppSelector } from '@hooks/redux';
-import { useAppTheme } from '@hooks/theme';
-import { AuthStack } from '@pages/auth/AuthStack';
-import { Delivery } from '@pages/delivery/Delivery';
-import { Home } from '@pages/home/Home';
-import { Onboarding } from '@pages/Onboarding';
-import { Order } from '@pages/order/Order';
-import { SplashScreen } from '@pages/SplashScreen';
+import { SCREEN } from 'app/shared/constants/screen';
+import { darkTheme, lightTheme } from 'app/shared/constants/style';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
+import { useAppTheme } from 'app/shared/hooks/theme';
+import { AuthNavigator } from 'app/navigation/AuthNavigator';
+import { DeliveryNavigator } from 'app/navigation/DeliveryNavigator';
+import { HomeNavigator } from 'app/navigation/HomeNavigator';
+import { Onboarding } from 'app/features/onboarding/Onboarding';
+import { OrderNavigator } from 'app/navigation/OrderNavigator';
+import { SplashScreen } from 'app/features/splash/SplashScreen';
 import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { apiService } from '@services/api.service';
-import { stopTimer } from '@slices/timer.slice';
-import { store } from '@utils/store';
-import { MainTabParamList, RootStackParamList } from 'app/types/navigation';
+import { stopTimer } from 'app/shared/state/timer.slice';
+import { store } from '@slices/store';
+import { MainTabParamList, RootStackParamList } from 'app/shared/types/navigation';
 import { StatusBar } from 'expo-status-bar';
 import { Appearance, Platform, TextInput, useColorScheme, Text } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
-import { CustomTabbar } from '@components/CustomTabbar';
-import IconModal from '@components/IconModal';
-import { Account } from '@pages/account/Account';
-import { Notification } from '@pages/notification/Notification';
+import { CustomTabbar } from 'app/shared/components/CustomTabbar';
+import IconModal from 'app/shared/components/IconModal';
+import { NotificationNavigator } from 'app/navigation/NotificationNavigator';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NotificationProvider } from 'app/context/NotificationContext';
+import { NotificationProvider } from 'app/shared/context/NotificationContext';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreenExpo from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
-import SocketProvider from 'app/context/SocketContext';
+import SocketProvider from 'app/shared/context/SocketContext';
 import moment from 'moment';
 import 'moment/locale/vi';
+import { AccountNavigator } from 'app/navigation/AccountNavigator';
 moment.locale('vi');
 
 /**
@@ -88,7 +88,7 @@ const linking: LinkingOptions<RootStackParamList> = {
   prefixes: [prefix],
   config: {
     screens: {
-      AuthStack: {
+      AuthNavigator: {
         screens: {
           CreateAccount: {
             path: 'create-account/:token',
@@ -157,8 +157,8 @@ function AppContent() {
               }}
             />
             <RootStack.Screen
-              name='AuthStack'
-              component={AuthStack}
+              name='AuthNavigator'
+              component={AuthNavigator}
               options={{
                 navigationBarColor: theme.colors.background
               }}
@@ -189,7 +189,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
       props.navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{ name: 'AuthStack' }]
+          routes: [{ name: 'AuthNavigator' }]
         })
       );
     }
@@ -220,7 +220,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             title: 'Trang chủ'
           }}
           name='Home'
-          component={Home}
+          component={HomeNavigator}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               e.preventDefault();
@@ -238,7 +238,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
               title: 'Chuyến đi'
             }}
             name='Delivery'
-            component={Delivery}
+            component={DeliveryNavigator}
             listeners={({ navigation }) => ({
               tabPress: (e) => {
                 e.preventDefault();
@@ -255,7 +255,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
               title: 'Đơn hàng'
             }}
             name='Order'
-            component={Order}
+            component={OrderNavigator}
             listeners={({ navigation }) => ({
               tabPress: (e) => {
                 e.preventDefault();
@@ -272,7 +272,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             title: 'Thông báo'
           }}
           name='Notification'
-          component={Notification}
+          component={NotificationNavigator}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               e.preventDefault();
@@ -288,7 +288,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
             title: 'Cá nhân'
           }}
           name='Account'
-          component={Account}
+          component={AccountNavigator}
           listeners={({ navigation }) => ({
             tabPress: (e) => {
               e.preventDefault();

@@ -6,13 +6,13 @@
     "typeRoots": ["./types"],
     "paths": {
       "@interfaces/*": ["app/interfaces/*"],
-      "@components/*": ["app/components/*"],
-      "@constants/*": ["app/constants/*"],
-      "@services/*": ["app/services/*"],
-      "@validations/*": ["app/validations/*"],
-      "@utils/*": ["app/utils/*"],
-      "@slices/*": ["app/slices/*"],
-      "@hooks/*": ["app/hooks/*"],
+      "@components/*": ["app/shared/components/*"],
+      "@constants/*": ["app/shared/constants/*"],
+      "@services/*": ["app/shared/services/*"],
+      "@validations/*": ["app/shared/schema/*"],
+      "@utils/*": ["app/shared/utils/*"],
+      "@slices/*": ["app/shared/state/*"],
+      "@hooks/*": ["app/shared/hooks/*"],
       "@pages/*": ["app/pages/*"]
     }
   }
