@@ -5,8 +5,8 @@ import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import Constants from 'expo-constants';
 import { Image, ImageBackground, Platform, View } from 'react-native';
 import { Text } from 'react-native-paper';
-import HeaderLogo from '../../assets/tsa-header.svg';
-const BackgroundImg = require('../../assets/header-background.png');
+import HeaderLogo from '../../../assets/tsa-header.svg';
+const BackgroundImg = require('../../../assets/header-background.png');
 export const DashboardHeader = () => {
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();

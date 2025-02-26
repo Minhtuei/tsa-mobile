@@ -1,26 +1,26 @@
+import { FontAwesome } from '@expo/vector-icons';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useUpdateOrderStatusMutation } from 'app/features/order/api/order.api';
+import {
+  updateOrderStatusSchema,
+  UpdateOrderStatusSchemaType
+} from 'app/features/order/schema/order.schema';
+import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
 import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
 import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
 import { LoadingScreen } from 'app/shared/components/LoadingScreen';
 import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
 import { SlideButton } from 'app/shared/components/SlideButton';
 import { OrderStatus } from 'app/shared/constants/status';
-import { FontAwesome } from '@expo/vector-icons';
-import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch } from 'app/shared/hooks/redux';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
-import { useUpdateOrderStatusMutation } from 'app/features/order/api/order.api';
+import { setCurrentOrderId, setHideTabBar } from 'app/shared/state/app.slice';
+import { DeliveryStackParamList } from 'app/shared/types/navigation';
 import { formatVNDcurrency } from 'app/shared/utils/format';
 import { formatDistance } from 'app/shared/utils/getDirection';
 import { getErrorMessage } from 'app/shared/utils/helper';
 import { shortenUUID } from 'app/shared/utils/order';
-import {
-  updateOrderStatusSchema,
-  UpdateOrderStatusSchemaType
-} from 'app/features/order/schema/order.schema';
-import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
-import { setHideTabBar } from 'app/shared/state/app.slice';
-import { DeliveryStackParamList } from 'app/shared/types/navigation';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -97,6 +97,11 @@ export const StaffTrackOrder = (
       setValue('distance', Number(distance));
     }
   }, [distance]);
+
+  useEffect(() => {
+    dispatch(setCurrentOrderId(order.id));
+  }, [order.id]);
+
   useEffect(() => {
     dispatch(setHideTabBar(true));
     return () => {

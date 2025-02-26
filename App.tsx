@@ -1,42 +1,44 @@
+import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { apiService } from '@services/api.service';
+import { store } from '@slices/store';
+import { Onboarding } from 'app/features/onboarding/Onboarding';
+import { SplashScreen } from 'app/features/splash/SplashScreen';
+import { AuthNavigator } from 'app/navigation/AuthNavigator';
+import { DeliveryNavigator } from 'app/navigation/DeliveryNavigator';
+import { HomeNavigator } from 'app/navigation/HomeNavigator';
+import { OrderNavigator } from 'app/navigation/OrderNavigator';
 import { SCREEN } from 'app/shared/constants/screen';
 import { darkTheme, lightTheme } from 'app/shared/constants/style';
 import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
 import { useAppTheme } from 'app/shared/hooks/theme';
-import { AuthNavigator } from 'app/navigation/AuthNavigator';
-import { DeliveryNavigator } from 'app/navigation/DeliveryNavigator';
-import { HomeNavigator } from 'app/navigation/HomeNavigator';
-import { Onboarding } from 'app/features/onboarding/Onboarding';
-import { OrderNavigator } from 'app/navigation/OrderNavigator';
-import { SplashScreen } from 'app/features/splash/SplashScreen';
-import { CommonActions, LinkingOptions, NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator, NativeStackScreenProps } from '@react-navigation/native-stack';
-import { apiService } from '@services/api.service';
 import { stopTimer } from 'app/shared/state/timer.slice';
-import { store } from '@slices/store';
 import { MainTabParamList, RootStackParamList } from 'app/shared/types/navigation';
 import { StatusBar } from 'expo-status-bar';
-import { Appearance, Platform, TextInput, useColorScheme, Text } from 'react-native';
+import { Appearance, Platform, Text, TextInput, useColorScheme } from 'react-native';
 import { PaperProvider, Portal } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
+import useLocationUpdater from '@hooks/location';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { setCurrentOrderId } from '@slices/app.slice';
+import { useGetCurrentOrderQuery } from 'app/features/order/api/order.api';
+import { AccountNavigator } from 'app/navigation/AccountNavigator';
+import { NotificationNavigator } from 'app/navigation/NotificationNavigator';
 import { CustomTabbar } from 'app/shared/components/CustomTabbar';
 import IconModal from 'app/shared/components/IconModal';
-import { NotificationNavigator } from 'app/navigation/NotificationNavigator';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NotificationProvider } from 'app/shared/context/NotificationContext';
+import SocketProvider, { useSocketContext } from 'app/shared/context/SocketContext';
 import * as Linking from 'expo-linking';
 import * as Notifications from 'expo-notifications';
 import * as SplashScreenExpo from 'expo-splash-screen';
+import moment from 'moment';
+import 'moment/locale/vi';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { registerTranslation } from 'react-native-paper-dates';
-import SocketProvider from 'app/shared/context/SocketContext';
-import moment from 'moment';
-import 'moment/locale/vi';
-import { AccountNavigator } from 'app/navigation/AccountNavigator';
 moment.locale('vi');
-
 /**
  * Below code is to limit the max size of text font user can custom in Accessibility
  * StackOverflow: https://stackoverflow.com/a/65193181/27724785
@@ -61,6 +63,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: true
   })
 });
+
 registerTranslation('vi', {
   save: 'Lưu',
   selectSingle: 'Chọn ngày',
@@ -180,8 +183,23 @@ function AppContent() {
 const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) => {
   const theme = useAppTheme();
   const auth = useAppSelector((state) => state.auth);
+  const staffId = auth.userInfo?.id;
+
   const dispatch = useAppDispatch();
   const [message, setMessage] = useState('');
+  const { socket } = useSocketContext();
+
+  const { data } = useGetCurrentOrderQuery();
+  const orderId = data?.id;
+
+  useEffect(() => {
+    if (orderId) {
+      dispatch(setCurrentOrderId(orderId));
+    }
+  }, [data]);
+
+  useLocationUpdater(socket, orderId, staffId);
+
   useEffect(() => {
     if (auth.refreshToken === null) {
       dispatch(stopTimer());

@@ -42,7 +42,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Cho phép $(PRODUCT_NAME) truy cập vị trí của bạn khi bạn đang sử dụng ứng dụng và khi bạn không sử dụng ứng dụng.",
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       "@react-native-firebase/app",

@@ -43,6 +43,9 @@ const orderApi = apiService.injectEndpoints({
         body: rest
       }),
       invalidatesTags: ['Orders', 'Deliveries']
+    }),
+    getCurrentOrder: build.query<Order, void>({
+      query: () => 'orders/current'
     })
   })
 });
@@ -51,5 +54,6 @@ export const {
   useGetOrdersQuery,
   useCreateOrdersMutation,
   useGetShippingFeeQuery,
-  useUpdateOrderStatusMutation
+  useUpdateOrderStatusMutation,
+  useGetCurrentOrderQuery
 } = orderApi;

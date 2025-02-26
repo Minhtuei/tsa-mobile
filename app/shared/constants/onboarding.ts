@@ -1,7 +1,7 @@
 import { ImageSourcePropType } from 'react-native';
-const createFormImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_1.png');
-const chooseLocationImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_2.png');
-const paymentImg: ImageSourcePropType = require('../../assets/onboarding/onboarding_3.png');
+const createFormImg: ImageSourcePropType = require('../../../assets/onboarding/onboarding_1.png');
+const chooseLocationImg: ImageSourcePropType = require('../../../assets/onboarding/onboarding_2.png');
+const paymentImg: ImageSourcePropType = require('../../../assets/onboarding/onboarding_3.png');
 export const ONBOARDING_DATA = [
   {
     key: 1,

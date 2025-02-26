@@ -1,5 +1,4 @@
-import { coordinateList } from 'app/shared/constants/coordinate';
-import { SCREEN } from 'app/shared/constants/screen';
+import { useAppSelector } from '@hooks/redux';
 import Mapbox, {
   Camera,
   CircleLayer,
@@ -9,10 +8,10 @@ import Mapbox, {
   ShapeSource,
   SymbolLayer
 } from '@rnmapbox/maps';
-import { getDirection } from 'app/shared/utils/getDirection';
-import { useSocketContext } from 'app/shared/context/SocketContext';
+import { coordinateList } from 'app/shared/constants/coordinate';
+import { SCREEN } from 'app/shared/constants/screen';
 import { DeliverOrderDetail } from 'app/shared/state/delivery.slice';
-import * as Location from 'expo-location';
+import { getDirection } from 'app/shared/utils/getDirection';
 import React, { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
@@ -34,9 +33,11 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
 }) {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
-  const { socket } = useSocketContext();
+  // const { socket } = useSocketContext();
+  const app = useAppSelector((state) => state.app);
 
-  const [shipperCoordinate, setShipperCoordinate] = useState<[number, number] | null>(null);
+  const shipperCoordinate = app.location ? [app.location.longitude, app.location.latitude] : null;
+
   const studentCoordinate = useMemo(() => {
     const foundCoordinate = coordinateList.find((coordinate) => {
       return order.building === coordinate.address[0] && order.dormitory === coordinate.address[1];
@@ -48,29 +49,11 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
   }, [order, coordinateList]);
 
   useEffect(() => {
-    const getLocation = async () => {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission to access location was denied');
-        return;
-      }
-    };
-
-    getLocation();
-  }, []);
-
-  useEffect(() => {
     const fetchDirection = async () => {
       try {
         if (shipperCoordinate && studentCoordinate) {
           const direction = await getDirection(shipperCoordinate, studentCoordinate);
-          if (
-            direction &&
-            direction.routes &&
-            direction.routes[0] &&
-            direction.routes[0].geometry &&
-            direction.routes[0].geometry.coordinates
-          ) {
+          if (direction?.routes?.[0]?.geometry?.coordinates) {
             setRouteCoordinates(direction.routes[0].geometry.coordinates);
             setDistance(direction.routes[0].distance.toString());
           } else {
@@ -86,33 +69,6 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
       fetchDirection();
     }
   }, [shipperCoordinate, studentCoordinate]);
-
-  useEffect(() => {
-    const sendLocation = async () => {
-      if (socket) {
-        const location = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.Highest
-        });
-        console.log([location.coords.longitude, location.coords.latitude]);
-        setShipperCoordinate([location.coords.longitude, location.coords.latitude]);
-        socket.emit('locationUpdate', {
-          orderId: order.id,
-          staffId: order.shipperId,
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude
-        });
-        // console.log(`Sent location update: ${JSON.stringify(shipperCoordinate)}`);
-      }
-    };
-
-    // sendLocation();
-
-    const intervalId = setInterval(() => {
-      sendLocation();
-    }, 5000);
-
-    return () => clearInterval(intervalId);
-  }, [socket, shipperCoordinate, order.shipperId, order.id]);
 
   return (
     <View style={styles.container}>

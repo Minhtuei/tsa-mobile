@@ -63,6 +63,8 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
       socket.off('connect');
       socket.off('disconnect');
       socket.off('error');
+      socket.off('connect_error');
+      socket.close();
     };
   }, [socket]);
 

@@ -2,8 +2,8 @@ import { DASHBOARD_HEADER_HEIGHT, SCREEN } from 'app/shared/constants/screen';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useAppTheme } from 'app/shared/hooks/theme';
 import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
-import HeaderLogo from '../../assets/tsa-header.svg';
-const BackgroundImg = require('../../assets/header-background.png');
+import HeaderLogo from '../../../assets/tsa-header.svg';
+const BackgroundImg = require('../../../assets/header-background.png');
 
 export const AccountHeader = ({
   onRightPress,

@@ -3,11 +3,18 @@ interface AppState {
   colorScheme: string;
   isHideTabBar: boolean;
   unReadNotificationCount: number;
+  currentOrderId: string | null;
+  location: {
+    latitude: number;
+    longitude: number;
+  } | null;
 }
 const initialState: AppState = {
   colorScheme: 'light',
   isHideTabBar: false,
-  unReadNotificationCount: 0
+  unReadNotificationCount: 0,
+  currentOrderId: null,
+  location: null
 };
 
 const appSlice = createSlice({
@@ -30,6 +37,13 @@ const appSlice = createSlice({
     },
     setReadAllNotification(state) {
       state.unReadNotificationCount = 0;
+    },
+
+    setCurrentOrderId(state, action: PayloadAction<string | null>) {
+      state.currentOrderId = action.payload;
+    },
+    setLocation(state, action: PayloadAction<AppState['location']>) {
+      state.location = action.payload;
     }
   }
 });
@@ -38,6 +52,8 @@ export const {
   setHideTabBar,
   setReadNotifcation,
   setReadAllNotification,
-  setUnReadNotificationCount
+  setUnReadNotificationCount,
+  setCurrentOrderId,
+  setLocation
 } = appSlice.actions;
 export default appSlice.reducer;
