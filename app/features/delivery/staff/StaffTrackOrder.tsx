@@ -85,6 +85,7 @@ export const StaffTrackOrder = (
           orderId: order.id
         };
         await finishOrder(validateData).unwrap();
+        dispatch(setCurrentOrderId(null));
         props.navigation.goBack();
       } catch (error) {
         console.log(error);

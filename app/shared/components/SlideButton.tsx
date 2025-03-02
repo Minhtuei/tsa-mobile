@@ -23,6 +23,8 @@ export const SlideButton = memo(function SlideButton({
     .onUpdate((e) => {
       if (e.translationX < 0) {
         xValue.value = 0;
+      } else if (e.translationX > swipeBtnWidth - 70) {
+        xValue.value = swipeBtnWidth - 70;
       } else {
         xValue.value = e.translationX;
       }

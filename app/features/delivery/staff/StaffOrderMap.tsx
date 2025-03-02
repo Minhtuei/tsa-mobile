@@ -37,7 +37,6 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
   const app = useAppSelector((state) => state.app);
 
   const shipperCoordinate = app.location ? [app.location.longitude, app.location.latitude] : null;
-
   const studentCoordinate = useMemo(() => {
     const foundCoordinate = coordinateList.find((coordinate) => {
       return order.building === coordinate.address[0] && order.dormitory === coordinate.address[1];

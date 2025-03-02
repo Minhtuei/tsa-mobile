@@ -16,12 +16,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
+  Linking,
   RefreshControl,
   ScrollView,
   StyleSheet,
   View
 } from 'react-native';
 import { Button, Card, Divider, IconButton, Portal, Text } from 'react-native-paper';
+import { useLocationPermission } from '@hooks/location';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
@@ -36,6 +38,10 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   } = useGetDeliveryQuery(deliveryId, {
     refetchOnMountOrArgChange: true
   });
+
+  const { permissionGranted, requestPermission } = useLocationPermission();
+  const [openPermissionDialog, setOpenPermissionDialog] = useState(false);
+
   const [err, setErr] = useState('');
   const [isStartDeliSwipe, setIsStartDeliSwipe] = useState(false);
   const [isCancelDeli, setIsCancelDeli] = useState(false);
@@ -77,10 +83,15 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     setIsStartDeliSwipe(true);
   }, []);
   const onTrackOrder = useCallback(() => {
+    if (!permissionGranted) {
+      setOpenPermissionDialog(true);
+      return;
+    }
     navigation.navigate('StaffTrackOrder', {
       order: currentOrder as unknown as DeliverOrderDetail
     });
-  }, [currentOrder]);
+  }, [currentOrder, permissionGranted]);
+
   console.log('currentOrder', currentOrder);
   console.log('delivery[0]', delivery?.orders[0]);
   const onUpdateDelivery = useCallback(
@@ -148,6 +159,20 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
           content={err}
           notShowCancel
           isErr
+        />
+        <ConfirmationDialog
+          visible={openPermissionDialog}
+          setVisible={() => {
+            setOpenPermissionDialog(false);
+          }}
+          onSubmit={() => {
+            Linking.openSettings();
+            requestPermission();
+            setOpenPermissionDialog(false);
+          }}
+          title='Thông báo'
+          content='Vui lòng cấp quyền truy cập vị trí và khởi động lại ứng dụng để sử dụng tính năng này.'
+          notShowCancel
         />
       </Portal>
       <ScrollView
