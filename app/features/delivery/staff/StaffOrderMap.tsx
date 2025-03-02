@@ -8,6 +8,7 @@ import Mapbox, {
   ShapeSource,
   SymbolLayer
 } from '@rnmapbox/maps';
+import { useLazyGetDirectionQuery } from '@services/mapbox.service';
 import { coordinateList } from 'app/shared/constants/coordinate';
 import { SCREEN } from 'app/shared/constants/screen';
 import { DeliverOrderDetail } from 'app/shared/state/delivery.slice';
@@ -35,9 +36,12 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
   const [routeCoordinates, setRouteCoordinates] = useState<[number, number][]>([]);
   // const { socket } = useSocketContext();
   const app = useAppSelector((state) => state.app);
+  const shipperCoordinate = app.location
+    ? ([app.location.longitude, app.location.latitude] as Coordinate)
+    : null;
 
-  const shipperCoordinate = app.location ? [app.location.longitude, app.location.latitude] : null;
-  const studentCoordinate = useMemo(() => {
+  const [getDirectionQuery] = useLazyGetDirectionQuery();
+  const studentCoordinate: Coordinate = useMemo(() => {
     const foundCoordinate = coordinateList.find((coordinate) => {
       return order.building === coordinate.address[0] && order.dormitory === coordinate.address[1];
     });
@@ -51,10 +55,14 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
     const fetchDirection = async () => {
       try {
         if (shipperCoordinate && studentCoordinate) {
-          const direction = await getDirection(shipperCoordinate, studentCoordinate);
-          if (direction?.routes?.[0]?.geometry?.coordinates) {
-            setRouteCoordinates(direction.routes[0].geometry.coordinates);
-            setDistance(direction.routes[0].distance.toString());
+          const direction = await getDirectionQuery({
+            from: shipperCoordinate,
+            to: studentCoordinate
+          }).unwrap();
+          const { coordinates, distance } = direction || {};
+          if (coordinates && distance) {
+            setRouteCoordinates(coordinates);
+            setDistance(distance);
           } else {
             console.error('Invalid direction response:', direction);
           }
@@ -67,7 +75,7 @@ export const StaffOrderMap: React.FC<StaffOrderMapProps> = memo(function StaffOr
     if (shipperCoordinate && studentCoordinate) {
       fetchDirection();
     }
-  }, [shipperCoordinate, studentCoordinate]);
+  }, [shipperCoordinate?.[0], shipperCoordinate?.[1], studentCoordinate]);
 
   return (
     <View style={styles.container}>

@@ -20,7 +20,7 @@ import { PaperProvider, Portal } from 'react-native-paper';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 
-import useLocationUpdater from '@hooks/location';
+import useLocationUpdater, { useLocationPermission } from '@hooks/location';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { setCurrentOrderId } from '@slices/app.slice';
 import { useGetCurrentOrderQuery } from 'app/features/order/api/order.api';
@@ -191,14 +191,14 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
 
   const { data } = useGetCurrentOrderQuery();
   const orderId = data?.id;
+  const { permissionGranted } = useLocationPermission();
 
   useEffect(() => {
     if (orderId) {
       dispatch(setCurrentOrderId(orderId));
     }
   }, [data]);
-
-  useLocationUpdater(socket, orderId, staffId);
+  useLocationUpdater(socket, orderId, staffId, permissionGranted);
 
   useEffect(() => {
     if (auth.refreshToken === null) {

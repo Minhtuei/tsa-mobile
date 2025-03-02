@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import * as Location from 'expo-location';
-import { useAppDispatch } from './redux';
+import { useAppDispatch, useAppSelector } from './redux';
 import { setLocation } from '@slices/app.slice';
 import { Socket } from 'socket.io-client';
 
@@ -31,11 +31,12 @@ const useLocationUpdater = (
   socket: Socket | null,
   orderId?: string,
   staffId?: string,
+  permissionGranted = false,
   updateInterval = 5000
 ) => {
   const dispatch = useAppDispatch();
-  const { permissionGranted } = useLocationPermission();
-  console.log('permissionGranted', permissionGranted);
+  const app = useAppSelector((state) => state.app);
+
   useEffect(() => {
     if (!permissionGranted || !socket || !orderId || !staffId) return;
 
@@ -49,8 +50,9 @@ const useLocationUpdater = (
         console.log(
           `Sent location update: ${JSON.stringify({ orderId, staffId, latitude, longitude })}`
         );
-
-        dispatch(setLocation({ latitude, longitude }));
+        if (latitude !== app.location?.latitude || longitude !== app.location?.longitude) {
+          dispatch(setLocation({ latitude, longitude }));
+        }
 
         socket.emit('locationUpdate', {
           orderId,
