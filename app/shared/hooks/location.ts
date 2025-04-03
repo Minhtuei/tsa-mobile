@@ -30,15 +30,16 @@ export const useLocationPermission = () => {
 const useLocationUpdater = (
   socket: Socket | null,
   orderId?: string,
-  staffId?: string,
   permissionGranted = false,
   updateInterval = 5000
 ) => {
   const dispatch = useAppDispatch();
   const app = useAppSelector((state) => state.app);
-
+  const auth = useAppSelector((state) => state.auth);
+  const staffId = auth.userInfo?.id;
+  const skip = auth.userInfo?.role !== 'STAFF' || !permissionGranted || !socket || !orderId;
   useEffect(() => {
-    if (!permissionGranted || !socket || !orderId || !staffId) return;
+    if (skip) return;
 
     const sendLocation = async () => {
       try {

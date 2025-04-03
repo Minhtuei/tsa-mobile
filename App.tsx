@@ -198,7 +198,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
       dispatch(setCurrentOrderId(orderId));
     }
   }, [data]);
-  useLocationUpdater(socket, orderId, staffId, permissionGranted);
+  useLocationUpdater(socket, orderId, permissionGranted);
 
   useEffect(() => {
     if (auth.refreshToken === null) {

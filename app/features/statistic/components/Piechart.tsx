@@ -9,7 +9,7 @@ import { Text } from 'react-native-paper';
 export const Piechart = ({ data }: { data: OrderStatistics['brandPercentages'] | undefined }) => {
   const theme = useAppTheme();
   const mostUsedBrand = useMemo(() => {
-    if (!data) return null;
+    if (!data || data.length === 0) return null;
     // return the brand with the highest percentage and count
     return data.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current));
   }, [data]);
