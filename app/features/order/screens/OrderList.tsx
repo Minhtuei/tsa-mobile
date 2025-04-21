@@ -1,18 +1,18 @@
-import { HeaderWithSearchAndFilter } from 'app/shared/components/HeaderWithSearchAndFilter';
-import { SCREEN } from 'app/shared/constants/screen';
-import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
-import { getErrorMessage } from 'app/shared/utils/helper';
+import { HeaderWithSearchAndFilter } from 'app/shared/components/HeaderWithSearchAndFilter';
+import { FILTER_DATA, ORDER_STATUS_DATA, PAYMENT_STATUS_DATA } from 'app/shared/constants/filter';
+import { SCREEN } from 'app/shared/constants/screen';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { OrderStackParamList } from 'app/shared/types/navigation';
-import moment from 'moment';
-import { useEffect, useMemo, useState } from 'react';
+import { getErrorMessage } from 'app/shared/utils/helper';
+import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
 import { FAB, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import BackgroundIcon from '../../../../assets/background-icon.svg';
 import { StudentOrderItem } from '../components/StudentOrderItem';
-import { FILTER_DATA, ORDER_STATUS_DATA } from 'app/shared/constants/filter';
+import { Order } from 'app/shared/types/order';
 
 export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>) => {
   const theme = useAppTheme();
@@ -23,8 +23,26 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
   const [filterType, setFilterType] = useState<string | null>(null);
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
+  const [isPaid, setIsPaid] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [orders, setOrders] = useState<Order[]>([]);
 
-  const { data: orders, isError, refetch, isFetching, error } = useGetOrdersQuery();
+  const parseBoolean = (value: string | null) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return undefined;
+  };
+  const { data, isError, refetch, isFetching, error } = useGetOrdersQuery({
+    startDate: startDate ? startDate.toISOString().split('T')[0] : undefined,
+    endDate: endDate ? endDate.toISOString().split('T')[0] : undefined,
+    status: status ?? undefined,
+    search: orderId ?? undefined,
+    isPaid: parseBoolean(isPaid),
+    sortBy: 'deliveryDate',
+    sortOrder: 'desc',
+    page: page
+  });
+
   useEffect(() => {
     if (isError) {
       Toast.show(getErrorMessage(error), {
@@ -39,29 +57,11 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
     }
   }, [isError, error]);
 
-  const filteredOrders = useMemo(() => {
-    if (!orders) return [];
-    let result = orders;
-    // Filter by orderId
-    if (orderId) {
-      result = result.filter((order) => order.checkCode.includes(orderId));
+  useEffect(() => {
+    if (data && data.results.length > 0) {
+      setOrders((prev) => [...prev, ...data.results]);
     }
-    // Filter by status
-    if (status) {
-      result = result.filter((order) => order.latestStatus === status);
-    }
-    // Filter by time range if filterType is 'TIME'
-    if (filterType === 'TIME' && startDate && endDate) {
-      result = result.filter((order) => {
-        return (
-          moment(startDate).isSameOrBefore(moment.unix(Number(order.historyTime[0].time)), 'day') &&
-          moment(endDate).isSameOrAfter(moment.unix(Number(order.historyTime[0].time)), 'day')
-        );
-      });
-    }
-
-    return result;
-  }, [orders, orderId, status, filterType, startDate, endDate]);
+  }, [data]);
   return (
     <View style={{ flex: 1 }}>
       <HeaderWithSearchAndFilter
@@ -70,6 +70,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
         setSearchString={setOrderId}
         filterList={FILTER_DATA}
         statusList={ORDER_STATUS_DATA}
+        paymentList={PAYMENT_STATUS_DATA}
         {...{
           status,
           setStatus,
@@ -78,7 +79,9 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
           startDate,
           setStartDate,
           endDate,
-          setEndDate
+          setEndDate,
+          setIsPaid,
+          isPaid
         }}
       />
       <FlatList
@@ -89,7 +92,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
           paddingBottom: 120
         }}
         showsVerticalScrollIndicator={false}
-        data={filteredOrders}
+        data={orders}
         keyExtractor={(item) => item.id}
         ListHeaderComponent={
           <View
@@ -100,7 +103,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
             }}
           >
             <Text style={globalStyles.title}>Danh sách đơn hàng</Text>
-            <Text style={globalStyles.text}>{`${filteredOrders?.length ?? 0} đơn hàng`}</Text>
+            <Text style={globalStyles.text}>{`${data?.totalElements ?? 0} đơn hàng`}</Text>
           </View>
         }
         renderItem={({ item }) => (
@@ -126,6 +129,16 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
             </Text>
             <BackgroundIcon width={SCREEN.width * 0.8} height={SCREEN.height * 0.3} />
           </View>
+        }
+        onEndReached={() => {
+          if (data?.totalPages && page < data.totalPages) {
+            setPage((prev) => (prev += 1));
+          }
+        }}
+        ListFooterComponent={
+          !isFetching && page === data?.totalPages ? (
+            <Text style={[globalStyles.title, { textAlign: 'center' }]}>Đã hết đơn hàng</Text>
+          ) : null
         }
       />
       <FAB

@@ -5,10 +5,30 @@ export type STATUS_DATA_TYPE = {
 export const FILTER_DATA: STATUS_DATA_TYPE[] = [
   { label: 'Tất cả', value: 'ALL' },
   { label: 'Trạng thái', value: 'STATUS' },
-  { label: 'Thời gian', value: 'TIME' }
+  { label: 'Thời gian', value: 'TIME' },
+  { label: 'Thanh toán', value: 'PAYMENT' }
+];
+
+export const PAYMENT_STATUS_DATA: STATUS_DATA_TYPE[] = [
+  {
+    label: 'Tất cả',
+    value: ''
+  },
+  {
+    label: 'Đã thanh toán',
+    value: 'true'
+  },
+  {
+    label: 'Chưa thanh toán',
+    value: 'false'
+  }
 ];
 
 export const ORDER_STATUS_DATA: STATUS_DATA_TYPE[] = [
+  {
+    label: 'Tất cả',
+    value: ''
+  },
   {
     label: 'Đang chờ xử lý',
     value: 'PENDING'

@@ -7,7 +7,8 @@ import {
   DOMITORY_DATA,
   ECOMMERCE_DATA,
   PAYMENT_METHOD_DATA,
-  ROOM_DATA
+  ROOM_DATA,
+  TIMESLOT_DATA
 } from 'app/shared/constants/domitory';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -125,6 +126,8 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
   useEffect(() => {
     if (startDate) {
       setValue('deliveryDate', moment(startDate).format('YYYY-MM-DD'));
+    } else {
+      setValue('deliveryDate', moment().format('YYYY-MM-DD'));
     }
   }, [startDate]);
   return (
@@ -260,30 +263,18 @@ export const CreateOrder = (props: NativeStackScreenProps<OrderStackParamList, '
                 </Text>
                 <Controller
                   control={control}
-                  render={({ field: { onChange } }) => (
-                    <SearchInput
-                      value={moment({ hour, minute }).format('HH:mm')}
-                      onChange={onChange}
-                      placeholder='Thời gian giao hàng'
-                      pressable={true}
+                  render={({ field: { onChange, value } }) => (
+                    <DropDownList
+                      data={TIMESLOT_DATA}
+                      value={value}
+                      setValue={onChange}
+                      placeholder='Chọn thời gian giao hàng'
                       containerStyle={{
                         backgroundColor: theme.colors.surface,
                         borderRadius: 0,
                         borderWidth: 1,
-                        borderColor: theme.colors.outline,
-                        height: 40,
-                        pointerEvents: 'none',
-                        paddingLeft: 6
+                        borderColor: theme.colors.outline
                       }}
-                      placeholderTextColor={theme.colors.onSurface}
-                      onPress={() => setIsTimePickerVisible(true)}
-                      right={
-                        <MaterialIcons
-                          name='schedule'
-                          size={24}
-                          color={theme.colors.onBackground}
-                        />
-                      }
                     />
                   )}
                   name={'time'}

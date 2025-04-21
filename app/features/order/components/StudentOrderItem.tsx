@@ -6,12 +6,18 @@ import { Order } from 'app/shared/types/order';
 import moment from 'moment';
 import { Image, TouchableOpacity, View } from 'react-native';
 import { Badge, Text } from 'react-native-paper';
+import { formatDate, formatTimeslotFromTimestamp, formatUnixTimestamp } from '@utils/format';
 
 export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: () => void }) => {
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
 
   const statusRender = getStatusRender(order.latestStatus);
+  const formatedTimeslot =
+    formatTimeslotFromTimestamp(order.deliveryDate) ??
+    formatDate(formatUnixTimestamp(order.deliveryDate));
+  const deliveryDate = formatedTimeslot?.split(' ')[0];
+  const timeslot = formatedTimeslot?.split(' ')[1];
   return (
     <TouchableOpacity
       disabled={!onPress}
@@ -26,7 +32,7 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
             padding: 16,
             gap: 12,
             alignItems: 'center',
-            height: 100
+            height: 120
           }
         ]}
       >
@@ -51,33 +57,40 @@ export const StudentOrderItem = ({ order, onPress }: { order: Order; onPress?: (
           </View>
         )}
         <View style={{ flex: 1 }}>
-          <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
-            #{order.checkCode}
-          </Text>
-
           <View
             style={{
               flexDirection: 'row',
-              gap: 4,
-              alignItems: 'center',
-              justifyContent: 'space-between'
+              gap: 4
             }}
           >
-            <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-              <Feather name='clock' size={18} color={theme.colors.onSurface} />
-              <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
-                {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY')}
+            <View style={{ flex: 1, gap: 4 }}>
+              <Text style={[globalStyles.title, { color: theme.colors.onSurface }]}>
+                {order.checkCode}
               </Text>
+
+              <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                <Feather name='calendar' size={18} color={theme.colors.onSurface} />
+                <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
+                  {deliveryDate}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                <Feather name='clock' size={18} color={theme.colors.onSurface} />
+                <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
+                  {timeslot}
+                </Text>
+              </View>
+
+              <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+                <Feather name='home' size={18} color={theme.colors.onSurface} />
+                <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
+                  {`${order.building} - ${order.room}`}
+                </Text>
+              </View>
             </View>
-            <Badge size={24} style={{ backgroundColor: statusRender.color }}>
+            <Badge size={24} style={{ backgroundColor: statusRender.color, alignSelf: 'center' }}>
               {statusRender.label}
             </Badge>
-          </View>
-          <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
-            <Feather name='home' size={18} color={theme.colors.onSurface} />
-            <Text style={[globalStyles.text, { color: theme.colors.onSurface }]}>
-              {`${order.building} - ${order.room}`}
-            </Text>
           </View>
         </View>
       </View>

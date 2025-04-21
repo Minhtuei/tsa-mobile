@@ -3,18 +3,35 @@ import { CreateOrderSchemaType } from 'app/features/order/schema/order.schema';
 import { apiService } from '@services/api.service';
 import { Order } from 'app/shared/types/order';
 import { UpdateOrderStatus } from 'app/shared/state/order.slice';
+import { OrderQueryDto } from '../type';
 
 const orderApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    getOrders: build.query<Order[], void>({
-      query: () => 'orders',
-      providesTags: ['Orders'],
-      transformResponse: (response: any) => {
-        return response.results.sort((a: Order, b: Order) => {
-          return Number(b.deliveryDate) - Number(a.deliveryDate);
-        });
-      }
+    getOrders: build.query<
+      {
+        totalPages: number;
+        totalElements: number;
+        results: Order[];
+      },
+      Partial<OrderQueryDto>
+    >({
+      query: (params) => {
+        const query = new URLSearchParams();
+
+        if (params?.page !== undefined) query.append('page', String(params.page));
+        if (params?.size !== undefined) query.append('size', String(params.size));
+        if (params?.search) query.append('search', params.search);
+        if (params?.status) query.append('status', params.status);
+        if (params?.isPaid !== undefined) query.append('isPaid', String(params.isPaid));
+        if (params?.sortBy) query.append('sortBy', params.sortBy);
+        if (params?.sortOrder) query.append('sortOrder', params.sortOrder);
+        if (params?.startDate) query.append('startDate', params.startDate);
+        if (params?.endDate) query.append('endDate', params.endDate);
+
+        return `orders?${query.toString()}`;
+      },
+      providesTags: ['Orders']
     }),
     getShippingFee: build.query<
       { shippingFee: number },

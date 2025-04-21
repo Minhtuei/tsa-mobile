@@ -1,18 +1,18 @@
-import { Avatar, Button, Divider, Text } from 'react-native-paper';
-import { TouchableOpacity, View, ScrollView } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {
-  MainTabParamList,
-  OrderStackParamList,
-  ReportStackParamList
-} from 'app/shared/types/navigation';
-import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
-import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
-import moment from 'moment';
-import { LinearGradient } from 'expo-linear-gradient';
-import { SCREEN } from 'app/shared/constants/screen';
 import { CompositeScreenProps } from '@react-navigation/native';
-import { formatVNDcurrency } from 'app/shared/utils/format';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { SCREEN } from 'app/shared/constants/screen';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
+import { MainTabParamList, OrderStackParamList } from 'app/shared/types/navigation';
+import {
+  formatDate,
+  formatTimeslotFromTimestamp,
+  formatUnixTimestamp,
+  formatVNDcurrency
+} from 'app/shared/utils/format';
+import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ScrollView, View } from 'react-native';
+import { Button, Text } from 'react-native-paper';
 
 export const OrderDetail = (
   props: CompositeScreenProps<
@@ -24,7 +24,11 @@ export const OrderDetail = (
   const globalStyles = useGlobalStyles();
   const order = props.route.params.order;
   const statusRender = getStatusRender(order.latestStatus);
-
+  const formatedTimeslot =
+    formatTimeslotFromTimestamp(order.deliveryDate) ??
+    formatDate(formatUnixTimestamp(order.deliveryDate));
+  const deliveryDate = formatedTimeslot?.split(' ')[0];
+  const timeslot = formatedTimeslot?.split(' ')[1];
   return (
     <ScrollView
       style={{ flex: 1 }}
@@ -69,7 +73,9 @@ export const OrderDetail = (
           ]}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-            <Text style={[globalStyles.title, { fontSize: 24 }]}> {shortenUUID(order.id)}</Text>
+            <Text style={[globalStyles.title, { fontSize: 24 }]}>
+              {shortenUUID(order.id, 'ORDER')}
+            </Text>
           </View>
           {order.brand && (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
@@ -109,9 +115,15 @@ export const OrderDetail = (
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
+            <Text style={[globalStyles.title, { width: '45%' }]}>Ngày giao hàng:</Text>
+            <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
+              {deliveryDate}
+            </Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
             <Text style={[globalStyles.title, { width: '45%' }]}>Thời gian:</Text>
             <Text style={[globalStyles.text, { width: '55%', textAlign: 'right' }]}>
-              {moment.unix(Number(order.historyTime[0].time)).format('DD/MM/YYYY') ?? 'N/A'}
+              {timeslot}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>

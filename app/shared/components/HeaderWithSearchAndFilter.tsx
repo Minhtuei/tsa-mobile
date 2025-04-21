@@ -14,6 +14,8 @@ type OrderListHeaderProps = {
   setSearchString: (value: string | null) => void;
   status: string | null;
   setStatus: (value: string | null) => void;
+  isPaid: string | null;
+  setIsPaid: (value: string | null) => void;
   filterType: string | null;
   setFilterType: (value: string | null) => void;
   startDate: Date | null;
@@ -23,6 +25,7 @@ type OrderListHeaderProps = {
   title: string;
   filterList: { label: string; value: string }[];
   statusList: { label: string; value: string }[];
+  paymentList: { label: string; value: string }[];
 };
 export const HeaderWithSearchAndFilter = ({
   searchString,
@@ -37,7 +40,10 @@ export const HeaderWithSearchAndFilter = ({
   setEndDate,
   title,
   filterList,
-  statusList
+  statusList,
+  paymentList,
+  isPaid,
+  setIsPaid
 }: OrderListHeaderProps) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -111,10 +117,10 @@ export const HeaderWithSearchAndFilter = ({
               />
             ) : (
               <DropDownList
-                data={statusList}
-                value={status}
-                setValue={setStatus}
-                placeholder='Tất cả trạng thái'
+                data={filterType === 'STATUS' ? statusList : paymentList}
+                value={filterType === 'STATUS' ? status : isPaid}
+                setValue={filterType === 'STATUS' ? setStatus : setIsPaid}
+                placeholder={filterType === 'STATUS' ? 'Tất cả trạng thái' : 'Tất cả'}
               />
             )}
           </View>

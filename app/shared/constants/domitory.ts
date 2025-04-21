@@ -1,5 +1,4 @@
 import { getBrandIcon, getPamentMethodIcon } from 'app/shared/utils/getBrandIcon';
-import { ImageSourcePropType } from 'react-native';
 import { EcommerceBrand } from './status';
 
 export const DOMITORIES = ['A', 'B'];
@@ -21,6 +20,17 @@ export const ROOMS = [
   '401',
   '402',
   '403'
+];
+
+export const TIMESLOT_DATA = [
+  { label: '7h-8h45', value: '07:00' },
+  { label: '9h-10h45', value: '09:00' },
+  { label: '11h-12h45', value: '11:00' },
+  { label: '13h-14h45', value: '13:00' },
+  { label: '15h-16h45', value: '15:00' },
+  { label: '17h-18h45', value: '17:00' },
+  { label: '19h-20h45', value: '19:00' },
+  { label: '20h-21h45', value: '20:00' }
 ];
 
 export const DOMITORY_DATA = [
@@ -291,12 +301,12 @@ export const PAYMENT_METHOD_DATA = [
     label: 'Chuyển khoản',
     value: 'CREDIT',
     image: getPamentMethodIcon('CREDIT')
-  },
-  {
-    label: 'Momo',
-    value: 'MOMO',
-    image: getPamentMethodIcon('MOMO')
   }
+  // {
+  //   label: 'Momo',
+  //   value: 'MOMO',
+  //   image: getPamentMethodIcon('MOMO')
+  // }
 ];
 
 export const ECOMMERCE_DATA = [
