@@ -1,25 +1,26 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { MainTabParamList, ReportStackParamList } from 'app/shared/types/navigation';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Portal } from 'react-native-paper';
 
-import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
-import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
-import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
-import { useAppSelector } from 'app/shared/hooks/redux';
 import { CompositeScreenProps } from '@react-navigation/native';
 import {
   createReportSchema,
   CreateReportSchemaType
 } from 'app/features/report/schema/report.schema';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { useAppSelector } from 'app/shared/hooks/redux';
 import Toast from 'react-native-root-toast';
 import { useCreateReportMutation, useUpLoadImageMutation } from '../api/report.api';
 import { ContentInput, OrderIdInput, ProofInput } from '../components/ReportField';
+import { getErrorMessage } from '@utils/helper';
 export const CreateReport = (
   props: CompositeScreenProps<
     NativeStackScreenProps<ReportStackParamList, 'CreateReport'>,
@@ -33,20 +34,16 @@ export const CreateReport = (
   const [viewImageModalVisible, setViewImageModalVisible] = useState(false);
   const [createReport, { isLoading: isCreateReportLoading }] = useCreateReportMutation();
   const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
-  const { data: orders, isLoading: isLoadingOrders, error: errorOrders } = useGetOrdersQuery();
+  const {
+    data: orders,
+    isLoading: isLoadingOrders,
+    error: errorOrders
+  } = useGetOrdersQuery({
+    search: props.route.params?.orderId
+  });
   const [fileName, setFileName] = useState<string | null | undefined>(null);
   const [fileType, setFileType] = useState<string | null | undefined>(null);
   const auth = useAppSelector((state) => state.auth);
-  const orderIdList = useMemo(() => {
-    const mapOrders = orders
-      ? orders.map((order) => ({
-          label: `#${order.checkCode}`,
-          value: order.id
-        }))
-      : [];
-
-    return mapOrders;
-  }, [orders]);
 
   const {
     handleSubmit,
@@ -94,8 +91,8 @@ export const CreateReport = (
         });
         props.navigation.navigate('ReportList');
       } catch (error) {
-        Toast.show('Tạo khiếu nại thất bại', {
-          position: Toast.positions.BOTTOM,
+        Toast.show(getErrorMessage(error), {
+          position: Toast.positions.CENTER,
           shadow: true,
           animation: true,
           hideOnPress: true,
@@ -121,19 +118,18 @@ export const CreateReport = (
           <View style={{ gap: 24 }}>
             <View style={[globalStyles.vstack, { gap: 24 }]}>
               <OrderIdInput
-                orderIdList={orderIdList}
                 control={control}
                 errors={errors}
                 defaultValue={props.route.params?.orderId}
                 disabled={isUploadImageLoading || isCreateReportLoading || isLoadingOrders}
-                onPress={() => {
-                  const foundOrder = orders?.find((order) => order.id === watch('orderId'));
-                  if (foundOrder)
-                    props.navigation.navigate('Order', {
-                      screen: 'OrderDetail',
-                      params: { order: foundOrder }
-                    });
-                }}
+                // onPress={() => {
+                //   const foundOrder = orders?.find((order) => order.id === watch('orderId'));
+                //   if (foundOrder)
+                //     props.navigation.navigate('Order', {
+                //       screen: 'OrderDetail',
+                //       params: { order: foundOrder }
+                //     });
+                // }}
               />
               <ContentInput control={control} errors={errors} />
               <ProofInput

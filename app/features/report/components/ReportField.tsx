@@ -1,4 +1,3 @@
-import { DropDownList } from 'app/shared/components/order/DropDownList';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { Controller } from 'react-hook-form';
@@ -9,14 +8,12 @@ export const OrderIdInput = ({
   errors,
   onPress,
   disabled,
-  orderIdList,
   defaultValue
 }: {
   control: any;
   errors: any;
-  onPress: () => void;
+  onPress?: () => void;
   disabled: boolean;
-  orderIdList: { label: string; value: string }[];
   defaultValue: string | undefined;
 }) => {
   const globalStyles = useGlobalStyles();
@@ -42,7 +39,7 @@ export const OrderIdInput = ({
               alignItems: 'center'
             }}
           >
-            <DropDownList
+            {/* <DropDownList
               data={orderIdList}
               value={value}
               setValue={(value) => {
@@ -56,19 +53,35 @@ export const OrderIdInput = ({
                 borderColor: theme.colors.outline,
                 flex: 1
               }}
-            />
-            <IconButton
-              icon={'hand-pointing-right'}
-              onPress={onPress}
+            /> */}
+            <TextInput
+              value={value}
+              onChangeText={onChange}
+              placeholder='Nhập mã đơn hàng'
               style={{
-                backgroundColor: theme.colors.secondary,
+                backgroundColor: theme.colors.surface,
                 borderRadius: 0,
                 borderWidth: 1,
-                borderColor: theme.colors.outline
+                borderColor: theme.colors.outline,
+                flex: 1
               }}
-              iconColor={theme.colors.onSecondary}
-              disabled={disabled}
+              numberOfLines={1}
             />
+            {onPress && (
+              <IconButton
+                icon={'text-search'}
+                onPress={onPress}
+                style={{
+                  backgroundColor: theme.colors.secondary,
+                  borderRadius: 0,
+                  borderWidth: 1,
+                  borderColor: theme.colors.outline,
+                  alignSelf: 'center'
+                }}
+                iconColor={theme.colors.onSecondary}
+                disabled={disabled}
+              />
+            )}
           </View>
         )}
         name={'orderId'}

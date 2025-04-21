@@ -11,8 +11,11 @@ import {
 } from 'app/shared/utils/format';
 import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useCallback } from 'react';
 import { ScrollView, View } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import { Button, IconButton, Text } from 'react-native-paper';
+import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-root-toast';
 
 export const OrderDetail = (
   props: CompositeScreenProps<
@@ -29,6 +32,19 @@ export const OrderDetail = (
     formatDate(formatUnixTimestamp(order.deliveryDate));
   const deliveryDate = formatedTimeslot?.split(' ')[0];
   const timeslot = formatedTimeslot?.split(' ')[1];
+  const copyToClipboard = useCallback(async (text: string) => {
+    await Clipboard.setStringAsync(text);
+    Toast.show('Đã sao chép', {
+      duration: Toast.durations.SHORT,
+      position: Toast.positions.CENTER,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+      backgroundColor: theme.colors.primary,
+      textColor: theme.colors.onPrimary
+    });
+  }, []);
   return (
     <ScrollView
       style={{ flex: 1 }}
@@ -76,6 +92,13 @@ export const OrderDetail = (
             <Text style={[globalStyles.title, { fontSize: 24 }]}>
               {shortenUUID(order.id, 'ORDER')}
             </Text>
+            <IconButton
+              style={{
+                marginLeft: 'auto'
+              }}
+              icon='content-copy'
+              onPress={() => copyToClipboard(order.id)}
+            />
           </View>
           {order.brand && (
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>

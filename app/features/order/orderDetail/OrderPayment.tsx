@@ -1,10 +1,9 @@
-import { useAppTheme } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { formatVNDcurrency } from 'app/shared/utils/format';
-import { useSocketContext } from 'app/shared/context/SocketContext';
-import { useCreateOrdersMutation } from 'app/features/order/api/order.api';
 import { useCreatePayOSPaymentMutation } from 'app/features/order/api/payment.api';
+import { useSocketContext } from 'app/shared/context/SocketContext';
+import { useAppTheme } from 'app/shared/hooks/theme';
 import { OrderStackParamList } from 'app/shared/types/navigation';
+import { formatVNDcurrency } from 'app/shared/utils/format';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
@@ -17,7 +16,6 @@ export const OrderPayment = (
 ) => {
   const theme = useAppTheme();
   const order = props.route.params.order;
-  const [createOrder, { isLoading }] = useCreateOrdersMutation();
   const [getLinkPayment, { isLoading: isGettingLink }] = useCreatePayOSPaymentMutation();
   const [qrCodeUrl, setQrCodeUrl] = useState<string | null>(null);
   const [amount, setAmount] = useState<number>(0);
