@@ -40,3 +40,13 @@ type UploadedImage = {
   original_filename: string;
   api_key: string;
 };
+
+type ReportQueryDto = {
+  page?: number;
+  size?: number;
+  status?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  startDate?: string;
+  endDate?: string;
+};

@@ -2,12 +2,13 @@ export type STATUS_DATA_TYPE = {
   label: string;
   value: string;
 };
-export const FILTER_DATA: STATUS_DATA_TYPE[] = [
+export const FILTER_REPORT_DATA: STATUS_DATA_TYPE[] = [
   { label: 'Tất cả', value: 'ALL' },
   { label: 'Trạng thái', value: 'STATUS' },
-  { label: 'Thời gian', value: 'TIME' },
-  { label: 'Thanh toán', value: 'PAYMENT' }
+  { label: 'Thời gian', value: 'TIME' }
 ];
+
+export const FILTER_ORDER_DATA = [...FILTER_REPORT_DATA, { label: 'Thanh toán', value: 'PAYMENT' }];
 
 export const PAYMENT_STATUS_DATA: STATUS_DATA_TYPE[] = [
   {
@@ -62,6 +63,6 @@ export const REPORT_STATUS_DATA: STATUS_DATA_TYPE[] = [
   },
   {
     label: 'Đã trả lời',
-    value: 'REPPLIED'
+    value: 'REPLIED'
   }
 ];

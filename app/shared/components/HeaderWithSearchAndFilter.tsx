@@ -26,6 +26,7 @@ type OrderListHeaderProps = {
   filterList: { label: string; value: string }[];
   statusList: { label: string; value: string }[];
   paymentList: { label: string; value: string }[];
+  canSearch: boolean;
 };
 export const HeaderWithSearchAndFilter = ({
   searchString,
@@ -43,7 +44,8 @@ export const HeaderWithSearchAndFilter = ({
   statusList,
   paymentList,
   isPaid,
-  setIsPaid
+  setIsPaid,
+  canSearch
 }: OrderListHeaderProps) => {
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
@@ -59,6 +61,7 @@ export const HeaderWithSearchAndFilter = ({
       setStatus(null);
     }
   }, [filterType]);
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
       <View
@@ -83,13 +86,15 @@ export const HeaderWithSearchAndFilter = ({
         >
           {title}
         </Text>
-        <SearchInput
-          value={searchString ?? ''}
-          onChange={setSearchString}
-          placeholder='Tìm kiếm'
-          pressable={false}
-          left={<MaterialIcons name='search' size={24} color={theme.colors.onBackground} />}
-        />
+        {canSearch && (
+          <SearchInput
+            value={searchString ?? ''}
+            onChange={setSearchString}
+            placeholder='Tìm kiếm'
+            pressable={false}
+            left={<MaterialIcons name='search' size={24} color={theme.colors.onBackground} />}
+          />
+        )}
         <View
           style={{
             flexDirection: 'row',

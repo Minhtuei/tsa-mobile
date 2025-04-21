@@ -1,18 +1,22 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useGetOrdersQuery } from 'app/features/order/api/order.api';
 import { HeaderWithSearchAndFilter } from 'app/shared/components/HeaderWithSearchAndFilter';
-import { FILTER_DATA, ORDER_STATUS_DATA, PAYMENT_STATUS_DATA } from 'app/shared/constants/filter';
+import {
+  FILTER_ORDER_DATA,
+  ORDER_STATUS_DATA,
+  PAYMENT_STATUS_DATA
+} from 'app/shared/constants/filter';
 import { SCREEN } from 'app/shared/constants/screen';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { OrderStackParamList } from 'app/shared/types/navigation';
-import { getErrorMessage } from 'app/shared/utils/helper';
+import { Order } from 'app/shared/types/order';
+import { getErrorMessage, parseBoolean } from 'app/shared/utils/helper';
 import { useEffect, useState } from 'react';
 import { FlatList, RefreshControl, View } from 'react-native';
 import { FAB, Text } from 'react-native-paper';
 import Toast from 'react-native-root-toast';
 import BackgroundIcon from '../../../../assets/background-icon.svg';
 import { StudentOrderItem } from '../components/StudentOrderItem';
-import { Order } from 'app/shared/types/order';
 
 export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'OrderList'>) => {
   const theme = useAppTheme();
@@ -27,11 +31,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
   const [page, setPage] = useState<number>(1);
   const [orders, setOrders] = useState<Order[]>([]);
 
-  const parseBoolean = (value: string | null) => {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
-    return undefined;
-  };
+  const [isLoadMore, setIsLoadMore] = useState(false);
   const { data, isError, refetch, isFetching, error } = useGetOrdersQuery({
     startDate: startDate ? startDate.toISOString().split('T')[0] : undefined,
     endDate: endDate ? endDate.toISOString().split('T')[0] : undefined,
@@ -59,16 +59,29 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
 
   useEffect(() => {
     if (data && data.results.length > 0) {
-      setOrders((prev) => [...prev, ...data.results]);
+      if (isLoadMore) {
+        setOrders((prev) => {
+          const existingIds = new Set(prev.map((o) => o.id));
+          const newOrders = data.results.filter((o) => !existingIds.has(o.id));
+          return [...prev, ...newOrders];
+        });
+      } else {
+        setOrders(data.results);
+        setPage(1);
+      }
+    } else {
+      setOrders([]);
+      setPage(1);
     }
-  }, [data]);
+  }, [data, isLoadMore]);
+
   return (
     <View style={{ flex: 1 }}>
       <HeaderWithSearchAndFilter
         title='Danh sách đơn hàng'
         searchString={orderId}
         setSearchString={setOrderId}
-        filterList={FILTER_DATA}
+        filterList={FILTER_ORDER_DATA}
         statusList={ORDER_STATUS_DATA}
         paymentList={PAYMENT_STATUS_DATA}
         {...{
@@ -81,7 +94,8 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
           endDate,
           setEndDate,
           setIsPaid,
-          isPaid
+          isPaid,
+          canSearch: true
         }}
       />
       <FlatList
@@ -131,9 +145,11 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
           </View>
         }
         onEndReached={() => {
-          if (data?.totalPages && page < data.totalPages) {
-            setPage((prev) => (prev += 1));
-          }
+          // Đảm bảo là đang không load data và còn trang tiếp theo
+          if (isLoadMore || (data?.totalPages && page >= data.totalPages)) return; // tránh load thêm khi đã hết trang
+
+          setIsLoadMore(true); // Bắt đầu loading
+          setPage((prev) => prev + 1); // Tiến đến trang tiếp theo
         }}
         ListFooterComponent={
           !isFetching && page === data?.totalPages ? (

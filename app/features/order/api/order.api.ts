@@ -3,7 +3,7 @@ import { CreateOrderSchemaType } from 'app/features/order/schema/order.schema';
 import { apiService } from '@services/api.service';
 import { Order } from 'app/shared/types/order';
 import { UpdateOrderStatus } from 'app/shared/state/order.slice';
-import { OrderQueryDto } from '../type';
+import { OrderQueryDto } from 'app/shared/types/order';
 
 const orderApi = apiService.injectEndpoints({
   overrideExisting: true,

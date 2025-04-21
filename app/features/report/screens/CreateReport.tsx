@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useGetOrdersQuery } from 'app/features/order/api/order.api';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { MainTabParamList, ReportStackParamList } from 'app/shared/types/navigation';
 import { useState } from 'react';
@@ -9,6 +8,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { Button, Portal } from 'react-native-paper';
 
 import { CompositeScreenProps } from '@react-navigation/native';
+import { getErrorMessage } from '@utils/helper';
 import {
   createReportSchema,
   CreateReportSchemaType
@@ -20,7 +20,6 @@ import { useAppSelector } from 'app/shared/hooks/redux';
 import Toast from 'react-native-root-toast';
 import { useCreateReportMutation, useUpLoadImageMutation } from '../api/report.api';
 import { ContentInput, OrderIdInput, ProofInput } from '../components/ReportField';
-import { getErrorMessage } from '@utils/helper';
 export const CreateReport = (
   props: CompositeScreenProps<
     NativeStackScreenProps<ReportStackParamList, 'CreateReport'>,
@@ -34,13 +33,7 @@ export const CreateReport = (
   const [viewImageModalVisible, setViewImageModalVisible] = useState(false);
   const [createReport, { isLoading: isCreateReportLoading }] = useCreateReportMutation();
   const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
-  const {
-    data: orders,
-    isLoading: isLoadingOrders,
-    error: errorOrders
-  } = useGetOrdersQuery({
-    search: props.route.params?.orderId
-  });
+
   const [fileName, setFileName] = useState<string | null | undefined>(null);
   const [fileType, setFileType] = useState<string | null | undefined>(null);
   const auth = useAppSelector((state) => state.auth);
@@ -121,7 +114,7 @@ export const CreateReport = (
                 control={control}
                 errors={errors}
                 defaultValue={props.route.params?.orderId}
-                disabled={isUploadImageLoading || isCreateReportLoading || isLoadingOrders}
+                disabled={isUploadImageLoading || isCreateReportLoading}
                 // onPress={() => {
                 //   const foundOrder = orders?.find((order) => order.id === watch('orderId'));
                 //   if (foundOrder)

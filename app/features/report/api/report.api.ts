@@ -1,19 +1,34 @@
 import { apiService } from '@services/api.service';
 import { CreateReportSchemaType } from 'app/features/report/schema/report.schema';
-import { ReportType, UploadedImage } from 'app/shared/types/report';
+import { ReportQueryDto, ReportType, UploadedImage } from 'app/shared/types/report';
 
 const reportApi = apiService.injectEndpoints({
   overrideExisting: true,
   endpoints: (build) => ({
-    getReports: build.query<ReportType[], void>({
-      query: () => 'reports',
-      providesTags: ['Reports'],
-      transformResponse: (response: any) => {
-        return response.results.sort((a: ReportType, b: ReportType) => {
-          return Number(b.reportedAt) - Number(a.reportedAt);
-        });
-      }
+    getReports: build.query<
+      {
+        totalPages: number;
+        totalElements: number;
+        results: ReportType[];
+      },
+      Partial<ReportQueryDto>
+    >({
+      query: (params) => {
+        const query = new URLSearchParams();
+
+        if (params?.page !== undefined) query.append('page', String(params.page));
+        if (params?.size !== undefined) query.append('size', String(params.size));
+        if (params?.status) query.append('status', params.status);
+        if (params?.sortBy) query.append('sortBy', params.sortBy);
+        if (params?.sortOrder) query.append('sortOrder', params.sortOrder);
+        if (params?.startDate) query.append('startDate', params.startDate);
+        if (params?.endDate) query.append('endDate', params.endDate);
+
+        return `reports?${query.toString()}`;
+      },
+      providesTags: ['Reports']
     }),
+
     createReport: build.mutation<void, CreateReportSchemaType>({
       query: (report) => ({
         url: 'reports',

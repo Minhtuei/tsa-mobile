@@ -56,3 +56,9 @@ export function getErrorMessage(err: unknown): string {
   }
   return UNKNOWN_ERROR_MESSAGE;
 }
+
+export const parseBoolean = (value: string | null) => {
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return undefined;
+};
