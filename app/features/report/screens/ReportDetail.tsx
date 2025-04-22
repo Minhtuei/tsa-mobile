@@ -143,7 +143,7 @@ export const ReportDetail = (
         keyboardShouldPersistTaps={'handled'}
         style={{ flex: 1 }}
         contentContainerStyle={[
-          { flex: 1, paddingBottom: 32, backgroundColor: theme.colors.background }
+          { flexGrow: 1, paddingBottom: 100, backgroundColor: theme.colors.background }
         ]}
       >
         <View style={{ flex: 1, padding: 16 }}>
@@ -168,7 +168,7 @@ export const ReportDetail = (
                     icon={'pencil'}
                     disabled={canNotEdit}
                   >
-                    Sửa
+                    Cập nhật
                   </Button>
                 </View>
                 <TextInput
@@ -290,7 +290,7 @@ export const ReportDetail = (
               disabled={isUploadImageLoading || isUpdateReportLoading || isDeleteReportLoading}
               icon={'trash-can'}
             >
-              Gỡ khiếu nại
+              Xoá khiếu nại
             </Button>
           </View>
         </View>

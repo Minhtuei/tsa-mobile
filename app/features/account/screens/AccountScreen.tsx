@@ -220,7 +220,7 @@ export const AccountScreen = (
           {auth.userInfo?.role === 'STUDENT' && (
             <>
               <SettingButton
-                text='Khiếu nại'
+                text='Lịch sử khiếu nại'
                 icon='alert-circle'
                 onPress={() => {
                   props.navigation.navigate('Report');

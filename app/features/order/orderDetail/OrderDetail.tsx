@@ -16,6 +16,7 @@ import { ScrollView, View } from 'react-native';
 import { Button, IconButton, Text } from 'react-native-paper';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
+import { OrderStatus } from '@constants/status';
 
 export const OrderDetail = (
   props: CompositeScreenProps<
@@ -27,6 +28,9 @@ export const OrderDetail = (
   const globalStyles = useGlobalStyles();
   const order = props.route.params.order;
   const statusRender = getStatusRender(order.latestStatus);
+  const canReport =
+    order.latestStatus in
+    [OrderStatus.CANCELED, OrderStatus.DELIVERED, OrderStatus.IN_TRANSPORT, OrderStatus.REJECTED];
   const formatedTimeslot =
     formatTimeslotFromTimestamp(order.deliveryDate) ??
     formatDate(formatUnixTimestamp(order.deliveryDate));
@@ -192,22 +196,24 @@ export const OrderDetail = (
               flexWrap: 'wrap'
             }}
           >
-            <Button
-              mode='contained'
-              style={[{ backgroundColor: theme.colors.error, minWidth: 60 }]}
-              onPress={() => {
-                props.navigation.navigate('Account', {
-                  screen: 'Report',
-                  params: {
-                    screen: 'CreateReport',
-                    params: { orderId: order.id }
-                  }
-                });
-              }}
-              icon={'alert-circle'}
-            >
-              Khiếu nại
-            </Button>
+            {canReport && (
+              <Button
+                mode='contained'
+                style={[{ backgroundColor: theme.colors.error, minWidth: 60 }]}
+                onPress={() => {
+                  props.navigation.navigate('Account', {
+                    screen: 'Report',
+                    params: {
+                      screen: 'CreateReport',
+                      params: { orderId: order.id }
+                    }
+                  });
+                }}
+                icon={'alert-circle'}
+              >
+                Khiếu nại
+              </Button>
+            )}
             {!order.isPaid && order.paymentMethod !== 'CASH' && (
               <Button
                 mode='contained'
