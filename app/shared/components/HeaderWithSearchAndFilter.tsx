@@ -2,7 +2,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { Keyboard, Platform, TouchableWithoutFeedback, View } from 'react-native';
+import { Keyboard, TouchableWithoutFeedback, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import DatePicker from './order/DatePicker';
 import { DropDownList } from './order/DropDownList';
@@ -50,7 +50,7 @@ export const HeaderWithSearchAndFilter = ({
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
 
   const showDatePicker = filterType === 'TIME';
-
+  const [isShowDropDown, setIsShowDropDown] = useState(true);
   const theme = useAppTheme();
   const globalStyles = useGlobalStyles();
   useEffect(() => {
@@ -59,6 +59,9 @@ export const HeaderWithSearchAndFilter = ({
       setEndDate(null);
       setSearchString(null);
       setStatus(null);
+      setIsShowDropDown(false);
+    } else {
+      setIsShowDropDown(true);
     }
   }, [filterType]);
 
@@ -66,26 +69,86 @@ export const HeaderWithSearchAndFilter = ({
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()} accessible={false}>
       <View
         style={{
-          height: Platform.OS === 'android' ? 180 : 200,
           backgroundColor: theme.colors.primary,
-          justifyContent: 'flex-end',
-          paddingHorizontal: 16,
-          paddingBottom: 16
+          padding: 16,
+          minHeight: 100,
+          gap: 4
         }}
       >
-        <Text
-          style={[
-            globalStyles.title,
-            {
-              color: theme.colors.onPrimary,
-              fontSize: 24,
-              textTransform: 'uppercase',
-              marginBottom: 8
-            }
-          ]}
+        <View
+          style={{
+            // height: Platform.OS === 'android' ? 180 : 200,
+            justifyContent: isShowDropDown ? 'flex-end' : 'space-between',
+            flexDirection: isShowDropDown ? 'column' : 'row',
+            alignItems: isShowDropDown ? 'stretch' : 'center'
+          }}
         >
-          {title}
-        </Text>
+          <Text
+            style={[
+              globalStyles.title,
+              {
+                color: theme.colors.onPrimary,
+                fontSize: 24,
+                textTransform: 'uppercase'
+              }
+            ]}
+          >
+            {title}
+          </Text>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}
+          >
+            {isShowDropDown && (
+              <View style={{ width: '70%' }}>
+                {showDatePicker ? (
+                  <SearchInput
+                    value={
+                      startDate && endDate
+                        ? `${moment(startDate).format('DD/MM/YYYY')} - ${moment(endDate).format('DD/MM/YYYY')}`
+                        : 'Từ ngày - Đến ngày'
+                    }
+                    onChange={() => {}}
+                    placeholder='Từ ngày'
+                    pressable={true}
+                    disabled={true}
+                    onPress={() => setIsDatePickerVisible(true)}
+                    right={
+                      <MaterialIcons
+                        name='date-range'
+                        size={24}
+                        color={theme.colors.onBackground}
+                      />
+                    }
+                  />
+                ) : (
+                  <DropDownList
+                    data={filterType === 'STATUS' ? statusList : paymentList}
+                    value={filterType === 'STATUS' ? status : isPaid}
+                    setValue={filterType === 'STATUS' ? setStatus : setIsPaid}
+                    placeholder={filterType === 'STATUS' ? 'Tất cả trạng thái' : 'Tất cả'}
+                  />
+                )}
+              </View>
+            )}
+            <FilterBtnDropdown data={filterList} value={filterType} setValue={setFilterType} />
+          </View>
+          {isDatePickerVisible && (
+            <DatePicker
+              shown={isDatePickerVisible}
+              setShown={setIsDatePickerVisible}
+              setStartDate={setStartDate}
+              setEndDate={setEndDate}
+              startDate={startDate}
+              endDate={endDate}
+              mode='range'
+            />
+          )}
+        </View>
         {canSearch && (
           <SearchInput
             value={searchString ?? ''}
@@ -93,53 +156,6 @@ export const HeaderWithSearchAndFilter = ({
             placeholder='Tìm kiếm'
             pressable={false}
             left={<MaterialIcons name='search' size={24} color={theme.colors.onBackground} />}
-          />
-        )}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: 8
-          }}
-        >
-          <View style={{ width: '70%' }}>
-            {showDatePicker ? (
-              <SearchInput
-                value={
-                  startDate && endDate
-                    ? `${moment(startDate).format('DD/MM/YYYY')} - ${moment(endDate).format('DD/MM/YYYY')}`
-                    : 'Từ ngày - Đến ngày'
-                }
-                onChange={() => {}}
-                placeholder='Từ ngày'
-                pressable={true}
-                disabled={true}
-                onPress={() => setIsDatePickerVisible(true)}
-                right={
-                  <MaterialIcons name='date-range' size={24} color={theme.colors.onBackground} />
-                }
-              />
-            ) : (
-              <DropDownList
-                data={filterType === 'STATUS' ? statusList : paymentList}
-                value={filterType === 'STATUS' ? status : isPaid}
-                setValue={filterType === 'STATUS' ? setStatus : setIsPaid}
-                placeholder={filterType === 'STATUS' ? 'Tất cả trạng thái' : 'Tất cả'}
-              />
-            )}
-          </View>
-          <FilterBtnDropdown data={filterList} value={filterType} setValue={setFilterType} />
-        </View>
-        {isDatePickerVisible && (
-          <DatePicker
-            shown={isDatePickerVisible}
-            setShown={setIsDatePickerVisible}
-            setStartDate={setStartDate}
-            setEndDate={setEndDate}
-            startDate={startDate}
-            endDate={endDate}
-            mode='range'
           />
         )}
       </View>

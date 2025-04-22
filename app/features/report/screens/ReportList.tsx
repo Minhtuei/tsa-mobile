@@ -18,7 +18,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
 
   const [content, setContent] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
-  const [filterType, setFilterType] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<string | null>('ALL');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [page, setPage] = useState<number>(1);
@@ -47,6 +47,14 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
       });
     }
   }, [isError, error]);
+
+  useEffect(() => {
+    if (startDate || endDate || status) {
+      setReports([]);
+      setPage(1);
+      setIsLoadMore(false);
+    }
+  }, [startDate, endDate, status]);
 
   useEffect(() => {
     if (data && data.results.length > 0) {
@@ -135,7 +143,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
         }
         onEndReached={() => {
           // Đảm bảo là đang không load data và còn trang tiếp theo
-          if (isLoadMore || (data?.totalPages && page >= data.totalPages)) return; // tránh load thêm khi đã hết trang
+          if (data?.totalPages && page >= data.totalPages) return; // tránh load thêm khi đã hết trang
 
           setIsLoadMore(true); // Bắt đầu loading
           setPage((prev) => prev + 1); // Tiến đến trang tiếp theo
@@ -146,7 +154,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
           ) : null
         }
       />
-      <FAB
+      {/* <FAB
         onPress={() => {
           props.navigation.navigate('CreateReport');
         }}
@@ -158,7 +166,7 @@ export const ReportList = (props: NativeStackScreenProps<ReportStackParamList, '
           borderRadius: 50
         }}
         icon='plus'
-      />
+      /> */}
     </View>
   );
 };

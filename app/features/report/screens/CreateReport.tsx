@@ -110,7 +110,7 @@ export const CreateReport = (
         <View style={{ flex: 1, padding: 16 }}>
           <View style={{ gap: 24 }}>
             <View style={[globalStyles.vstack, { gap: 24 }]}>
-              <OrderIdInput
+              {/* <OrderIdInput
                 control={control}
                 errors={errors}
                 defaultValue={props.route.params?.orderId}
@@ -123,7 +123,7 @@ export const CreateReport = (
                 //       params: { order: foundOrder }
                 //     });
                 // }}
-              />
+              /> */}
               <ContentInput control={control} errors={errors} />
               <ProofInput
                 control={control}

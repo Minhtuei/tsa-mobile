@@ -24,7 +24,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
 
   const [orderId, setOrderId] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
-  const [filterType, setFilterType] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<string | null>('ALL');
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
   const [isPaid, setIsPaid] = useState<string | null>(null);
@@ -57,6 +57,13 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
     }
   }, [isError, error]);
 
+  useEffect(() => {
+    if (startDate || endDate || status || orderId) {
+      setOrders([]);
+      setPage(1);
+      setIsLoadMore(false);
+    }
+  }, [startDate, endDate, status, orderId]);
   useEffect(() => {
     if (data && data.results.length > 0) {
       if (isLoadMore) {
@@ -146,11 +153,12 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
         }
         onEndReached={() => {
           // Đảm bảo là đang không load data và còn trang tiếp theo
-          if (isLoadMore || (data?.totalPages && page >= data.totalPages)) return; // tránh load thêm khi đã hết trang
+          if (data?.totalPages && page >= data.totalPages) return; // tránh load thêm khi đã hết trang
 
           setIsLoadMore(true); // Bắt đầu loading
           setPage((prev) => prev + 1); // Tiến đến trang tiếp theo
         }}
+        onEndReachedThreshold={0.8}
         ListFooterComponent={
           !isFetching && page === data?.totalPages ? (
             <Text style={[globalStyles.title, { textAlign: 'center' }]}>Đã hết đơn hàng</Text>
