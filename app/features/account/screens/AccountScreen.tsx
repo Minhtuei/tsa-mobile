@@ -234,7 +234,7 @@ export const AccountScreen = (
             text='Trung tâm trợ giúp'
             icon='help-circle'
             onPress={() => {
-              Linking.openURL('https://tsa-frontend-coral.vercel.app/landing');
+              Linking.openURL('https://www.transportsupport.systems/tickets');
             }}
           />
 
