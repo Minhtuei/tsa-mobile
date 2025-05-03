@@ -5,6 +5,7 @@ import {
   statusCodes
 } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
+console.log(process.env.EXPO_GOOGLE_WEB_CLIENT_ID);
 GoogleSignin.configure({
   webClientId: process.env.EXPO_GOOGLE_WEB_CLIENT_ID || ''
 });

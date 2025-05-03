@@ -6,7 +6,7 @@ import { OrderStackParamList } from 'app/shared/types/navigation';
 import { formatVNDcurrency } from 'app/shared/utils/format';
 import * as Clipboard from 'expo-clipboard';
 import { useCallback, useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, View } from 'react-native';
 import { Button, IconButton, Text } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import Toast from 'react-native-root-toast';
@@ -105,6 +105,9 @@ export const OrderPayment = (
     }
   }, [socket, order.id, gotLink]);
 
+  useEffect(() => {
+    getPayment();
+  }, []);
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
@@ -115,9 +118,10 @@ export const OrderPayment = (
         keyboardShouldPersistTaps={'handled'}
         style={{ flex: 1, backgroundColor: theme.colors.background }}
         contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={<RefreshControl refreshing={isGettingLink} />}
       >
         <View style={{ flex: 1, padding: 16 }}>
-          <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
+          {/* <View style={{ flexDirection: 'row', gap: 16, alignItems: 'center' }}>
             <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Lấy link thanh toán:</Text>
             <Button
               mode='contained'
@@ -127,7 +131,7 @@ export const OrderPayment = (
             >
               Lấy link
             </Button>
-          </View>
+          </View> */}
           {qrCodeUrl && (
             <View
               style={{
