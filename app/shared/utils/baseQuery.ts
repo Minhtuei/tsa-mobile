@@ -18,6 +18,8 @@ interface RefreshTokenRes {
 }
 const mutex = new Mutex();
 console.log('process.env.EXPO_PUBLIC_SERVER_HOST', process.env.EXPO_PUBLIC_SERVER_HOST);
+console.log('process.env.EXPO_PUBLIC_SERVER_HOST', process.env.EXPO_PUBLIC_SERVER_HOST);
+
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
   // baseUrl: 'https://rbp8zpmp-8000.asse.devtunnels.ms/api/',
