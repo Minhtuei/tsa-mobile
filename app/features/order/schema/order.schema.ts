@@ -40,23 +40,8 @@ export const updateOrderStatusSchema = yup.object({
     otherwise: (schema) => schema.optional()
   }),
   cancelReasonType: yup.string().optional(),
-  canceledImage: yup.string().when(['status', 'cancelReasonType'], (values, schema) => {
-    const [status, cancelReasonType] = values;
-    if (
-      status === OrderStatus.CANCELED &&
-      !(cancelReasonType in [OrderCancelReason.OTHER, OrderCancelReason.PERSONAL_REASON])
-    ) {
-      return schema.required('Ảnh hủy không được để trống');
-    }
-    return schema.optional();
-  }),
-  reason: yup.string().when(['status', 'cancelReasonType'], (values, schema) => {
-    const [status, cancelReasonType] = values;
-    if (status === OrderStatus.CANCELED && cancelReasonType === OrderCancelReason.OTHER) {
-      return schema.required('Lý do hủy không được để trống');
-    }
-    return schema.optional();
-  })
+  canceledImage: yup.string().optional(),
+  reason: yup.string().optional()
 });
 export type CreateOrderSchemaType = yup.InferType<typeof createOrderSchema>;
 export type UpdateOrderStatusSchemaType = yup.InferType<typeof updateOrderStatusSchema>;

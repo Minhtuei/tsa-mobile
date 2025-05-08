@@ -55,7 +55,7 @@ export interface UpdateOrderStatus {
   canceledImage?: string;
   reason?: string;
   distance?: number;
-  cancelReasonType?: OrderCancelReason;
+  cancelReasonType?: string;
 }
 
 export interface OrderStatistics {

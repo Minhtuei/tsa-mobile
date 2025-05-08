@@ -12,7 +12,7 @@ import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
 import { LoadingScreen } from 'app/shared/components/LoadingScreen';
 import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
 import { SlideButton } from 'app/shared/components/SlideButton';
-import { OrderStatus } from 'app/shared/constants/status';
+import { OrderCancelReason, OrderStatus } from 'app/shared/constants/status';
 import { useAppDispatch } from 'app/shared/hooks/redux';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { setCurrentOrderId, setHideTabBar } from 'app/shared/state/app.slice';
@@ -27,7 +27,7 @@ import { useForm } from 'react-hook-form';
 import { Image, Linking, StyleSheet, View } from 'react-native';
 import { IconButton, Portal, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import { FinishedImageInput } from '../components/DeliveryField';
+import { CancelReasonInput, FinishedImageInput, ReasonInput } from '../components/DeliveryField';
 import { StaffOrderMap } from './StaffOrderMap';
 export const StaffTrackOrder = (
   props: NativeStackScreenProps<DeliveryStackParamList, 'StaffTrackOrder'>
@@ -40,6 +40,7 @@ export const StaffTrackOrder = (
   const [isErr, setIsErr] = useState('');
   const [isPreview, setIsPreview] = useState(false);
   const [isShowCamera, setIsShowCamera] = useState(false);
+  const [isCancel, setIsCancel] = useState(false);
 
   const snapPoints = useMemo(() => ['50%'], []);
   const dispatch = useAppDispatch();
@@ -58,11 +59,16 @@ export const StaffTrackOrder = (
     defaultValues: {
       status: OrderStatus.DELIVERED as string,
       finishedImage: '',
-      distance: 0
+      distance: 0,
+      canceledImage: undefined,
+      cancelReasonType: undefined,
+      reason: undefined
     }
   });
   // Captured image state
   console.log(errors);
+  const cancelReasonType = watch('cancelReasonType');
+  const reason = watch('reason');
 
   const finishedImage = watch('finishedImage');
   const [fileName, setFileName] = useState<string | null | undefined>(null);
@@ -79,11 +85,18 @@ export const StaffTrackOrder = (
         formData.append('image', file);
         const result = await uploadImage(formData).unwrap();
         const validateData = {
-          status: OrderStatus.DELIVERED,
+          status: isComplete ? OrderStatus.DELIVERED : OrderStatus.CANCELED,
           distance: data.distance,
-          finishedImage: result.url,
-          orderId: order.id
+          orderId: order.id,
+          ...(isComplete && { finishedImage: result.url }),
+          ...(isCancel && {
+            cancelReasonType,
+            reason,
+            canceledImage: result.url
+          })
         };
+        console.log(validateData);
+
         await finishOrder(validateData).unwrap();
         dispatch(setCurrentOrderId(null));
         props.navigation.goBack();
@@ -138,6 +151,37 @@ export const StaffTrackOrder = (
                 setProofModalVisible={setIsShowCamera}
               />
             </>
+          )}
+        />
+        <ConfirmationDialog
+          visible={isCancel}
+          setVisible={() => {
+            setIsCancel(false);
+          }}
+          onSubmit={handleSubmit(onSubmit)}
+          title='Xác nhận huỷ đơn hàng'
+          content={'Bạn có chắc chắn muốn huỷ đơn hàng này?'}
+          renderContent={() => (
+            <View style={{ gap: 6 }}>
+              <CancelReasonInput control={control} errors={errors} />
+              {!(cancelReasonType !== OrderCancelReason.OTHER) && (
+                <ReasonInput control={control} errors={errors} />
+              )}
+              <Text
+                style={[
+                  globalStyles.text,
+                  { color: theme.colors.error, fontSize: 14, fontStyle: 'italic' }
+                ]}
+              >
+                *Vui lòng chụp ảnh minh chứng trước khi huỷ
+              </Text>
+              <FinishedImageInput
+                control={control}
+                errors={errors}
+                setViewImageModalVisible={setIsPreview}
+                setProofModalVisible={setIsShowCamera}
+              />
+            </View>
           )}
         />
         <ChooseImageModal
@@ -315,7 +359,9 @@ export const StaffTrackOrder = (
             <IconButton
               icon={'trash-can-outline'}
               size={24}
-              onPress={() => {}}
+              onPress={() => {
+                setIsCancel(true);
+              }}
               mode='contained'
               style={{
                 backgroundColor: theme.colors.error,

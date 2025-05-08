@@ -51,7 +51,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     () => [
       {
         title: 'Mã chuyến đi',
-        value: shortenUUID(deliveryId, 'DELIVERY')
+        value: delivery?.displayId
       },
       {
         title: 'Thời gian tạo',

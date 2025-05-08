@@ -1,6 +1,7 @@
 import { OrderDetail } from './order.slice';
 import { DeliveryStatus } from 'app/shared/types/delivery';
 export interface Delivery {
+  displayId: string;
   id: string;
   createdAt: string;
   acceptedAt?: string;

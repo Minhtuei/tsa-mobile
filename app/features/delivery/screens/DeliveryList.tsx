@@ -10,7 +10,7 @@ import React, { useMemo, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { Card, Chip, Divider, Text } from 'react-native-paper';
 import DeliveryListHeader from '../components/DeliveryListHeader';
-import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
+import { getStatusRender } from 'app/shared/utils/order';
 
 const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> = ({
   delivery,
@@ -39,8 +39,9 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
-              alignItems: 'center',
-              flex: 1
+              alignItems: 'flex-start',
+              flex: 1,
+              gap: 4
             }}
           >
             <View style={{ flex: 1 }}>
@@ -50,9 +51,9 @@ const DeliveryItem: React.FC<{ delivery: DeliveryEntity; onPress: () => void }> 
                   fontWeight: 'bold',
                   fontSize: 20
                 }}
-                numberOfLines={1}
+                numberOfLines={2}
               >
-                {shortenUUID(delivery.id, 'DELIVERY')}
+                {delivery.displayId}
               </Text>
               <Text style={{ opacity: 0.4 }}>
                 {formatDate(formatUnixTimestamp(delivery.createdAt))}
