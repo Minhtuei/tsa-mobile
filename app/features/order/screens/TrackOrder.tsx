@@ -1,16 +1,16 @@
+import { FontAwesome } from '@expo/vector-icons';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
+import { formatDistance } from '@utils/getDirection';
 import { useAppDispatch } from 'app/shared/hooks/redux';
 import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { setHideTabBar } from 'app/shared/state/app.slice';
 import { OrderStackParamList } from 'app/shared/types/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { Image, Linking, StyleSheet, View } from 'react-native';
-import { Avatar, Button, IconButton, Text } from 'react-native-paper';
+import { Button, IconButton, Text } from 'react-native-paper';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import OrderMap from '../components/OrderMap'; // Import the new component
 import OrderStatusStepIndicator from '../components/OrderStatusStepIndicator';
-import { FontAwesome } from '@expo/vector-icons';
-import { apiService } from '@services/api.service';
 export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'TrackOrder'>) => {
   const order = props.route.params.order;
   const globalStyles = useGlobalStyles();
@@ -90,7 +90,7 @@ export const TrackOrder = (props: NativeStackScreenProps<OrderStackParamList, 'T
                     }
                   ]}
                 >
-                  {distance ?? '0'}m
+                  {formatDistance(distance ?? 'N/A')}
                 </Text>
               </View>
               <View

@@ -67,6 +67,9 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   const globalStyles = useGlobalStyles();
   const dispatch = useAppDispatch();
   const canCancel = !(delivery?.latestStatus === 'PENDING');
+  const isAllCancel = delivery?.orders.every(
+    (order) => order.latestStatus === OrderStatus.CANCELED
+  );
   const deliveryInfo = useMemo(
     () => [
       {
@@ -379,6 +382,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
               <SlideButton onSlideComplete={onSlideComplete} title='Bắt đầu chuyến đi' />
             ) : (
               <Button
+                disabled={isAllCancel}
                 mode='contained'
                 onPress={
                   canFinishDelivery

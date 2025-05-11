@@ -86,8 +86,7 @@ const OrderStatusStepIndicator: React.FC<OrderStatusStepIndicatorProps> = ({
       <View
         style={{
           flexDirection: 'row',
-          alignItems: 'center',
-          marginLeft: 8
+          alignItems: 'center'
         }}
       >
         <Text
