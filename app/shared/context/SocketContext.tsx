@@ -23,8 +23,8 @@ const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const auth = useAppSelector((state) => state.auth);
   useEffect(() => {
-    // const newSocket = io('https://pqvjbn2m-8000.asse.devtunnels.ms', {
-    const newSocket = io(process.env.EXPO_SOCKET_SERVER_URL, {
+    const newSocket = io('https://pqvjbn2m-8000.asse.devtunnels.ms', {
+      // const newSocket = io(process.env.EXPO_SOCKET_SERVER_URL, {
       transportOptions: {
         polling: {
           extraHeaders: {
