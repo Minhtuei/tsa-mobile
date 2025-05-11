@@ -12,6 +12,7 @@
       "backgroundColor": "#5CC990",
       "resizeMode": "cover"
     },
+    "deepLinks": ["tsa://"],
     "ios": {
       "supportsTablet": true
     },

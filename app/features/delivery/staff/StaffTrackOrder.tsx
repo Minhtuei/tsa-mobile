@@ -121,7 +121,6 @@ export const StaffTrackOrder = (
       dispatch(setHideTabBar(false));
     };
   }, [dispatch]);
-
   return (
     <View style={styles.page}>
       <Portal>
@@ -296,7 +295,7 @@ export const StaffTrackOrder = (
                   }
                 ]}
               >
-                {formatDistance(distance ?? '0')}
+                {formatDistance(distance ?? 'N/A')}
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 4 }}>
@@ -348,6 +347,8 @@ export const StaffTrackOrder = (
                 onSlideComplete={() => {
                   if (Number(distance) > 100) {
                     setIsErr('Chỉ được hoàn thành đơn hàng khi cách đơn hàng tối thiểu 100m');
+                  } else if (!distance) {
+                    setIsErr('Lỗi chưa lấy được khoảng cách');
                   } else {
                     setIsComplete(true);
                   }

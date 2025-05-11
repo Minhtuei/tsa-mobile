@@ -11,13 +11,14 @@ import {
 } from 'app/shared/utils/format';
 import { getStatusRender, shortenUUID } from 'app/shared/utils/order';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useCallback } from 'react';
-import { ScrollView, View } from 'react-native';
-import { Button, IconButton, Text } from 'react-native-paper';
+import { useCallback, useState } from 'react';
+import { Image, ScrollView, View } from 'react-native';
+import { Button, IconButton, Portal, Text } from 'react-native-paper';
 import * as Clipboard from 'expo-clipboard';
 import Toast from 'react-native-root-toast';
 import { OrderStatus } from '@constants/status';
-
+import { PreViewImageModal } from '@components/PreviewImageModal';
+import moment from 'moment';
 export const OrderDetail = (
   props: CompositeScreenProps<
     NativeStackScreenProps<OrderStackParamList, 'OrderDetail'>,
@@ -49,14 +50,28 @@ export const OrderDetail = (
       textColor: theme.colors.onPrimary
     });
   }, []);
+  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [seeHistory, setSeeHistory] = useState(false);
   return (
     <ScrollView
       style={{ flex: 1 }}
       contentContainerStyle={{
         position: 'relative',
-        height: '100%'
+        flexGrow: 1,
+        paddingBottom: 100
       }}
     >
+      <Portal>
+        <PreViewImageModal
+          visible={modalVisible}
+          setVisible={setModalVisible}
+          proofUri={selectedImageUri}
+          setValue={() => {}}
+          disabled={true}
+          title='Ảnh minh chứng'
+        />
+      </Portal>
       <LinearGradient
         colors={[theme.colors.background, theme.colors.primary]}
         start={{ x: 0.1, y: 0.1 }}
@@ -96,6 +111,13 @@ export const OrderDetail = (
             <Text style={[globalStyles.title, { fontSize: 24 }]}>
               {shortenUUID(order.id, 'ORDER')}
             </Text>
+            <IconButton
+              style={{
+                marginLeft: 'auto'
+              }}
+              icon='history'
+              onPress={() => setSeeHistory((prev) => !prev)}
+            />
             <IconButton
               style={{
                 marginLeft: 'auto'
@@ -240,6 +262,73 @@ export const OrderDetail = (
             )}
           </View>
         </View>
+        {seeHistory && (
+          <View
+            style={[
+              {
+                padding: 24,
+                borderRadius: 8,
+                width: '95%',
+                gap: 8,
+                position: 'relative'
+              },
+              globalStyles.SurfaceContainer
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={[globalStyles.title, { fontSize: 20 }]}>
+                Lịch sử trạng thái đơn hàng:
+              </Text>
+            </View>
+            {order.historyTime.map((item) => {
+              const imageUri =
+                item.status === 'DELIVERED' ? order.finishedImage : item.canceledImage;
+
+              return (
+                <View
+                  key={item.id}
+                  style={{
+                    marginBottom: 12,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}
+                >
+                  <View>
+                    <Text>
+                      Trạng thái:
+                      <Text
+                        style={{
+                          color: getStatusRender(item.status).color
+                        }}
+                      >
+                        {' '}
+                        {getStatusRender(item.status).label}
+                      </Text>
+                    </Text>
+                    {item.reason && <Text>Lý do: {item.reason}</Text>}
+                    <Text>
+                      Thời gian: {moment.unix(Number(item.time)).format('HH:mm DD/MM/YYYY')}
+                    </Text>
+                  </View>
+
+                  {/* IconButton ở bên phải */}
+                  {imageUri && (
+                    <IconButton
+                      icon='image' // Icon bạn muốn sử dụng
+                      size={24}
+                      onPress={() => {
+                        setSelectedImageUri(imageUri);
+                        setModalVisible(true);
+                      }}
+                      iconColor={theme.colors.primary}
+                    />
+                  )}
+                </View>
+              );
+            })}
+          </View>
+        )}
       </View>
     </ScrollView>
   );

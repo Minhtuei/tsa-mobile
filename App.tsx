@@ -83,12 +83,11 @@ registerTranslation('vi', {
   minute: 'Phút'
 });
 
-const prefix = Linking.createURL('/');
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 const linking: LinkingOptions<RootStackParamList> = {
-  prefixes: [prefix],
+  prefixes: ['tsa://'],
   config: {
     screens: {
       AuthNavigator: {

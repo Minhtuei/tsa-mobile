@@ -8,11 +8,19 @@ import { Text } from 'react-native-paper';
 
 export const Piechart = ({ data }: { data: OrderStatistics['brandPercentages'] | undefined }) => {
   const theme = useAppTheme();
+
   const mostUsedBrand = useMemo(() => {
     if (!data || data.length === 0) return null;
-    // return the brand with the highest percentage and count
-    return data.reduce((prev, current) => (prev.percentage > current.percentage ? prev : current));
-  }, [data]);
+
+    // Chuyển percentage từ string sang số và so sánh
+    return data.reduce((prev, current) => {
+      const prevPercentage = parseFloat(prev.percentage);
+      const currentPercentage = parseFloat(current.percentage);
+
+      return prevPercentage > currentPercentage ? prev : current;
+    });
+  }, [data]); // Chỉ tính lại khi 'data' thay đổi
+
   const pieData = useMemo(() => {
     if (!data) return [];
     return data.map((value) => {

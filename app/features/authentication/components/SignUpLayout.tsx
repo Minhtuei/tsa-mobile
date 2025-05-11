@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scrollView: {
-    flex: 1,
+    flexGrow: 1,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 32

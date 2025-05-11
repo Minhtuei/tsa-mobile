@@ -30,6 +30,7 @@ type Order = {
   student?: any;
   brand?: string;
   remainingAmount?: number;
+  finishedImage: string | null;
 };
 
 type HistoryTime = {
@@ -38,6 +39,7 @@ type HistoryTime = {
   reason: string | null;
   status: OrderStatus;
   time: string;
+  canceledImage: string | null;
 };
 
 type OrderQueryDto = {

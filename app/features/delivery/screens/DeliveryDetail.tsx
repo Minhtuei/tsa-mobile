@@ -66,9 +66,7 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   const [isShowCamera, setIsShowCamera] = useState(false);
   const globalStyles = useGlobalStyles();
   const dispatch = useAppDispatch();
-  const canCancel = !(
-    delivery?.latestStatus === 'FINISHED' || delivery?.latestStatus === 'CANCELED'
-  );
+  const canCancel = !(delivery?.latestStatus === 'PENDING');
   const deliveryInfo = useMemo(
     () => [
       {
@@ -129,10 +127,10 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     }
   });
   const canceledImage = watch('canceledImage');
-
   const onSubmit = async (data: UpdateDeliverStatusSchemaType) => {
-    if (fileName && fileType) {
-      try {
+    try {
+      let result = null;
+      if (fileName && fileType) {
         const formData = new FormData();
         const file = {
           uri: data.canceledImage,
@@ -140,24 +138,24 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
           type: fileType
         } as any;
         formData.append('image', file);
-        const result = await uploadImage(formData).unwrap();
-        const validateData = {
-          id: deliveryId,
-          status: data.status,
-          ...(data.status === DeliveryStatus.CANCELED && {
-            reason: data.reason,
-            canceledImage: result.url
-          })
-        };
-        console.log(validateData);
-        await updateDeliveryStatus(validateData).unwrap();
-        if (data.status === DeliveryStatus.FINISHED || data.status === DeliveryStatus.CANCELED) {
-          dispatch(setCurrentOrderId(null));
-        }
-      } catch (error) {
-        console.log(error);
-        setErr(getErrorMessage(error));
+        result = await uploadImage(formData).unwrap();
       }
+      const validateData = {
+        id: deliveryId,
+        status: data.status,
+        ...(data.status === DeliveryStatus.CANCELED && {
+          reason: data.reason,
+          canceledImage: result ? result.url : undefined
+        })
+      };
+      console.log(validateData);
+      await updateDeliveryStatus(validateData).unwrap();
+      if (data.status === DeliveryStatus.FINISHED || data.status === DeliveryStatus.CANCELED) {
+        dispatch(setCurrentOrderId(null));
+      }
+    } catch (error) {
+      console.log(error);
+      setErr(getErrorMessage(error));
     }
   };
 
