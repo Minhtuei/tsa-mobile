@@ -20,8 +20,8 @@ const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
   // baseUrl: process.env.EXPO_PUBLIC_SERVER_HOST,
-  // baseUrl: 'https://api.transportsupport.systems/api/',
-  baseUrl: 'http://172.20.10.2:8000/api',
+  baseUrl: 'https://api.transportsupport.systems/api/',
+  // baseUrl: 'http://172.20.10.2:8000/api',
   timeout: 20000,
   prepareHeaders: async (headers, { getState }) => {
     const state = getState() as RootState;
