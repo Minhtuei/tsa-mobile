@@ -22,10 +22,13 @@
       },
       "googleServicesFile": "./config/google-services.json",
       "package": "com.ttq.tsa",
-      "permissions": [
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
-      ]
+      "android": {
+        "permissions": [
+          "ACCESS_FINE_LOCATION",
+          "ACCESS_COARSE_LOCATION",
+          "ACCESS_BACKGROUND_LOCATION"
+        ]
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

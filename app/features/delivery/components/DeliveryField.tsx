@@ -194,14 +194,8 @@ export const CancelReasonInput = ({ control, errors }: { control: any; errors: a
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const orderCancelReasons = [
-    { label: 'Địa chỉ sai', value: 'WRONG_ADDRESS' },
-    { label: 'Không thể liên lạc', value: 'CAN_NOT_CONTACT' },
-    { label: 'Vấn đề thanh toán', value: 'PAYMENT_ISSUE' },
-    { label: 'Sản phẩm bị hư hỏng', value: 'DAMAGED_PRODUCT' },
-    { label: 'Sản phẩm quá nặng', value: 'HEAVY_PRODUCT' },
-    { label: 'Lý do cá nhân', value: 'PERSONAL_REASON' },
-    { label: 'Xe giao hàng bị hư hỏng', value: 'DAMEGED_VEHICLE' },
-    { label: 'Khác', value: 'OTHER' }
+    { label: 'Lí do từ nhân viên', value: 'FROM_STAFF' },
+    { label: 'Lí do từ sinh viên', value: 'FROM_STUDENT' }
   ];
   return (
     <Controller

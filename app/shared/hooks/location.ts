@@ -7,15 +7,24 @@ import { Socket } from 'socket.io-client';
 export const useLocationPermission = () => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const requestPermission = useCallback(async () => {
-    const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
-    if (status === 'granted') {
-      setPermissionGranted(true);
-    } else if (canAskAgain) {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      setPermissionGranted(status === 'granted');
-    } else {
+    const { status: fgStatus, canAskAgain: fgCanAskAgain } =
+      await Location.requestForegroundPermissionsAsync();
+
+    if (fgStatus !== 'granted' && fgCanAskAgain) {
+      const retry = await Location.requestForegroundPermissionsAsync();
+      if (retry.status !== 'granted') {
+        setPermissionGranted(false);
+        return;
+      }
+    } else if (fgStatus !== 'granted') {
       setPermissionGranted(false);
+      return;
     }
+
+    // Foreground permission granted, now request background (Android only)
+    const { status: bgStatus } = await Location.requestBackgroundPermissionsAsync();
+
+    setPermissionGranted(bgStatus === 'granted');
   }, []);
 
   useEffect(() => {
@@ -38,6 +47,7 @@ const useLocationUpdater = (
   const auth = useAppSelector((state) => state.auth);
   const staffId = auth.userInfo?.id;
   const skip = auth.userInfo?.role !== 'STAFF' || !permissionGranted || !socket || !orderId;
+
   useEffect(() => {
     if (skip) return;
 
@@ -62,7 +72,16 @@ const useLocationUpdater = (
           longitude
         });
       } catch (error) {
-        console.error('Error getting location:', error);
+        if (app.location?.latitude && app.location?.longitude) {
+          socket.emit('locationUpdate', {
+            orderId,
+            staffId,
+            latitude: app.location?.latitude,
+            longitude: app.location?.longitude
+          });
+        } else {
+          console.error('Error getting location:', error);
+        }
       }
     };
 

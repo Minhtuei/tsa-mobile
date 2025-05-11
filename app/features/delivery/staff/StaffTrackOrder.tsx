@@ -33,7 +33,6 @@ export const StaffTrackOrder = (
   props: NativeStackScreenProps<DeliveryStackParamList, 'StaffTrackOrder'>
 ) => {
   const order = props.route.params.order;
-  console.log('staffTrackOrder', order);
   const globalStyles = useGlobalStyles();
   const theme = useAppTheme();
   const [isComplete, setIsComplete] = useState(false);
@@ -164,9 +163,8 @@ export const StaffTrackOrder = (
           renderContent={() => (
             <View style={{ gap: 6 }}>
               <CancelReasonInput control={control} errors={errors} />
-              {!(cancelReasonType !== OrderCancelReason.OTHER) && (
-                <ReasonInput control={control} errors={errors} />
-              )}
+              <ReasonInput control={control} errors={errors} />
+
               <Text
                 style={[
                   globalStyles.text,

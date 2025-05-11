@@ -1,18 +1,25 @@
+import { ChooseImageModal } from '@components/ChooseImageModal';
+import { PreViewImageModal } from '@components/PreviewImageModal';
+import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useLocationPermission } from '@hooks/location';
+import { useAppDispatch } from '@hooks/redux';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { setCurrentOrderId } from '@slices/app.slice';
+import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
 import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
 import { LoadingScreen } from 'app/shared/components/LoadingScreen';
 import { SlideButton } from 'app/shared/components/SlideButton';
 import { DeliveryStatus, OrderStatus } from 'app/shared/constants/status';
-import { AntDesign, Feather, FontAwesome } from '@expo/vector-icons';
-import { useAppTheme } from 'app/shared/hooks/theme';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useGetDeliveryQuery, useUpdateDeliveryStatusMutation } from '../api/delivery.api';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { DeliverOrderDetail } from 'app/shared/state/delivery.slice';
+import { DeliveryStackParamList } from 'app/shared/types/navigation';
 import { formatDate, formatUnixTimestamp, formatVNDcurrency } from 'app/shared/utils/format';
 import { getBrandIcon, getPamentMethodIcon } from 'app/shared/utils/getBrandIcon';
 import { getErrorMessage } from 'app/shared/utils/helper';
 import { shortenUUID } from 'app/shared/utils/order';
-import { DeliveryStackParamList } from 'app/shared/types/navigation';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   ActivityIndicator,
   Image,
@@ -23,7 +30,12 @@ import {
   View
 } from 'react-native';
 import { Button, Card, Divider, IconButton, Portal, Text } from 'react-native-paper';
-import { useLocationPermission } from '@hooks/location';
+import { useGetDeliveryQuery, useUpdateDeliveryStatusMutation } from '../api/delivery.api';
+import { CanceledImageInput, ReasonInput } from '../components/DeliveryField';
+import {
+  UpdateDeliverStatusSchema,
+  UpdateDeliverStatusSchemaType
+} from '../schema/delivery.schema';
 
 type DeliveryDetailProps = NativeStackScreenProps<DeliveryStackParamList, 'DeliveryDetail'>;
 
@@ -46,7 +58,17 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
   const [isStartDeliSwipe, setIsStartDeliSwipe] = useState(false);
   const [isCancelDeli, setIsCancelDeli] = useState(false);
   const [updateDeliveryStatus, { isLoading: isUpdating }] = useUpdateDeliveryStatusMutation();
+  const [uploadImage, { isLoading: isUploadImageLoading }] = useUpLoadImageMutation();
 
+  const [fileName, setFileName] = useState<string | null | undefined>(null);
+  const [fileType, setFileType] = useState<string | null | undefined>(null);
+  const [isPreview, setIsPreview] = useState(false);
+  const [isShowCamera, setIsShowCamera] = useState(false);
+  const globalStyles = useGlobalStyles();
+  const dispatch = useAppDispatch();
+  const canCancel = !(
+    delivery?.latestStatus === 'FINISHED' || delivery?.latestStatus === 'CANCELED'
+  );
   const deliveryInfo = useMemo(
     () => [
       {
@@ -92,31 +114,64 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     });
   }, [currentOrder, permissionGranted]);
 
-  console.log('currentOrder', currentOrder);
-  console.log('delivery[0]', delivery?.orders[0]);
-  const onUpdateDelivery = useCallback(
-    (status: Omit<DeliveryStatus, 'PENDING'>) => {
-      updateDeliveryStatus({ id: deliveryId, status })
-        .unwrap()
-        .then(() => {
-          if (status === DeliveryStatus.FINISHED || status === DeliveryStatus.CANCELED) {
-            navigation.goBack();
-          } else {
-            onTrackOrder();
-          }
-        })
-        .catch((err) => {
-          setErr(getErrorMessage(err));
-        });
-    },
-    [deliveryId, currentOrder]
-  );
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    watch,
+    formState: { errors }
+  } = useForm({
+    resolver: yupResolver(UpdateDeliverStatusSchema),
+    defaultValues: {
+      status: DeliveryStatus.ACCEPTED,
+      canceledImage: undefined,
+      reason: undefined
+    }
+  });
+  const canceledImage = watch('canceledImage');
+
+  const onSubmit = async (data: UpdateDeliverStatusSchemaType) => {
+    if (fileName && fileType) {
+      try {
+        const formData = new FormData();
+        const file = {
+          uri: data.canceledImage,
+          name: fileName,
+          type: fileType
+        } as any;
+        formData.append('image', file);
+        const result = await uploadImage(formData).unwrap();
+        const validateData = {
+          id: deliveryId,
+          status: data.status,
+          ...(data.status === DeliveryStatus.CANCELED && {
+            reason: data.reason,
+            canceledImage: result.url
+          })
+        };
+        console.log(validateData);
+        await updateDeliveryStatus(validateData).unwrap();
+        if (data.status === DeliveryStatus.FINISHED || data.status === DeliveryStatus.CANCELED) {
+          dispatch(setCurrentOrderId(null));
+        }
+      } catch (error) {
+        console.log(error);
+        setErr(getErrorMessage(error));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (delivery?.id) {
+      setValue('id', delivery.id);
+    }
+  }, [delivery?.id]);
 
   if (isLoading) {
     return <ActivityIndicator size='large' color='#34A853' />;
   }
   const latestStatus = delivery?.latestStatus;
-  if (isUpdating) {
+  if (isUpdating || isUploadImageLoading) {
     return <LoadingScreen />;
   }
   return (
@@ -129,7 +184,8 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
               setIsStartDeliSwipe(false);
             }}
             onSubmit={() => {
-              onUpdateDelivery(DeliveryStatus.ACCEPTED);
+              setValue('status', DeliveryStatus.ACCEPTED);
+              handleSubmit(onSubmit)();
             }}
             title='Thông báo'
             content='Bạn có chắc chắn muốn bắt đầu chuyến đi?'
@@ -141,11 +197,58 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             setIsCancelDeli(false);
           }}
           onSubmit={() => {
-            onUpdateDelivery(DeliveryStatus.CANCELED);
-            setIsCancelDeli(false);
+            setValue('status', DeliveryStatus.CANCELED);
+            handleSubmit(onSubmit)();
           }}
           title='Thông báo'
           content='Bạn có chắc chắn muốn huỷ chuyến đi?'
+          renderContent={() => (
+            <View style={{ gap: 6 }}>
+              <ReasonInput control={control} errors={errors} />
+
+              <Text
+                style={[
+                  globalStyles.text,
+                  { color: theme.colors.error, fontSize: 14, fontStyle: 'italic' }
+                ]}
+              >
+                *Vui lòng chụp ảnh minh chứng trước khi huỷ
+              </Text>
+              <CanceledImageInput
+                control={control}
+                errors={errors}
+                setViewImageModalVisible={setIsPreview}
+                setProofModalVisible={setIsShowCamera}
+              />
+              <Text
+                style={[
+                  globalStyles.text,
+                  { color: theme.colors.error, fontSize: 14, fontStyle: 'italic' }
+                ]}
+              >
+                *Lưu ý rằng khi huỷ chuyến đi đồng nghĩa với việc huỷ toàn bộ đơn hàng trong chuyến
+                đi này. Xin hãy cân nhắc trước khi xác nhận!
+              </Text>
+            </View>
+          )}
+        />
+        <ChooseImageModal
+          title='Chọn ảnh hoàn thành'
+          visible={isShowCamera}
+          setVisible={setIsShowCamera}
+          forceCamera={isShowCamera}
+          onSuccess={({ uri, name, type }) => {
+            setValue('canceledImage', uri);
+            setFileName(name);
+            setFileType(type);
+          }}
+        />
+        <PreViewImageModal
+          visible={isPreview}
+          setVisible={setIsPreview}
+          proofUri={canceledImage}
+          setValue={(field, value) => setValue('canceledImage', value)}
+          title='Ảnh hoàn thành'
         />
         <ConfirmationDialog
           visible={!!err}
@@ -280,7 +383,12 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
               <Button
                 mode='contained'
                 onPress={
-                  canFinishDelivery ? () => onUpdateDelivery(DeliveryStatus.FINISHED) : onTrackOrder
+                  canFinishDelivery
+                    ? () => {
+                        setValue('status', DeliveryStatus.FINISHED);
+                        handleSubmit(onSubmit)();
+                      }
+                    : onTrackOrder
                 }
                 style={{
                   backgroundColor: theme.colors.primary,
@@ -303,16 +411,14 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
             }}
             mode='contained'
             style={{
-              backgroundColor:
-                currentOrder !== undefined || canFinishDelivery
-                  ? theme.colors.surfaceDisabled
-                  : theme.colors.error,
+              backgroundColor: canCancel ? theme.colors.error : theme.colors.outlineVariant,
+
               borderRadius: 8,
               height: 60,
               width: 60
             }}
-            iconColor={theme.colors.onError}
-            disabled={currentOrder !== undefined || canFinishDelivery}
+            iconColor={canCancel ? theme.colors.onError : theme.colors.background}
+            disabled={!canCancel}
           />
         </View>
       )}

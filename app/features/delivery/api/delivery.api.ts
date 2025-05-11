@@ -1,7 +1,6 @@
 import { apiService } from '@services/api.service';
-import { UpdateDeliverySchemaType } from 'app/features/delivery/schema/delivery.schema';
+import { UpdateDeliverStatusSchemaType } from 'app/features/delivery/schema/delivery.schema';
 import { Delivery, DetailDelivery } from 'app/shared/state/delivery.slice';
-import { DeliveryStatus } from 'app/shared/types/delivery';
 
 export const deliveryApi = apiService.injectEndpoints({
   overrideExisting: true,
@@ -27,22 +26,19 @@ export const deliveryApi = apiService.injectEndpoints({
         };
       }
     }),
-    updateDelivery: build.mutation<void, { id: string; data: UpdateDeliverySchemaType }>({
-      query: ({ id, data }) => ({
-        url: `deliveries/${id}`,
-        method: 'PATCH',
-        body: data
-      }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Deliveries', id }]
-    }),
-    updateDeliveryStatus: build.mutation<
-      void,
-      { id: string; status: Omit<DeliveryStatus, 'PENDING'> }
-    >({
-      query: ({ id, status }) => ({
+    // updateDelivery: build.mutation<void, { id: string; data: UpdateDeliverySchemaType }>({
+    //   query: ({ id, data }) => ({
+    //     url: `deliveries/${id}`,
+    //     method: 'PATCH',
+    //     body: data
+    //   }),
+    //   invalidatesTags: (result, error, { id }) => [{ type: 'Deliveries', id }]
+    // }),
+    updateDeliveryStatus: build.mutation<void, UpdateDeliverStatusSchemaType>({
+      query: ({ id, ...data }) => ({
         url: `deliveries/status/${id}`,
         method: 'PATCH',
-        body: { status }
+        body: data
       }),
       invalidatesTags: [{ type: 'Deliveries' }]
     })
@@ -52,6 +48,6 @@ export const deliveryApi = apiService.injectEndpoints({
 export const {
   useGetDeliveriesQuery,
   useGetDeliveryQuery,
-  useUpdateDeliveryMutation,
+  // useUpdateDeliveryMutation,
   useUpdateDeliveryStatusMutation
 } = deliveryApi;
