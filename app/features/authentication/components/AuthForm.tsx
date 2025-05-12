@@ -123,7 +123,7 @@ export const FirstNameInput = ({ control, errors }: { control: any; errors: any 
             style={[
               globalStyles.input,
               {
-                backgroundColor: theme.colors.surfaceVariant
+                backgroundColor: theme.colors.onPrimary
               }
             ]}
             label='Tên'
@@ -153,7 +153,7 @@ export const LastNameInput = ({ control, errors }: { control: any; errors: any }
             style={[
               globalStyles.input,
               {
-                backgroundColor: theme.colors.surfaceVariant
+                backgroundColor: theme.colors.onPrimary
               }
             ]}
             label='Họ'
@@ -183,7 +183,7 @@ export const PhoneNumberInput = ({ control, errors }: { control: any; errors: an
             style={[
               globalStyles.input,
               {
-                backgroundColor: theme.colors.surfaceVariant
+                backgroundColor: theme.colors.onPrimary
               }
             ]}
             label='Số điện thoại'

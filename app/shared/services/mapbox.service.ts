@@ -19,14 +19,20 @@ const mapboxApi = createApi({
       query: ({ from, to }) =>
         `/walking/${from[0]},${from[1]};${to[0]},${to[1]}?alternatives=false&continue_straight=true&geometries=geojson&language=vi&overview=full&steps=true&access_token=${process.env.EXPO_MAPBOX_ACCESS_TOKEN || ''}`,
       transformResponse: (response: any) => {
-        const { geometry, distance } = response?.routes?.[0] || {};
+        const route = response?.routes?.[0];
+        if (!route?.geometry || typeof route.distance !== 'number') {
+          return {
+            coordinates: undefined,
+            distance: undefined
+          };
+        }
         return {
-          coordinates: geometry?.coordinates,
-          distance: distance?.toString()
+          coordinates: route.geometry.coordinates,
+          distance: route.distance.toString()
         };
       },
-      providesTags(result, error, arg, meta) {
-        if (error) {
+      providesTags: (result, error, arg) => {
+        if (error || !arg?.from || !arg?.to) {
           return [{ type: 'Direction' }];
         }
         return [

@@ -10,7 +10,7 @@ export const DropDownList = ({
   containerStyle
 }: {
   data: { label: string; value: string }[];
-  value: string | null;
+  value?: string | null;
   setValue: (value: string | null) => void;
   placeholder?: string;
   containerStyle?: ViewStyle;

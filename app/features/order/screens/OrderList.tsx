@@ -64,6 +64,7 @@ export const OrderList = (props: NativeStackScreenProps<OrderStackParamList, 'Or
       setIsLoadMore(false);
     }
   }, [startDate, endDate, status, orderId]);
+  console.log(orders[0]);
   useEffect(() => {
     if (data && data.results.length > 0) {
       if (isLoadMore) {

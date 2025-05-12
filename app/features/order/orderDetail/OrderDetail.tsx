@@ -29,9 +29,13 @@ export const OrderDetail = (
   const globalStyles = useGlobalStyles();
   const order = props.route.params.order;
   const statusRender = getStatusRender(order.latestStatus);
-  const canReport =
-    order.latestStatus in
-    [OrderStatus.CANCELED, OrderStatus.DELIVERED, OrderStatus.IN_TRANSPORT, OrderStatus.REJECTED];
+  const canReport = [
+    OrderStatus.CANCELED,
+    OrderStatus.DELIVERED,
+    OrderStatus.IN_TRANSPORT,
+    OrderStatus.REJECTED
+  ].includes(order.latestStatus as OrderStatus);
+
   const formatedTimeslot =
     formatTimeslotFromTimestamp(order.deliveryDate) ??
     formatDate(formatUnixTimestamp(order.deliveryDate));

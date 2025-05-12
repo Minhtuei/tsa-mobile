@@ -36,7 +36,7 @@ export const AccountScreen = (
   const [unregisterErr, setUnregisterErr] = useState('');
   const [logOut, { isLoading: logOutLoading }] = useLogoutMutation();
   const [visible, setVisible] = useState(false);
-
+  const [isGmailExpand, setIsGmailExpand] = useState(false);
   const isVerified = useMemo(() => {
     if (userInfo) {
       return Object.keys(userInfo || {})
@@ -203,7 +203,16 @@ export const AccountScreen = (
             />
           )}
           {userInfo?.email && (
-            <SettingButton text='Email' icon='email' right={<Text>{userInfo.email}</Text>} />
+            <SettingButton
+              text='Email'
+              icon='email'
+              right={
+                <Text numberOfLines={isGmailExpand ? undefined : 1} style={{ textAlign: 'right' }}>
+                  {userInfo.email}
+                </Text>
+              }
+              onPress={() => setIsGmailExpand((prev) => !prev)}
+            />
           )}
           {userInfo?.dormitory && (
             <SettingButton

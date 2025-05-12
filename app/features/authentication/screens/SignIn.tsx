@@ -190,7 +190,6 @@ export const SignIn = (props: NativeStackScreenProps<RootStackParamList>) => {
               mode='contained'
               style={[globalStyles.wideButton, styles.loginButton]}
               labelStyle={styles.buttonContent}
-              loading={isLoading}
               disabled={isLoading || isGoogleLoading}
             >
               Đăng nhập

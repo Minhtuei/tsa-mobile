@@ -1,34 +1,32 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useAppTheme, useGlobalStyles } from 'app/shared/hooks/theme';
 import { AccountStackParamList } from 'app/shared/types/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
-import { Button, Portal } from 'react-native-paper';
+import { Button, Portal, Text } from 'react-native-paper';
 
-import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
-import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
-import { LoadingScreen } from 'app/shared/components/LoadingScreen';
-import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
-import { BUILDINGS, DOMITORIES, ROOMS } from 'app/shared/constants/domitory';
-import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
-import { saveUserInfo } from 'app/shared/utils/userInfo';
+import { DropDownList } from '@components/order/DropDownList';
+import { useUpdateUserInfoMutation } from 'app/features/account/api/profile.api';
+import {
+  FirstNameInput,
+  LastNameInput,
+  PhoneNumberInput
+} from 'app/features/authentication/components/AuthForm';
 import {
   updateAccountSchema,
   UpdateAccountSchemaType
 } from 'app/features/authentication/schema/auth.schema';
-import { useUpdateUserInfoMutation } from 'app/features/account/api/profile.api';
-import {
-  BuildingSelect,
-  DormitorySelect,
-  FirstNameInput,
-  LastNameInput,
-  PhoneNumberInput,
-  RoomSelect
-} from 'app/features/authentication/components/AuthForm';
 import { useUpLoadImageMutation } from 'app/features/report/api/report.api';
+import { ChooseImageModal } from 'app/shared/components/ChooseImageModal';
+import { ConfirmationDialog } from 'app/shared/components/ConfirmDialog';
+import { LoadingScreen } from 'app/shared/components/LoadingScreen';
+import { PreViewImageModal } from 'app/shared/components/PreviewImageModal';
+import { BUILDING_DATA, DOMITORY_DATA, ROOM_DATA } from 'app/shared/constants/domitory';
+import { useAppDispatch, useAppSelector } from 'app/shared/hooks/redux';
 import { setUser } from 'app/shared/state/auth.slice';
+import { saveUserInfo } from 'app/shared/utils/userInfo';
 import { PhotoInput } from '../components/ProfileField';
 export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Profile'>) => {
   const { userInfo } = props.route.params;
@@ -72,6 +70,8 @@ export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Pr
     userInfo?.dormitory !== watch('dormitory') ||
     userInfo?.room !== watch('room') ||
     userInfo?.building !== watch('building');
+
+  const dormitory = watch('dormitory') as keyof typeof BUILDING_DATA;
   const onSubmit = async (data: UpdateAccountSchemaType) => {
     if (canUpdate) {
       try {
@@ -138,9 +138,95 @@ export const Profile = (props: NativeStackScreenProps<AccountStackParamList, 'Pr
               <FirstNameInput errors={errors} control={control} />
               <PhoneNumberInput errors={errors} control={control} />
 
-              <DormitorySelect control={control} errors={errors} dormitories={DOMITORIES} />
-              <BuildingSelect control={control} errors={errors} buildings={BUILDINGS} />
-              <RoomSelect control={control} errors={errors} rooms={ROOMS} />
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Ký túc xá
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <DropDownList
+                      data={DOMITORY_DATA}
+                      value={value}
+                      setValue={onChange}
+                      placeholder='Chọn ký túc xá'
+                      containerStyle={{
+                        backgroundColor: theme.colors.surface,
+                        borderRadius: 0,
+                        borderWidth: 1,
+                        borderColor: theme.colors.outline
+                      }}
+                    />
+                  )}
+                  name={'dormitory'}
+                />
+                {errors.dormitory && (
+                  <Text style={{ color: 'red' }}>{errors.dormitory.message}</Text>
+                )}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Tòa nhà
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <DropDownList
+                      data={dormitory ? BUILDING_DATA[dormitory] : BUILDING_DATA['B']}
+                      value={value}
+                      setValue={onChange}
+                      placeholder='Chọn tòa nhà'
+                      containerStyle={{
+                        backgroundColor: theme.colors.surface,
+                        borderRadius: 0,
+                        borderWidth: 1,
+                        borderColor: theme.colors.outline
+                      }}
+                    />
+                  )}
+                  name={'building'}
+                />
+                {errors.building && <Text style={{ color: 'red' }}>{errors.building.message}</Text>}
+              </View>
+              <View
+                style={{
+                  width: '100%',
+                  gap: 8
+                }}
+              >
+                <Text style={{ color: theme.colors.onSurface, fontWeight: 'bold', fontSize: 16 }}>
+                  Phòng
+                </Text>
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <DropDownList
+                      data={ROOM_DATA}
+                      value={value}
+                      setValue={onChange}
+                      placeholder='Chọn phòng'
+                      containerStyle={{
+                        backgroundColor: theme.colors.surface,
+                        borderRadius: 0,
+                        borderWidth: 1,
+                        borderColor: theme.colors.outline
+                      }}
+                    />
+                  )}
+                  name={'room'}
+                />
+                {errors.room && <Text style={{ color: 'red' }}>{errors.room.message}</Text>}
+              </View>
             </View>
             <Button
               onPress={() => {
