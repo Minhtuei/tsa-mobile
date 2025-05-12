@@ -43,7 +43,7 @@ export const SplashScreen = (props: NativeStackScreenProps<RootStackParamList, '
     if (colorScheme === 'dark' || colorScheme === 'light') {
       Appearance.setColorScheme(colorScheme);
     }
-    dispatch(setColorScheme(colorScheme ?? 'system'));
+    dispatch(setColorScheme(colorScheme ?? 'light'));
 
     const onboarding = await AsyncStorage.getItem('onboarding');
     props.navigation.dispatch(

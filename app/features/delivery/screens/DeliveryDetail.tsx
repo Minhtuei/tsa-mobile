@@ -99,9 +99,11 @@ const DeliveryDetail: React.FC<DeliveryDetailProps> = ({ route, navigation }) =>
     if (!delivery) {
       return false;
     }
-    return delivery.orders.every((order) => order.latestStatus === OrderStatus.DELIVERED);
+    return delivery.orders.every(
+      (order) =>
+        order.latestStatus === OrderStatus.DELIVERED || order.latestStatus === OrderStatus.CANCELED
+    );
   }, [delivery]);
-
   const onSlideComplete = useCallback(() => {
     setIsStartDeliSwipe(true);
   }, []);
