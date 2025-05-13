@@ -197,7 +197,7 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
       dispatch(setCurrentOrderId(orderId));
     }
   }, [data]);
-  useLocationUpdater(socket, orderId, permissionGranted);
+  const { error } = useLocationUpdater(socket, orderId, permissionGranted);
 
   useEffect(() => {
     if (auth.refreshToken === null) {
@@ -211,6 +211,11 @@ const MainTab = (props: NativeStackScreenProps<RootStackParamList, 'MainTab'>) =
       );
     }
   }, [auth.refreshToken, dispatch, props.navigation]);
+  useEffect(() => {
+    if (error) {
+      setMessage(error);
+    }
+  }, [error]);
 
   return (
     <>

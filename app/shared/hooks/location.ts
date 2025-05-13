@@ -47,7 +47,7 @@ const useLocationUpdater = (
   const auth = useAppSelector((state) => state.auth);
   const staffId = auth.userInfo?.id;
   const skip = auth.userInfo?.role !== 'STAFF' || !permissionGranted || !socket || !orderId;
-
+  const [error, setError] = useState('');
   useEffect(() => {
     if (skip) return;
 
@@ -80,7 +80,8 @@ const useLocationUpdater = (
             longitude: app.location?.longitude
           });
         } else {
-          console.error('Error getting location:', error);
+          setError('Đã xảy ra lỗi trong quá trình lấy vị trí của bạn!');
+          console.log('Error getting location:', error);
         }
       }
     };
@@ -89,6 +90,7 @@ const useLocationUpdater = (
 
     return () => clearInterval(intervalId);
   }, [permissionGranted, socket, orderId, staffId, updateInterval, dispatch]);
+  return { error };
 };
 
 export default useLocationUpdater;
