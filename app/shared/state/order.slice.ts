@@ -68,4 +68,9 @@ export interface OrderStatistics {
   }[];
   totalShippingFee?: number;
   totalOrders?: number;
+  resultByDay?: {
+    deliveryCount: number;
+    orderCount: number;
+    period: string;
+  }[];
 }

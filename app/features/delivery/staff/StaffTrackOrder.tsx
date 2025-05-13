@@ -65,7 +65,6 @@ export const StaffTrackOrder = (
     }
   });
   // Captured image state
-  console.log(errors);
   const cancelReasonType = watch('cancelReasonType');
   const reason = watch('reason');
 

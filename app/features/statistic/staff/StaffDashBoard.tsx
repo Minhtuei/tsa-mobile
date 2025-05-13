@@ -76,6 +76,7 @@ export const StaffDashBoard = () => {
   useEffect(() => {
     refetchOrderStatistic();
   }, [selectedType]);
+  console.log(orderStatistic);
   return (
     <ScrollView
       refreshControl={
@@ -213,7 +214,7 @@ export const StaffDashBoard = () => {
             <Feather name='box' size={24} color='black' />
             <Text style={styles.sectionHeader}>Thống kê đơn hàng</Text>
           </View>
-          <Barchart />
+          <Barchart resultByDay={orderStatistic?.resultByDay} type='Order' />
         </View>
         {/* delivery statistic */}
         <View>
@@ -221,7 +222,7 @@ export const StaffDashBoard = () => {
             <FontAwesome name='bicycle' size={24} color='black' />
             <Text style={styles.sectionHeader}>Thống kê chuyến đi</Text>
           </View>
-          <Barchart />
+          <Barchart resultByDay={orderStatistic?.resultByDay} type='Delivery' />
         </View>
       </View>
     </ScrollView>
